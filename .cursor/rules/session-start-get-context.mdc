@@ -1,0 +1,10 @@
+---
+description: 세션 시작 시 MCP get_context 우선 (Yohan OS SoT)
+alwaysApply: true
+---
+
+# 세션 시작 — `get_context` 우선
+
+1. **Yohan OS MCP (`yohan-os`)가 연결되어 있으면**, 코드·문서 작업을 하기 전에 도구 **`get_context`** 를 **한 번** 호출해 SoT(`memory/`)를 읽는다.
+2. MCP가 없거나 실패하면: `memory/rules/agent-harness.md`를 읽었는지 확인하고, 사용자에게 MCP·`cwd`·`npm run build` 여부를 안내한다.
+3. `get_context` 결과의 **`memory_root`**가 이 레포의 `memory` 폴더를 가리키는지 확인한다 (다르면 `YOHAN_OS_ROOT` / MCP `cwd` 점검).

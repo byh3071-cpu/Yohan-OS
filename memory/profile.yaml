@@ -1,0 +1,37 @@
+# Yohan OS — 프로필 (에이전트 SoT). 필요에 따라 수정하세요.
+
+display_name: Yohan
+timezone: Asia/Seoul
+
+# 주로 쓰는 스택·도구 (필요 시 수정)
+stack:
+  languages: [TypeScript]
+  editors: [Cursor]
+  notes: Notion
+  # 맥락 통일용 MCP: 이 레포의 yohan-os → get_context
+  mcp:
+    - name: yohan-os
+      purpose: SoT 주입 (memory/)
+
+# AI 클라이언트 우선순위 (대화에서 합의한 순서)
+ai_clients:
+  primary: [Cursor, Claude]
+  secondary: [Antigravity]
+  occasional: [Gemini, ChatGPT]
+
+# 코딩·문서 선호 (예: 포매팅)
+preferences:
+  code_style:
+    indentation: spaces
+    width: 2
+  comments: concise
+
+# 하지 말 것 (에이전트가 반드시 참고)
+must_not:
+  - 시크릿·API 키를 SoT 마크다운에 평문으로 저장하지 않는다.
+  - 확인 없이 프로덕션 배포·삭제·대금 관련 작업을 하지 않는다.
+
+# 선택: 톤·응답 길이 등
+communication:
+  tone: direct
+  language: ko

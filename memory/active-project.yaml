@@ -1,0 +1,9 @@
+# 현재 집중 중인 작업 (한 개만 또는 비워 두기)
+
+id: yohan-os-mcp
+name: Yohan OS — SoT + MCP v0
+goal: get_context로 맥락 통일, append_decision으로 결정 로그 축적
+repo_path: null
+branch: null
+notes: |
+  첫 목표: Cursor에서 MCP 연결 후 get_context 호출로 동일 맥락 확인.
