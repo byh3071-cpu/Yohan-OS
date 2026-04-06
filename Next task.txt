@@ -1,0 +1,60 @@
+내일 바로 할 일 (순서 권장)
+
+ 1. .env 작성 — NOTION_TOKEN, NOTION_DATABASE_ID (필요 시 NOTION_PAGE_ID). Integration은 Notion My integrations에서 생성하고, DB에 연결 권한 부여.
+
+ 2. 푸시(MVP)만 — 최근 decisions/ 또는 요약 카드 1종을 노션 DB 행으로 생성/갱신 (idempotent 키: SoT 파일 경로 해시 등).
+
+ 3. 풀은 큐만 — 노션 쿼리 결과를 **memory/inbox/notion-queue.md**에 append만 하고, profile / decisions 자동 덮어쓰기 금지.
+
+ 4. CLI 또는 MCP 도구 하나로 고정 — 예: npm run sync:notion:push / sync:notion:pull 또는 notion_pull_to_queue.
+
+ 5. get_context 설명 한 줄 업데이트 (이미 notion_queue 있음) + README에 동기 스크립트 사용법 짧게.
+앞으로 할 일 (로드맵)
+
+ A. 노션 푸시 안정화 — 재실행 시 중복 없이 갱신, 에러 시 로그. 우선순위: 높음 · 중요도: 높음 · 이유: 사람·협업 뷰와 SoT를 안전하게 연결하는 첫 실사용 경로.
+
+ B. 노션 풀 → 큐만 (자동 병합 없음). 우선순위: 높음 · 중요도: 높음 · 이유: “SoT가 항상 이김”을 깨지 않으려면 풀은 제안 큐로만 두는 게 맞음.
+
+ C. (선택) 반자동 워크플로 — 노션에서 승인된 항목만 SoT 반영 (예: 큐에서 체크된 항목만 append_decision). 우선순위: 중간 · 중요도: 중간 · 이유: 스케일 커지면 필요; 처음엔 수동으로도 충분.
+
+ D. memory/ 시맨틱/벡터 검색 (로컬 임베딩 vs API). 우선순위: 낮음~중간 · 중요도: 중간 · 이유: 키워드 search_memory로 버티다가, 파일 수·질문 복잡도가 늘면 도입.
+
+ E. P/G/E 하네스·Evaluator 실제 작업 밀착 (게이트 자동화 등). 우선순위: 중간 · 중요도: 중간 · 이유: 비전 문서와의 정합성·품질 유지.
+
+ F. 시크릿·토큰 로테이션, 노션 Integration 권한 최소화. 우선순위: 지속 · 중요도: 높음 · 이유: 1인이어도 유출 시 피해 큼; 초기부터 습관화.
+우선순위 한 줄 정리 (표에 있던 3줄)
+내일: Notion 자격 증명 → 푸시 MVP → 풀은 큐만 → 스크립트/MCP 하나로 고정.
+그다음: 풀·푸시 에러 처리·중복 방지 다듬기.
+나중에: 벡터 검색, 반자동 병합, P/G/E 자동화 강화.
+
+
+
+
+
+
+오늘 (30분 안)
+memory/profile.yaml 열기 → differentiation만 손본다.
+
+voice: 네가 원하는 말투·금지어를 2~3문장으로 적는다.
+priority_order: 네 기준 순서로 바꾼다 (안전 → 비전 → 명확성 → 새로움 등).
+creative_margin: “대안 23개 내라”고 할 상황 / “그냥 관례대로” 할 상황을 각각 23줄씩 적는다.
+Cursor에서 MCP yohan-os 켜고, 새 채팅에서 get_context 한 번 호출해 보기.
+
+profile에 방금 쓴 내용이 들어오는지 확인한다.
+이번 주 (프로젝트 같이 돌릴 때)
+작업이 “크게 방향이 바뀌는” 종류면 → MCP **append_decision**으로 memory/decisions/에 한 줄이라도 남긴다. (나중에 그게 “우리만의 선례”가 된다.)
+
+답이 너무 뻔하면 그 턴에만 이렇게 말한다:
+
+“profile의 creative_margin 중 대안 케이스에 해당하니, 옵션 A/B/C와 장단만 줘.”
+답이 과하면 이렇게 말한다:
+
+“이건 when_to_stay_conventional이니 최소 수정만.”
+습관 (부담 적게)
+중요한 턴만 응답 말미에 Evaluator 한 줄:
+
+“우리 톤·우선순위에 맞았는지”만 스스로 점검 (이미 레포에 체크리스트 §E 있음).
+한 달에 한 번 differentiation만 읽고, innovation_signals에 “이번 달 좋았던 패턴” 한 줄 추가.
+
+한 줄 요약: profile의 differentiation을 네 말로 채우고, 큰 결정은 decisions에 남기고, 매번 **“대안 필요 / 관례로”**만 명시하면 된다.
+원하면 다음 메시지에 voice + priority 순서를 네가 말해 주면, 그걸 그대로 넣을 profile.yaml 문단만 써 줄게.

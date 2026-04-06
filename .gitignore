@@ -3,3 +3,6 @@ dist/
 .env
 .env.*
 *.local
+
+# 텔레그램 봇 단일 인스턴스 락
+memory/.telegram-bot.lock

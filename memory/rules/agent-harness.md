@@ -1,6 +1,6 @@
 # Agent Harness — 세션·작업 규칙 (Yohan OS v0)
 
-이 파일은 **에이전트(Cursor 등)**가 이 레포에서 일할 때 따라야 할 **최소 하네스**다. 비전 전체는 `docs/VISION-AND-REQUIREMENTS.md`를 본다.
+이 파일은 **에이전트(Cursor 등)**가 이 레포에서 일할 때 따라야 할 **최소 하네스**다. 비전 전체는 `docs/VISION-AND-REQUIREMENTS.md`를 본다. **컨텍스트·하네스 엔지니어링을 레포 구조에 어떻게 매핑했는지**는 `docs/CONTEXT-AND-HARNESS-SYSTEM.md`를 본다.
 
 ---
 
@@ -16,15 +16,17 @@
 
 1. 에이전트 SoT 루트는 **`memory/`** 이다. 레포 루트는 MCP `cwd` 또는 환경 변수 **`YOHAN_OS_ROOT`** 로 결정된다.
 2. **비밀번호·API 키·토큰**은 SoT 마크다운·YAML·커밋에 **평문으로 넣지 않는다**. 필요하면 `.env`·OS 시크릿·예시만 문서화한다.
-3. **노션·다른 툴이 “최종 진실”이 되게 설계 변경을 제안하지 않는다.** 사람용 미러·입력은 가능하나, **런타임 진실은 `memory/`**다.
+3. **노션·다른 툴이 “최종 진실”이 되게 설계 변경을 제안하지 않는다.** 사람용 미러·입력은 가능하나, **런타임 진실은 `memory/`**다. 노션과 양방향을 쓸 때는 **`memory/rules/notion-sync.md`** (SoT 항상 우선)를 따른다.
 
 ---
 
 ## 3. 작업 흐름 (P → G → E)
 
-1. **복잡한 요청**(여러 파일·아키텍처·정책 변경)이면 먼저 **짧은 계획**(목표·제약·단계)을 말로 정리한 뒤 실행한다.
-2. **생성(Generator)** 단계에서 코드·문서를 바꾼다.
-3. **종료 전 Evaluator** 단계: `.cursor/rules/evaluator-vision-gate.mdc` 및 `memory/rules/evaluator-checklist.md`에 따라 **비전 대조·판정**을 응답 말미에 적는다. (단순 한 줄 응답은 생략 가능.)
+상세: `memory/rules/pge-pipeline.md`.
+
+1. **Planner**: 복잡한 요청이면 MCP **`plan_task`** 로 `plan.v0` JSON을 받거나, 관련 자료를 **`search_memory`** 로 찾는다. (가벼운 요청은 생략 가능.)
+2. **Generator**: 플랜·요청에 따라 코드·문서를 실제로 수정한다.
+3. **Evaluator**: `.cursor/rules/evaluator-vision-gate.mdc` 및 `memory/rules/evaluator-checklist.md`에 따라 응답 말미에 **판정**을 적는다. (단순 한 줄 응답은 생략 가능.)
 
 ---
 
@@ -53,6 +55,8 @@
 
 | 파일 | 역할 |
 |------|------|
+| `docs/CONTEXT-AND-HARNESS-SYSTEM.md` | 컨텍스트 vs 하네스, 파이프라인·산출물 인덱스 |
 | `docs/VISION-AND-REQUIREMENTS.md` | 비전·요구 통합 |
+| `memory/rules/pge-pipeline.md` | Planner→Generator→Evaluator 도구 매핑 |
 | `memory/rules/evaluator-checklist.md` | Evaluator 대조 항목 |
 | `.cursor/rules/evaluator-vision-gate.mdc` | Cursor에서 Evaluator 응답 형식 강제 |

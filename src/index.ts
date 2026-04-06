@@ -1,20 +1,19 @@
+import "dotenv/config";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, writeFile, stat } from "node:fs/promises";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import * as z from "zod/v4";
-
-function resolveRepoRoot(): string {
-  const env = process.env.YOHAN_OS_ROOT?.trim();
-  if (env) return env;
-  return process.cwd();
-}
-
-function memoryDir(): string {
-  return join(resolveRepoRoot(), "memory");
-}
+import { ingestGeekNewsRss } from "./ingest/geeknews.js";
+import { loadRecentIngestSummary } from "./ingest/recent-summary.js";
+import { ingestUrl } from "./ingest/url.js";
+import { buildPlanStub } from "./plan/task-plan.js";
+import { getMemoryDir } from "./paths.js";
+import { loadNotionQueuePreview } from "./notion-queue.js";
+import { searchMemory } from "./search/memory-search.js";
 
 async function readYamlFile<T>(path: string): Promise<{ ok: true; data: T } | { ok: false; error: string }> {
   try {
@@ -69,10 +68,10 @@ async function main(): Promise<void> {
     "get_context",
     {
       description:
-        "Yohan OS 에이전트 SoT: profile.yaml, active-project.yaml, 최근 decisions/*.md 를 로드해 단일 맥락 패키지로 반환한다. 세션 시작 시 호출.",
+        "Yohan OS 에이전트 SoT: profile, active-project, 최근 decisions, 최근 인제스트 요약, 노션 풀 큐(`notion_queue`) 미리보기를 한 번에 반환. 세션 시작 시 호출.",
     },
     async () => {
-      const root = memoryDir();
+      const root = getMemoryDir();
       const profilePath = join(root, "profile.yaml");
       const activePath = join(root, "active-project.yaml");
       const decisionsPath = join(root, "decisions");
@@ -80,6 +79,8 @@ async function main(): Promise<void> {
       const profile = await readYamlFile<Record<string, unknown>>(profilePath);
       const activeProject = await readYamlFile<Record<string, unknown>>(activePath);
       const recentDecisions = await loadRecentDecisions(decisionsPath, 8);
+      const recentIngest = await loadRecentIngestSummary(12);
+      const notionQueue = await loadNotionQueuePreview();
 
       const payload = {
         sot_version: "0.1",
@@ -90,6 +91,14 @@ async function main(): Promise<void> {
           file,
           content: content.length > 6000 ? `${content.slice(0, 6000)}\n\n…(truncated)` : content,
         })),
+        recent_ingest: recentIngest,
+        notion_queue: {
+          path: notionQueue.path.replace(/\\/g, "/"),
+          exists: notionQueue.exists,
+          preview: notionQueue.preview,
+          truncated: notionQueue.truncated,
+          rules: "memory/rules/notion-sync.md",
+        },
       };
 
       const text = JSON.stringify(payload, null, 2);
@@ -111,7 +120,7 @@ async function main(): Promise<void> {
       },
     },
     async ({ title, summary, body }) => {
-      const root = memoryDir();
+      const root = getMemoryDir();
       const decisionsPath = join(root, "decisions");
       await mkdir(decisionsPath, { recursive: true });
 
@@ -146,11 +155,94 @@ async function main(): Promise<void> {
     },
   );
 
+  server.registerTool(
+    "ingest_geeknews_rss",
+    {
+      description:
+        "GeekNews RSS(https://news.hada.io/rss/news)를 가져와 memory/ingest/rss/geeknews/ 에 ingest.v0 마크다운으로 저장한다. 동일 원문 URL은 건너뜀.",
+      inputSchema: {
+        limit: z.number().int().min(1).max(100).optional().describe("가져올 최대 항목 수 (기본 20)"),
+      },
+    },
+    async (args) => {
+      const limit = args?.limit ?? 20;
+      const r = await ingestGeekNewsRss({ limit });
+      return {
+        content: [{ type: "text", text: JSON.stringify(r, null, 2) }],
+      };
+    },
+  );
+
+  server.registerTool(
+    "ingest_url",
+    {
+      description:
+        "http(s) URL 하나를 ingest.v0로 memory/ingest/url/에 저장. 유튜브는 oEmbed+자막, 그 외는 Readability 본문 추출. 동일 URL은 스킵.",
+      inputSchema: {
+        url: z.string().url().describe("https://… 로 시작하는 주소"),
+      },
+    },
+    async ({ url }) => {
+      const r = await ingestUrl(url);
+      return {
+        content: [{ type: "text", text: JSON.stringify(r, null, 2) }],
+      };
+    },
+  );
+
+  server.registerTool(
+    "search_memory",
+    {
+      description:
+        "memory/ 이하 .md/.yaml/.txt 에서 부분 문자열 검색(대소문자 무시). ingest·decisions·rules·프로필 등 통합 검색.",
+      inputSchema: {
+        query: z.string().min(1).describe("검색어"),
+        max_results: z.number().int().min(1).max(200).optional().describe("최대 히트 수 (기본 40)"),
+      },
+    },
+    async ({ query, max_results }) => {
+      const r = await searchMemory(query, { maxResults: max_results ?? 40 });
+      return {
+        content: [{ type: "text", text: JSON.stringify(r, null, 2) }],
+      };
+    },
+  );
+
+  server.registerTool(
+    "plan_task",
+    {
+      description:
+        "Planner 스텁: 목표를 plan.v0 JSON으로 감싼다. 복잡 요청 전 구조화·오케스트레이션 대비. 이어서 Generator(실작업)·Evaluator(말미 검증) 단계.",
+      inputSchema: {
+        goal: z.string().min(1).describe("한 문장 목표"),
+        constraints_must: z.array(z.string()).optional().describe("반드시 지킬 조건"),
+        constraints_must_not: z.array(z.string()).optional().describe("하면 안 되는 것"),
+        notes: z.string().optional().describe("추가 맥락"),
+      },
+    },
+    async (args) => {
+      const plan = buildPlanStub({
+        goal: args.goal,
+        constraints_must: args.constraints_must,
+        constraints_must_not: args.constraints_must_not,
+        notes: args.notes,
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
+      };
+    },
+  );
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+/** `node dist/index.js` 로 직접 실행될 때만 MCP stdio 기동 (import 시 부작용 방지) */
+const entryFile = resolve(fileURLToPath(import.meta.url));
+const argvMain = process.argv[1] ? resolve(process.argv[1]) : "";
+if (argvMain && entryFile === argvMain) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

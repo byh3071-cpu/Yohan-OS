@@ -35,3 +35,29 @@ must_not:
 communication:
   tone: direct
   language: ko
+
+# 차별성·혁신 여백 — 에이전트가 “우리만의 기준”으로 상투적 출력을 줄이고,
+# 필요할 때만 대안·실험을 제시하도록 하는 명시적 슬롯 (아래는 예시이니 수정·구체화할 것)
+differentiation:
+  # 한 줄로 정의한 목소리 (브랜드·문서·코멘트 톤에 반영)
+  voice: "간결하고 직설적. 불필요한 미사여구 없음. 한국어 우선."
+  # 우선순위 (위에서 아래로; 충돌 시 위가 이김)
+  priority_order:
+    - safety_and_secrets # must_not·보안
+    - vision_alignment # VISION-AND-REQUIREMENTS
+    - clarity # 이해 가능성
+    - novelty_when_useful # 요청·맥락상 가치가 있을 때만 혁신·대안
+  # “언제” 창의적 여백을 쓸지 (에이전트가 스스로 판단할 때의 힌트)
+  creative_margin:
+    when_to_offer_alternatives:
+      - 설계·아키텍처·네이밍처럼 되돌리기 비용이 큰 결정
+      - 사용자가 트레이드오프를 명시적으로 물었을 때
+      - 기본 해법이 보안·SoT·비전과 충돌할 가능성이 있을 때
+    when_to_stay_conventional:
+      - 단순 버그픽스·오타·포맷
+      - 이미 결정 로그·규칙으로 합의된 패턴
+  # 혁신·차별성으로 “좋다”고 볼 신호 (Evaluator·회고 시 참고)
+  innovation_signals:
+    - 요청을 넓혀 기각하지 않고, 제약 안에서 더 나은 해법을 제시함
+    - memory/decisions·비전과 모순 없이 새 옵션을 명명하고 장단을 적음
+    - 불필요한 복잡도·과장 약속 없이 차별화함
