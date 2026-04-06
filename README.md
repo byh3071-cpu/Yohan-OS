@@ -42,10 +42,28 @@ npm run build
 | `NOTION_DATABASE_ID` | 동기 대상 DB ID.                                            |
 | `NOTION_PAGE_ID`     | 페이지 기반 API 시 (선택).                                      |
 | `NOTION_QUEUE_FILE`  | 노션 풀 큐 파일 경로 오버라이드. 기본은 `memory/inbox/notion-queue.md`. |
+| `NOTION_TITLE_PROPERTY` | 노션 DB 제목 열 이름 (기본 `Name`). |
+| `NOTION_PROPERTY_SOT_KEY` | 멱등 키 열 이름 (기본 `SoT Key`, **DB에 텍스트 열로 생성**). |
+| `NOTION_PROPERTY_SUMMARY` | 요약 열 이름 (선택, 없으면 푸시 시 생략). |
+| `NOTION_PROPERTY_SOURCE_PATH` | SoT 상대 경로 열 (선택). |
 | `TELEGRAM_BOT_TOKEN` | 텔레그램 봇 (`npm run bot`). @BotFather 발급 토큰. |
 | `TELEGRAM_CHAT_ID`   | (권장) 본인 채팅 ID만 처리. 비우면 모든 채팅 수신. |
 
 **노션 풀 큐(SoT 병합 전):** `memory/inbox/notion-queue.md` — 규칙은 `memory/rules/notion-sync.md`. `get_context` 의 `notion_queue` 필드에 미리보기가 포함된다.
+
+### 노션 동기 (푸시 / 풀→큐만)
+
+1. [My integrations](https://www.notion.so/my-integrations)에서 Integration 생성 → **토큰**을 `.env`의 `NOTION_TOKEN`에 넣는다.
+2. 노션에서 해당 DB 페이지에 Integration을 **연결**(공유)한다.
+3. DB에 열 추가: **`SoT Key`** (텍스트) — 멱등 키 저장용, **필수**. 선택: `Summary`, `Source Path` (텍스트).
+4. `.env`: `NOTION_DATABASE_ID=` URL의 32자 hex(예: `…/33a9740ab07280cf8180cc8b19663fb5?…` → 앞 32자).
+
+```bash
+npm run sync:notion:push -- 20    # memory/decisions 최근 20개 → 노션 DB (같은 SoT Key 는 갱신)
+npm run sync:notion:pull -- 50    # 노션 DB 행 → notion-queue.md 에 append 만 (이미 있는 page_id 는 스킵, SoT 자동 병합 없음)
+```
+
+MCP: `notion_push_decisions`, `notion_pull_to_queue`. 클라이언트는 `@notionhq/client@2.2` (Notion API `databases.query`).
 
 ## 텔레그램 봇 인박스 (폴링)
 
@@ -155,6 +173,8 @@ memory/
 - `**ingest_url**`: 단일 URL
 - `**search_memory**`: `memory/` 텍스트 검색
 - `**plan_task**`: `plan.v0` 플랜 스텁 (Planner)
+- `**notion_push_decisions**`: `decisions/` → 노션 DB (멱등 `SoT Key`)
+- `**notion_pull_to_queue**`: 노션 DB → `notion-queue.md` append 만
 
 ## 문서
 

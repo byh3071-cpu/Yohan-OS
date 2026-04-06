@@ -9,11 +9,20 @@
     "start": "node dist/index.js",
     "mcp": "node dist/index.js",
     "ingest:geeknews": "tsx src/ingest-geeknews-cli.ts",
+    "ingest:yozm": "tsx src/ingest-yozm-cli.ts",
+    "ingest:aitimes": "tsx src/ingest-aitimes-cli.ts",
+    "ingest:themilk": "tsx src/ingest-themilk-cli.ts",
+    "ingest:paulgraham": "tsx src/ingest-paulgraham-cli.ts",
+    "ingest:samaltman": "tsx src/ingest-samaltman-cli.ts",
+    "ingest:karpathy": "tsx src/ingest-karpathy-cli.ts",
+    "ingest:all": "tsx src/ingest-all-rss-cli.ts",
     "ingest:url": "tsx src/ingest-url-cli.ts",
     "mcp:check": "node -e \"import('./dist/index.js').then(()=>console.log('MCP bundle OK')).catch(e=>{console.error(e);process.exit(1)})\"",
     "search:memory": "tsx src/search-memory-cli.ts",
     "plan:task": "tsx src/plan-task-cli.ts",
-    "bot": "tsx src/telegram-bot.ts"
+    "bot": "tsx src/telegram-bot.ts",
+    "sync:notion:push": "tsx src/notion-push-cli.ts",
+    "sync:notion:pull": "tsx src/notion-pull-cli.ts"
   },
   "engines": {
     "node": ">=20"
@@ -21,10 +30,12 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
     "@mozilla/readability": "^0.6.0",
+    "@notionhq/client": "^2.2.15",
     "dotenv": "^16.4.7",
     "jsdom": "^29.0.1",
     "node-telegram-bot-api": "^0.67.0",
     "rss-parser": "^3.13.0",
+    "tesseract.js": "^7.0.0",
     "yaml": "^2.7.0",
     "youtube-transcript": "^1.3.0",
     "zod": "^4.3.6"

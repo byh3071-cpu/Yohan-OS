@@ -6,3 +6,6 @@ dist/
 
 # 텔레그램 봇 단일 인스턴스 락
 memory/.telegram-bot.lock
+
+# Tesseract 학습 데이터(로컬에 두었을 때만; tesseract.js는 기본적으로 캐시에 다운로드)
+*.traineddata

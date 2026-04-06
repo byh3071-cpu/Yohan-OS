@@ -1,6 +1,6 @@
 /**
  * 텔레그램 봇 — 폴링으로 메시지 수신 (로컬, 별도 HTTP 서버 없음).
- * URL 포함 → `ingestUrl` / 텍스트만 → `memory/inbox/telegram-inbox.md` append
+ * 사진 → OCR(tesseract.js) 후 inbox append · URL 포함 → `ingestUrl` · 텍스트만 → inbox append
  */
 import {
   closeSync,
@@ -18,6 +18,7 @@ import { config } from "dotenv";
 import TelegramBot from "node-telegram-bot-api";
 import type { Message } from "node-telegram-bot-api";
 import { ingestUrl } from "./ingest/url.js";
+import { recognizeImageBuffer } from "./telegram-ocr.js";
 import { getInboxDir, getMemoryDir, resolveRepoRoot } from "./paths.js";
 
 config({ path: join(resolveRepoRoot(), ".env") });
@@ -158,6 +159,30 @@ async function appendTextOnlyInbox(text: string, meta: { chatId: number; message
   await appendFile(telegramInboxPath(), block, "utf8");
 }
 
+/** 사진 OCR 결과 — type: screenshot + received_at + message_id */
+async function appendScreenshotOcrInbox(
+  ocrText: string,
+  meta: { chatId: number; messageId: number; date?: number },
+): Promise<void> {
+  await mkdir(getInboxDir(), { recursive: true });
+  const tsSec = meta.date ?? Math.floor(Date.now() / 1000);
+  const iso = new Date(tsSec * 1000).toISOString();
+  const body = ocrText.length > 0 ? ocrText : "_(OCR 결과 없음 — 이미지에 인쇄 텍스트가 없을 수 있음)_";
+  const block = [
+    "",
+    "---",
+    "type: screenshot",
+    `received_at: ${iso}`,
+    `message_id: ${meta.messageId}`,
+    `from_chat_id: ${meta.chatId}`,
+    "---",
+    "",
+    body,
+    "",
+  ].join("\n");
+  await appendFile(telegramInboxPath(), block, "utf8");
+}
+
 /**
  * polling: true 만 쓰면 생성자 안에서 즉시 startPolling() → 리스너 등록 전에 업데이트가 처리될 수 있음.
  * autoStart: false 로 두고, on('message') 등록 후에만 startPolling() 한다.
@@ -170,6 +195,41 @@ const bot = new TelegramBot(token, {
   },
 });
 
+async function handlePhotoMessage(msg: Message): Promise<void> {
+  const chatId = msg.chat.id;
+  const photos = msg.photo;
+  if (!photos || photos.length === 0) return;
+
+  const largest = photos[photos.length - 1];
+  const fileId = largest.file_id;
+
+  try {
+    const fileUrl = await bot.getFileLink(fileId);
+    const res = await fetch(fileUrl);
+    if (!res.ok) {
+      throw new Error(`이미지 다운로드 실패 HTTP ${res.status}`);
+    }
+    const buf = Buffer.from(await res.arrayBuffer());
+    const text = await recognizeImageBuffer(buf);
+    await appendScreenshotOcrInbox(text, {
+      chatId,
+      messageId: msg.message_id,
+      date: msg.date,
+    });
+    const preview = text.length > 0 ? text.slice(0, 100) : "(비어 있음)";
+    const suffix = text.length > 100 ? "…" : "";
+    await bot.sendMessage(
+      chatId,
+      `OCR 완료 · 미리보기(100자):\n${preview}${suffix}\n\n→ memory/inbox/telegram-inbox.md`,
+      { disable_web_page_preview: true },
+    );
+  } catch (e) {
+    const err = e instanceof Error ? e.message : String(e);
+    console.error("[photo/ocr]", err);
+    await bot.sendMessage(chatId, `사진 처리 실패: ${err}`);
+  }
+}
+
 async function onMessage(msg: Message): Promise<void> {
   if (!tryClaimMessage(msg)) {
     return;
@@ -178,6 +238,11 @@ async function onMessage(msg: Message): Promise<void> {
   const chatId = msg.chat.id;
   if (allowedChatId && String(chatId) !== allowedChatId) {
     console.warn(`[skip] chat ${chatId} (allowed: ${allowedChatId})`);
+    return;
+  }
+
+  if (msg.photo && msg.photo.length > 0) {
+    await handlePhotoMessage(msg);
     return;
   }
 

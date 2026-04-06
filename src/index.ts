@@ -8,10 +8,23 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import * as z from "zod/v4";
 import { ingestGeekNewsRss } from "./ingest/geeknews.js";
+import {
+  type RssFeedDefinition,
+  RSS_FEED_AITIMES,
+  RSS_FEED_KARPATHY,
+  RSS_FEED_PAULGRAHAM,
+  RSS_FEED_SAMALTMAN,
+  RSS_FEED_THEMILK,
+  RSS_FEED_YOZM,
+} from "./ingest/rss-feed-config.js";
+import { ingestRssFeed } from "./ingest/rss-feed.js";
 import { loadRecentIngestSummary } from "./ingest/recent-summary.js";
 import { ingestUrl } from "./ingest/url.js";
 import { buildPlanStub } from "./plan/task-plan.js";
 import { getMemoryDir } from "./paths.js";
+import { loadNotionSyncEnv } from "./notion/notion-env.js";
+import { pushDecisionsFromSoT } from "./notion/push-decisions.js";
+import { pullNotionDatabaseToQueue } from "./notion/pull-queue.js";
 import { loadNotionQueuePreview } from "./notion-queue.js";
 import { searchMemory } from "./search/memory-search.js";
 
@@ -68,7 +81,7 @@ async function main(): Promise<void> {
     "get_context",
     {
       description:
-        "Yohan OS 에이전트 SoT: profile, active-project, 최근 decisions, 최근 인제스트 요약, 노션 풀 큐(`notion_queue`) 미리보기를 한 번에 반환. 세션 시작 시 호출.",
+        "Yohan OS 에이전트 SoT: profile, active-project, 최근 decisions, 최근 인제스트 요약, 노션 풀 큐(`notion_queue`) 미리보기. 노션 동기는 MCP `notion_push_decisions` / `notion_pull_to_queue` 또는 npm 스크립트. 세션 시작 시 호출.",
     },
     async () => {
       const root = getMemoryDir();
@@ -173,6 +186,64 @@ async function main(): Promise<void> {
     },
   );
 
+  const rssMcpTools: Array<{ name: string; description: string; def: RssFeedDefinition }> = [
+    {
+      name: "ingest_yozm_rss",
+      description:
+        "요즘IT RSS(https://yozm.wishket.com/magazine/feed/) → memory/ingest/rss/yozm/ (ingest.v0). OPENAI_API_KEY 있으면 title_ko·summary_ko. 동일 원문 URL 스킵.",
+      def: RSS_FEED_YOZM,
+    },
+    {
+      name: "ingest_aitimes_rss",
+      description:
+        "AI 타임스 RSS(https://www.aitimes.com/rss/allArticle.xml) → memory/ingest/rss/aitimes/. OPENAI_API_KEY 있으면 한국어 필드 추가.",
+      def: RSS_FEED_AITIMES,
+    },
+    {
+      name: "ingest_themilk_rss",
+      description:
+        "더 밀크 RSS(https://www.the-mill.kr/rss) → memory/ingest/rss/themilk/. OPENAI_API_KEY 있으면 한국어 필드 추가.",
+      def: RSS_FEED_THEMILK,
+    },
+    {
+      name: "ingest_paulgraham_rss",
+      description:
+        "Paul Graham 에세이 RSS(Aaron Swartz 스크랩 피드, rss-feed-config 참고) → memory/ingest/rss/paulgraham/. OPENAI_API_KEY 있으면 한국어 필드 추가.",
+      def: RSS_FEED_PAULGRAHAM,
+    },
+    {
+      name: "ingest_samaltman_rss",
+      description:
+        "Sam Altman Atom(https://blog.samaltman.com/posts.atom) → memory/ingest/rss/samaltman/. OPENAI_API_KEY 있으면 한국어 필드 추가.",
+      def: RSS_FEED_SAMALTMAN,
+    },
+    {
+      name: "ingest_karpathy_rss",
+      description:
+        "Andrej Karpathy RSS(https://karpathy.github.io/feed.xml) → memory/ingest/rss/karpathy/. OPENAI_API_KEY 있으면 한국어 필드 추가.",
+      def: RSS_FEED_KARPATHY,
+    },
+  ];
+
+  for (const t of rssMcpTools) {
+    server.registerTool(
+      t.name,
+      {
+        description: t.description,
+        inputSchema: {
+          limit: z.number().int().min(1).max(100).optional().describe("가져올 최대 항목 수 (기본 20)"),
+        },
+      },
+      async (args) => {
+        const limit = args?.limit ?? 20;
+        const r = await ingestRssFeed(t.def, { limit });
+        return {
+          content: [{ type: "text", text: JSON.stringify(r, null, 2) }],
+        };
+      },
+    );
+  }
+
   server.registerTool(
     "ingest_url",
     {
@@ -205,6 +276,56 @@ async function main(): Promise<void> {
       return {
         content: [{ type: "text", text: JSON.stringify(r, null, 2) }],
       };
+    },
+  );
+
+  server.registerTool(
+    "notion_push_decisions",
+    {
+      description:
+        "memory/decisions 의 최근 md 를 노션 DB에 푸시한다. 멱등 키는 파일 경로 해시(`SoT Key` 열). NOTION_TOKEN·NOTION_DATABASE_ID·DB 스키마 필요.",
+      inputSchema: {
+        limit: z.number().int().min(1).max(100).optional().describe("최대 파일 수 (기본 20)"),
+      },
+    },
+    async (args) => {
+      try {
+        const env = loadNotionSyncEnv();
+        const results = await pushDecisionsFromSoT(env, { limit: args?.limit ?? 20 });
+        return {
+          content: [{ type: "text", text: JSON.stringify({ ok: true, results }, null, 2) }],
+        };
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ ok: false, error: msg }, null, 2) }],
+        };
+      }
+    },
+  );
+
+  server.registerTool(
+    "notion_pull_to_queue",
+    {
+      description:
+        "노션 DB 행을 읽어 memory/inbox/notion-queue.md 에만 append. 이미 큐에 있는 page_id 는 스킵. profile·decisions 자동 덮어쓰기 없음.",
+      inputSchema: {
+        page_size: z.number().int().min(1).max(100).optional().describe("한 번에 조회할 행 수 (기본 50)"),
+      },
+    },
+    async (args) => {
+      try {
+        const env = loadNotionSyncEnv();
+        const r = await pullNotionDatabaseToQueue(env, { pageSize: args?.page_size ?? 50 });
+        return {
+          content: [{ type: "text", text: JSON.stringify({ ok: true, ...r, queue_file: "memory/inbox/notion-queue.md" }, null, 2) }],
+        };
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ ok: false, error: msg }, null, 2) }],
+        };
+      }
     },
   );
 

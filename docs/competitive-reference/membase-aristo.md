@@ -1,10 +1,12 @@
 ---
 
 ## title: "Membase / Aristo Technologies — 경쟁사 레퍼런스"
+
 collected_at: "2026-04-06"
 source:
-  - [https://aristo.so](https://aristo.so)
-  - [https://membase.so](https://membase.so)
+
+- [https://aristo.so](https://aristo.so)
+- [https://membase.so](https://membase.so)
 tags: [competitive-reference, universal-memory, mcp, knowledge-graph]
 
 ## 회사 개요
@@ -52,4 +54,3 @@ tags: [competitive-reference, universal-memory, mcp, knowledge-graph]
 - OpenMemory (mem0.ai/openmemory)
 
 ---
-

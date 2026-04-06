@@ -14,20 +14,41 @@ export type IngestSummaryItem = {
   ingested_at?: string;
 };
 
+async function collectMdFilesUnderRss(memoryDir: string): Promise<string[]> {
+  const rssRoot = join(memoryDir, "ingest", "rss");
+  if (!existsSync(rssRoot)) return [];
+  const subs = await readdir(rssRoot, { withFileTypes: true });
+  const out: string[] = [];
+  for (const d of subs) {
+    if (!d.isDirectory()) continue;
+    const dir = join(rssRoot, d.name);
+    const names = await readdir(dir);
+    for (const n of names) {
+      if (n.endsWith(".md")) out.push(join(dir, n));
+    }
+  }
+  return out;
+}
+
 /**
  * RSS·URL 인제스트 md 중 수정 시각 최신순 상위 limit개, 제목·링크만.
  */
 export async function loadRecentIngestSummary(limit: number): Promise<IngestSummaryItem[]> {
   const memoryDir = getMemoryDir();
-  const dirs = [join(memoryDir, "ingest", "rss", "geeknews"), join(memoryDir, "ingest", "url")];
 
   const files: { path: string; mtime: number }[] = [];
-  for (const dir of dirs) {
-    if (!existsSync(dir)) continue;
-    const names = await readdir(dir);
+
+  for (const p of await collectMdFilesUnderRss(memoryDir)) {
+    const s = await stat(p);
+    files.push({ path: p, mtime: s.mtimeMs });
+  }
+
+  const urlDir = join(memoryDir, "ingest", "url");
+  if (existsSync(urlDir)) {
+    const names = await readdir(urlDir);
     for (const n of names) {
       if (!n.endsWith(".md")) continue;
-      const p = join(dir, n);
+      const p = join(urlDir, n);
       const s = await stat(p);
       files.push({ path: p, mtime: s.mtimeMs });
     }

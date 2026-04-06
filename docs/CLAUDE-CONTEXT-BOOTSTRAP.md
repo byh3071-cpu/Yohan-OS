@@ -1,7 +1,7 @@
 # Claude(및 기타 AI)용 — Yohan OS 프로젝트 맥락 부트스트랩
 
 > **용도:** 새 대화·새 클라이언트에서 이 프로젝트의 **기획·이유·비전·병목·해결·현재 구현**을 빠짐없이 이해시키기 위한 단일 문서.  
-> **유지:** 비전·우선순위가 바뀌면 `docs/VISION-AND-REQUIREMENTS.md`를 갱신하고, 본 문서의 §8·§9만 따라잡으면 된다.  
+> **유지:** 비전·우선순위가 바뀌면 `docs/VISION-AND-REQUIREMENTS.md`를 갱신하고, 프로필·활성 프로젝트 스냅샷은 §8·§9를 따라잡는다. **당일 운영 요약**(MCP 검증·인제스트·노션 큐 등)은 필요 시 §11에 날짜 절로 추가한다.  
 > **SoT:** 에이전트 런타임의 최종 진실은 **`memory/`** + 이 레포 Git; 노션은 미러·큐·뷰(규칙: `memory/rules/notion-sync.md`).
 
 ---
@@ -184,7 +184,60 @@
 | 활성 프로젝트 | `memory/active-project.yaml` |
 | 결정 로그 | `memory/decisions/*.md` |
 | 하네스·동기·평가 | `memory/rules/*.md` |
+| 노션 풀 큐(병합 전) | `memory/inbox/notion-queue.md` |
 
 ---
 
-*이 문서는 비전 문서·README·프로필을 통합한 부트스트랩이며, 세부 수치·정책의 정본은 항상 `docs/VISION-AND-REQUIREMENTS.md` 및 `memory/`를 따른다.*
+## 11. 운영 일지 — 2026-04-06
+
+> 아래는 **당일 실제로 수행·누적된 작업**을 SoT 메타데이터·대화 로그와 맞춰 정리한 것이다. 시각은 **`memory/ingest/**/*.md` frontmatter**, **노션 큐 `pulled_at`**, **결정 로그 `created`** 등 저장소 기준이며, 인제스트 타임스탬프는 **UTC**가 많다.
+
+### 11.1 세션·MCP·하네스 (Cursor)
+
+- **세션 시작 시 `get_context` 우선**: `.cursor/rules/session-start-get-context.mdc`, `.cursor/skills/yohan-os-workflow/SKILL.md`에 따라 에이전트가 코드·문서 작업 전에 MCP **`get_context`** 를 호출하는 흐름을 **자동으로 실행**했다.
+- **반복 호출**: 동일 세션에서 `get_context`를 **여러 번** 호출해 스냅샷이 안정적으로 돌아오는지 확인했다.
+- **`memory_root` 검증**: 응답의 `memory_root`가 워크스페이스의 **`{레포}/memory`** 와 **일치**함을 매 호출마다 확인했다.
+- **`recent_decisions` 검증**: `memory/decisions/2026-04-06-1200-get-context-pipeline-verified.md`가 `get_context` 응답의 **`recent_decisions`** 에 **포함되는지**, 재호출로 **확인 완료**(해당 결정 본문의 “다음 확인” 항목 충족).
+
+### 11.2 결정 로그 (SoT)
+
+| 파일 | 요지 |
+|------|------|
+| `memory/decisions/2026-04-06-1200-get-context-pipeline-verified.md` | MCP `get_context`가 워크스페이스 `memory`와 정합한지 확인하고, `recent_decisions` 적재를 검증하기 위한 **첫 결정 로그 시드**(`created`: 2026-04-06T12:00:00.000Z, `source`: manual.seed). |
+
+### 11.3 노션 → 인박스만 (SoT 덮어쓰기 없음)
+
+- **`notion_pull_to_queue`** 로 `memory/inbox/notion-queue.md` 하단에 블록 추가 (`pulled_at`: **2026-04-06T13:49:16.864Z**, `source`: notion.pull_to_queue, `database_id`는 큐 파일 참조).
+- 끌어온 페이지 제목: **[Yohan] get_context 및 append_decision 파이프 검증** (Notion `page_id` / public URL / SoT Key는 **큐 파일**에 기록).
+- **`memory/rules/notion-sync.md`**: `decisions/`·`profile.yaml` 등 **본 SoT 반영은 승인 후** — 당일 작업은 **제안 큐 적재만**이며 자동 병합은 하지 않음.
+
+### 11.4 인제스트 (`memory/ingest/`)
+
+**URL** (`kind: url`, MCP `ingest_url` 등 — 당일 `ingested_at` 기준)
+
+| UTC (대략) | 저장 경로 패턴 | 제목·요지 |
+|------------|----------------|-----------|
+| 11:17 | `ingest/url/url-194a5baa2a535af7.md` | GitHub `anthropics/anthropic-sdk-python` |
+| 11:23 | `ingest/url/url-3d22403c3d5a828b.md` | GitHub `sapsaldog/supabase-naver-oidc-proxy` (Naver userinfo → OIDC 형식 프록시) |
+| 11:27 | `ingest/url/url-d84d4e72bd6545e5.md` | Karpathy gist **llm-wiki** (LLM 기반 개인 지식베이스 패턴) |
+| 11:30 | `ingest/url/url-d1c5f816c56eb3ae.md` | **Membase** 제품 페이지 (`membase.so`, 에이전트용 개인 메모리 레이어) |
+| 14:37 | `ingest/url/url-b88590c43555a909.md` | GitHub `mvanhorn/last30days-skill` |
+
+**RSS** (`kind: rss`, **약 14:42:28 ~ 14:45:56 UTC** 에 묶여 인제스트)
+
+- **`memory/ingest/rss/yozm/`** — 요즘IT 피드 다수.
+- **`memory/ingest/rss/aitimes/`** — AITimes 피드 다수.
+- **`memory/ingest/rss/samaltman/`** — Sam Altman 블로그 피드 다수.
+- **`memory/ingest/rss/karpathy/`** — Karpathy RSS 다수.
+- **`memory/ingest/rss/paulgraham/`** — Paul Graham 에세이 RSS(예: *What You (Want to)* Want*, *The Need to Read*, *How to Get New Ideas*, *How to Do Great Work*, *Superlinear Returns* 등).
+
+`get_context` 의 **`recent_ingest`** 필드는 **최신 일부만** 노출하므로, 전체 목록은 위 디렉터리·파일명·frontmatter `ingested_at` 을 본다.
+
+### 11.5 문서·에이전트 산출
+
+- **`docs/CLAUDE-CONTEXT-BOOTSTRAP.md`**: 본 §11을 추가·갱신해, Claude·기타 클라이언트에 **2026-04-06 맥락**을 한 번에 넘길 수 있게 했다.
+- Cursor 대화 안에서는 실질 산출이 있을 때 **Evaluator** 블록(`.cursor/rules/evaluator-vision-gate.mdc`)을 응답 말미에 붙이는 관행을 유지했다.
+
+---
+
+*이 문서는 비전 문서·README·프로필을 통합한 부트스트랩이며, 세부 수치·정책의 정본은 항상 `docs/VISION-AND-REQUIREMENTS.md` 및 `memory/`를 따른다. §11은 **날짜별 운영 스냅샷**으로 정본을 대체하지 않는다.*
