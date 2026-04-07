@@ -88,7 +88,7 @@
 ### 5.4 통합 동기화 (MCP Server)
 
 - Cursor·클로드·ChatGPT·제미나이 등 **툴이 달라도 동일 맥락·지침** 유지.
-- 예시 도구: `get_context`, `append_decision`, (선택) `search_memory`, `plan_task`, `evaluate_artifact` 등 — 설계 시 확정.
+- 예시 도구: `get_context`, `append_decision`, `log_evaluation`(Evaluator 판정 구조화 저장), (선택) `search_memory`, `plan_task`, `evaluate_artifact` 등 — 설계 시 확정.
 
 ### 5.5 단일 앱(OS)
 

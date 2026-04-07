@@ -27,6 +27,7 @@ import { pushDecisionsFromSoT } from "./notion/push-decisions.js";
 import { pullNotionDatabaseToQueue } from "./notion/pull-queue.js";
 import { loadNotionQueuePreview } from "./notion-queue.js";
 import { searchMemory } from "./search/memory-search.js";
+import { writeEvaluationLog } from "./evaluation-log.js";
 
 async function readYamlFile<T>(path: string): Promise<{ ok: true; data: T } | { ok: false; error: string }> {
   try {
@@ -162,6 +163,67 @@ async function main(): Promise<void> {
           {
             type: "text",
             text: JSON.stringify({ ok: true, path: path.replace(/\\/g, "/") }, null, 2),
+          },
+        ],
+      };
+    },
+  );
+
+  const qualityScoresSchema = z.object({
+    searchability: z.boolean().describe("true = 검색·키워드 등 탐색 가능성 충족"),
+    self_contained: z.boolean().describe("true = 카드/문서만으로 맥락 이해 가능"),
+    pattern_consistency: z.boolean().describe("true = 기존 코드·문서 패턴과 일치"),
+    compression: z.boolean().describe("true = 핵심 압축·중복 없이 요약 적절"),
+    connectivity: z.boolean().describe("true = 링크·related·경로 등 연결성 적절"),
+  });
+
+  const evaluationChecklistSchema = z.object({
+    scope_exceeded: z.boolean().describe("true = 범위 초과 변경 있음(나쁨). 없으면 false"),
+    memory_structure_changed: z.boolean().describe("true = memory/ 폴더 구조 변경 있음(나쁨). 없으면 false"),
+    secret_exposed: z.boolean().describe("true = 시크릿·키 평문 노출 의심(나쁨). 없으면 false"),
+    must_not_violated: z.boolean().describe("true = must_not 위반(나쁨). 없으면 false"),
+    frontmatter_valid: z.boolean().describe("true = 새 .md 프론트매터 규칙 충족 또는 해당 없음(양호)"),
+    unverified_claims: z.boolean().describe("true = 출처 없는 사실 단정 있음(나쁨). 없으면 false"),
+    content_lost: z.boolean().describe("true = 의도치 않은 삭제·유실 의심(나쁨). 없으면 false"),
+    voice_aligned: z.boolean().describe("true = profile voice·differentiation과 정합(양호)"),
+  });
+
+  server.registerTool(
+    "log_evaluation",
+    {
+      description:
+        "Evaluator 판정을 구조화 로그로 memory/metrics/evaluations/eval-{날짜}-{순번}.md 에 저장한다. id·date·순번은 서버가 부여(Asia/Seoul 날짜). 응답 말미 Evaluator 블록 직후 호출.",
+      inputSchema: {
+        verdict: z.enum(["pass", "revise", "reject"]).describe("Evaluator 판정"),
+        task: z.string().min(1).describe("이번 턴 작업 한 줄 설명"),
+        files_changed: z.number().int().min(0).describe("변경·추가된 파일 수"),
+        revise_count: z.number().int().min(0).describe("누적 revise 횟수 또는 이번 지적 항목 수 등 정수"),
+        quality_scores: qualityScoresSchema,
+        checklist: evaluationChecklistSchema,
+        body: z.string().optional().describe("프론트매터 아래 선택 마크다운(대조 요약·수정 지시 등)"),
+        date: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional()
+          .describe("선택. YYYY-MM-DD. 생략 시 Asia/Seoul 당일"),
+      },
+    },
+    async (args) => {
+      const r = await writeEvaluationLog({
+        verdict: args.verdict,
+        task: args.task,
+        files_changed: args.files_changed,
+        revise_count: args.revise_count,
+        quality_scores: args.quality_scores,
+        checklist: args.checklist,
+        body: args.body,
+        date: args.date,
+      });
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({ ok: true, id: r.id, path: r.path, date: r.date, seq: r.seq }, null, 2),
           },
         ],
       };

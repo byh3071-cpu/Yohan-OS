@@ -25,6 +25,7 @@ description: >-
 
 - 복잡한 목표: **`plan_task`** 또는 **`search_memory`** (Planner).
 - 구현·문서 수정 후: **`memory/rules/evaluator-checklist.md`** 기준으로 응답 말미 Evaluator 블록(프로젝트 규칙 준수).
+- Evaluator 블록 직후 MCP 가능하면 **`log_evaluation`** 으로 `memory/metrics/evaluations/` 에 판정 로그 저장.
 - 아키텍처·비전 충돌 가능 결정: **`append_decision`**.
 
 ## 진입 순서 (복붙용)

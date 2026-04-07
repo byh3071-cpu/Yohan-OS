@@ -17,6 +17,7 @@
 
 - 산출이 있으면 **응답 말미**에 `memory/rules/evaluator-checklist.md` 로 비전·SoT 대조.
 - 판정: `pass` / `revise` / `reject` (프로젝트 규칙: `.cursor/rules/evaluator-vision-gate.mdc`).
+- **MCP `log_evaluation` 호출:** 위 판정을 텍스트 블록(`## Evaluator`)으로 적은 **바로 다음**에, `yohan-os` MCP가 연결되어 있으면 **`log_evaluation`을 한 번 호출**해 `memory/metrics/evaluations/eval-{날짜}-{순번}.md`에 동일 판정·메트릭을 YAML로 남긴다. 연결 불가·도구 미노출이면 생략 사유를 응답에 적고, `evaluator-checklist.md`의 안내를 따른다 (`npm run build` 후 MCP 재연결 등).
 
 ## 도구 매핑 (요약)
 
@@ -25,4 +26,4 @@
 | --------- | ------------------------------------------- |
 | Planner   | `get_context`, `plan_task`, `search_memory` |
 | Generator | (에이전트 작업)                                   |
-| Evaluator | (체크리스트 + 규칙; 필요 시 `append_decision`)        |
+| Evaluator | 체크리스트 + 규칙; **`log_evaluation`**; 필요 시 `append_decision` |

@@ -75,7 +75,7 @@
 
 ### 5.4 MCP 통합
 
-- `get_context`, `append_decision`, `search_memory`, `plan_task` 등 — 설계 시 확장.
+- `get_context`, `append_decision`, `log_evaluation`, `search_memory`, `plan_task` 등 — 설계 시 확장.
 
 ### 5.5 단일 앱(OS)
 
@@ -125,6 +125,7 @@
 
 - `get_context` — profile, active-project, 최근 decisions, recent_ingest(12), notion_queue 미리보기 등 JSON 스냅샷.
 - `append_decision` — `memory/decisions/`에 결정 로그.
+- `log_evaluation` — Evaluator 판정을 `memory/metrics/evaluations/`에 YAML 프론트매터 `.md`로 저장.
 - `ingest_geeknews_rss` — GeekNews RSS → `memory/ingest/rss/geeknews/`.
 - `ingest_url` — 단일 URL(유튜브·기사) → `memory/ingest/url/`.
 - `search_memory` — memory 이하 부분 문자열 검색.

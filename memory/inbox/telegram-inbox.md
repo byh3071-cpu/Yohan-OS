@@ -1,6 +1,7 @@
 ---
 
 ## received_at: 2026-04-06T11:17:13.000Z
+
 from_chat_id: 8636994274
 message_id: 1
 
@@ -9,6 +10,7 @@ message_id: 1
 ---
 
 ## received_at: 2026-04-06T11:17:13.000Z
+
 from_chat_id: 8636994274
 message_id: 1
 
@@ -17,6 +19,7 @@ message_id: 1
 ---
 
 ## received_at: 2026-04-06T11:18:24.000Z
+
 from_chat_id: 8636994274
 message_id: 7
 
@@ -25,6 +28,7 @@ message_id: 7
 ---
 
 ## type: screenshot
+
 received_at: 2026-04-06T14:14:48.000Z
 message_id: 20
 from_chat_id: 8636994274
@@ -43,6 +47,7 @@ We 사용 방법은 간단한데
 ---
 
 ## type: screenshot
+
 received_at: 2026-04-06T14:14:48.000Z
 message_id: 18
 from_chat_id: 8636994274
@@ -71,6 +76,7 @@ SO XM AUC
 ---
 
 ## type: screenshot
+
 received_at: 2026-04-06T14:14:48.000Z
 message_id: 19
 from_chat_id: 8636994274

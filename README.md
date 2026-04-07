@@ -156,6 +156,7 @@ memory/
   profile.yaml
   active-project.yaml
   decisions/*.md
+  metrics/evaluations/*.md   # Evaluator 구조화 로그 (MCP log_evaluation)
   ingest/rss/geeknews/*.md
   ingest/url/*.md            # 단일 URL 인제스천
   rules/
@@ -170,14 +171,19 @@ memory/
 
 ## MCP 도구
 
-- `**get_context**`: SoT 스냅샷 JSON (`recent_ingest` 포함)
-- `**append_decision**`: `decisions/`에 결정 로그
-- `**ingest_geeknews_rss**`: GeekNews RSS
-- `**ingest_url**`: 단일 URL
-- `**search_memory**`: `memory/` 텍스트 검색
-- `**plan_task**`: `plan.v0` 플랜 스텁 (Planner)
-- `**notion_push_decisions**`: `decisions/` → 노션 DB (멱등 `SoT Key`)
-- `**notion_pull_to_queue**`: 노션 DB → `notion-queue.md` append 만
+| 도구 | 설명 |
+| --- | --- |
+| `get_context` | SoT 스냅샷 JSON (`profile`, `active_project`, 최근 `decisions`, `recent_ingest`, `notion_queue` 미리보기 등). |
+| `append_decision` | `memory/decisions/`에 결정 로그 마크다운을 추가한다. |
+| `log_evaluation` | Evaluator 구조화 로그. **필수 인자:** `verdict`, `task`, `files_changed`, `revise_count`, `quality_scores`(5키), `checklist`(8키). **선택:** `body`(프론트매터 아래 마크다운), `date`(YYYY-MM-DD·생략 시 **Asia/Seoul** 당일). 저장: `{memory_root}/metrics/evaluations/eval-{날짜}-{3자리순번}.md` — 프론트매터에 `id`, `date`, `type: evaluation`, 위 필드가 들어간다. 같은 날짜의 기존 `eval-*.md`를 보고 순번을 증가시킨다. **응답:** JSON `ok`, `id`, `path`, `date`, `seq`. (호출 타이밍·필드 의미: `evaluator-vision-gate.mdc`, `evaluator-checklist.md`.) |
+| `ingest_geeknews_rss` | GeekNews RSS → `memory/ingest/rss/geeknews/`. 인자 `limit` (1–100, 기본 20). |
+| `ingest_url` | 단일 http(s) URL → `memory/ingest/url/`. 인자 `url`. |
+| `search_memory` | `memory/` 이하 `.md`/`.yaml`/`.txt` 부분 문자열 검색. 인자 `query`, 선택 `max_results`. |
+| `plan_task` | 목표를 `plan.v0` JSON 스텁으로 감싼다 (Planner). |
+| `notion_push_decisions` | `memory/decisions` 최근 항목 → 노션 DB (멱등 `SoT Key`). |
+| `notion_pull_to_queue` | 노션 DB 행 → `memory/inbox/notion-queue.md`에 append 만. |
+
+그 외 RSS 전용 MCP(`ingest_yozm_rss`, `ingest_aitimes_rss`, `ingest_themilk_rss`, `ingest_paulgraham_rss`, `ingest_samaltman_rss`, `ingest_karpathy_rss`)는 각각 대응 피드를 `memory/ingest/rss/{이름}/`에 저장한다. 인자는 공통으로 선택 `limit` (1–100, 기본 20).
 
 ## 문서
 

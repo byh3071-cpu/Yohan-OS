@@ -1,12 +1,12 @@
 ---
-id: knowledge-base-strategy
+
+## id: knowledge-base-strategy
 date: 2026-04-07
 domain: ai-engineering
 tags: [knowledge-base, atomic-notes, RAG, layered-context, harness, vector-db]
 related: [exploration-vs-exploitation, vibe-coding-pipeline, yohan-os-mcp]
 reference: Andrej Karpathy
 status: insight
----
 
 # 지식 베이스 핵심 전략 — 「제2의 뇌」 설계
 

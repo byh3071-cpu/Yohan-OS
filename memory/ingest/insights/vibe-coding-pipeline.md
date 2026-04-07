@@ -1,11 +1,11 @@
 ---
-id: vibe-coding-pipeline
+
+## id: vibe-coding-pipeline
 date: 2026-04-07
 domain: ai-engineering
 tags: [vibe-coding, SoT, cursor, pipeline, context-engineering]
 related: [knowledge-base-strategy, exploration-vs-exploitation, yohan-os-mcp]
 status: insight
----
 
 # 바이브 코딩 — 초개인화 경량 파이프라인 (SoT 앱) 구축
 
