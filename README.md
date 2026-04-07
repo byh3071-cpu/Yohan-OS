@@ -35,19 +35,20 @@ npm run build
 레포 루트에 `**.env.example`** 을 참고해 `.env` 를 만들 수 있다. MCP는 `dotenv`로 `.env`를 읽는다(워크스페이스 루트에 둘 것).
 
 
-| 변수                   | 의미                                                      |
-| -------------------- | ------------------------------------------------------- |
-| `YOHAN_OS_ROOT`      | 레포 루트 절대 경로. 미설정 시 **프로세스 `cwd`**를 루트로 본다.              |
-| `NOTION_TOKEN`       | Notion Integration 토큰 (동기 구현 시).                        |
-| `NOTION_DATABASE_ID` | 동기 대상 DB ID.                                            |
-| `NOTION_PAGE_ID`     | 페이지 기반 API 시 (선택).                                      |
-| `NOTION_QUEUE_FILE`  | 노션 풀 큐 파일 경로 오버라이드. 기본은 `memory/inbox/notion-queue.md`. |
-| `NOTION_TITLE_PROPERTY` | 노션 DB 제목 열 이름 (기본 `Name`). |
-| `NOTION_PROPERTY_SOT_KEY` | 멱등 키 열 이름 (기본 `SoT Key`, **DB에 텍스트 열로 생성**). |
-| `NOTION_PROPERTY_SUMMARY` | 요약 열 이름 (선택, 없으면 푸시 시 생략). |
-| `NOTION_PROPERTY_SOURCE_PATH` | SoT 상대 경로 열 (선택). |
-| `TELEGRAM_BOT_TOKEN` | 텔레그램 봇 (`npm run bot`). @BotFather 발급 토큰. |
-| `TELEGRAM_CHAT_ID`   | (권장) 본인 채팅 ID만 처리. 비우면 모든 채팅 수신. |
+| 변수                            | 의미                                                      |
+| ----------------------------- | ------------------------------------------------------- |
+| `YOHAN_OS_ROOT`               | 레포 루트 절대 경로. 미설정 시 **프로세스 `cwd`**를 루트로 본다.              |
+| `NOTION_TOKEN`                | Notion Integration 토큰 (동기 구현 시).                        |
+| `NOTION_DATABASE_ID`          | 동기 대상 DB ID.                                            |
+| `NOTION_PAGE_ID`              | 페이지 기반 API 시 (선택).                                      |
+| `NOTION_QUEUE_FILE`           | 노션 풀 큐 파일 경로 오버라이드. 기본은 `memory/inbox/notion-queue.md`. |
+| `NOTION_TITLE_PROPERTY`       | 노션 DB 제목 열 이름 (기본 `Name`).                              |
+| `NOTION_PROPERTY_SOT_KEY`     | 멱등 키 열 이름 (기본 `SoT Key`, **DB에 텍스트 열로 생성**).            |
+| `NOTION_PROPERTY_SUMMARY`     | 요약 열 이름 (선택, 없으면 푸시 시 생략).                              |
+| `NOTION_PROPERTY_SOURCE_PATH` | SoT 상대 경로 열 (선택).                                       |
+| `TELEGRAM_BOT_TOKEN`          | 텔레그램 봇 (`npm run bot`). @BotFather 발급 토큰.               |
+| `TELEGRAM_CHAT_ID`            | (권장) 본인 채팅 ID만 처리. 비우면 모든 채팅 수신.                        |
+
 
 **노션 풀 큐(SoT 병합 전):** `memory/inbox/notion-queue.md` — 규칙은 `memory/rules/notion-sync.md`. `get_context` 의 `notion_queue` 필드에 미리보기가 포함된다.
 
@@ -55,7 +56,7 @@ npm run build
 
 1. [My integrations](https://www.notion.so/my-integrations)에서 Integration 생성 → **토큰**을 `.env`의 `NOTION_TOKEN`에 넣는다.
 2. 노션에서 해당 DB 페이지에 Integration을 **연결**(공유)한다.
-3. DB에 열 추가: **`SoT Key`** (텍스트) — 멱등 키 저장용, **필수**. 선택: `Summary`, `Source Path` (텍스트).
+3. DB에 열 추가: `**SoT Key`** (텍스트) — 멱등 키 저장용, **필수**. 선택: `Summary`, `Source Path` (텍스트).
 4. `.env`: `NOTION_DATABASE_ID=` URL의 32자 hex(예: `…/33a9740ab07280cf8180cc8b19663fb5?…` → 앞 32자).
 
 ```bash
@@ -72,10 +73,12 @@ MCP: `notion_push_decisions`, `notion_pull_to_queue`. 클라이언트는 `@notio
 1. `.env`에 `TELEGRAM_BOT_TOKEN`, (권장) `TELEGRAM_CHAT_ID` 설정.
 2. `npm run bot` — 종료는 `Ctrl+C`.
 
-| 수신 내용 | 동작 |
-|----------|------|
+
+| 수신 내용            | 동작                                                     |
+| ---------------- | ------------------------------------------------------ |
 | `http(s)` URL 포함 | 기존 `ingest/url` (`ingestUrl`)로 `memory/ingest/url/` 저장 |
-| URL 없는 텍스트만 | `memory/inbox/telegram-inbox.md`에 append |
+| URL 없는 텍스트만      | `memory/inbox/telegram-inbox.md`에 append               |
+
 
 스크립트는 `tsx`로 실행한다(NodeNext `*.js` import 규약과 동일하게 동작).
 
