@@ -1,0 +1,9 @@
+{
+  "date_ymd": "2026-04-06",
+  "resource_title": "[2026-04-06] 예시 스크린 제목",
+  "ocr_raw_body": "OCR으로 읽은 원문을 여기에 그대로 붙입니다. 교정하지 않습니다.",
+  "tags": ["AI", "생산성"],
+  "summary_title": "[2026-04-06] 정제된 핵심 제목",
+  "summary_body": "## 카테고리\n…\n\n## 핵심 요약\n…\n\n## 상세 내용\n…",
+  "resource_only": false
+}

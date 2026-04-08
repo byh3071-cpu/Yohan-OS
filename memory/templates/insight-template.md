@@ -1,10 +1,14 @@
 ---
+
 id: kebab-case-id
 date: YYYY-MM-DD
 domain: domain-name
 tags: [tag-one, tag-two]
 related: [other-note-id]
 status: draft
+
+# archive_tier: light   # 선택: light | standard | long_term — `memory/rules/archiving-appraisal-feynman.md`
+
 ---
 
 # 제목

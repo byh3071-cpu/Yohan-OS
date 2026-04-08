@@ -52,4 +52,8 @@
 
 ---
 
+**텔레그램 OCR → 리소스/서머리 DB** 별도 절차·삭제 정책: `memory/rules/notion-ocr-pipeline.md` (SoT는 여전히 `memory/ingest/insights/` 우선).
+
+---
+
 *이 문서는 비전 문서의 “노션 = 사람용, SoT = 에이전트 진실”과 동일 축이다.*

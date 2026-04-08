@@ -1,6 +1,7 @@
 ---
 
 ## id: knowledge-base-strategy
+
 date: 2026-04-07
 domain: ai-engineering
 tags: [knowledge-base, atomic-notes, RAG, layered-context, harness, vector-db]

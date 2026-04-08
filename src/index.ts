@@ -23,7 +23,9 @@ import { ingestUrl } from "./ingest/url.js";
 import { buildPlanStub } from "./plan/task-plan.js";
 import { getMemoryDir } from "./paths.js";
 import { loadNotionSyncEnv } from "./notion/notion-env.js";
+import { loadNotionOcrEnv } from "./notion/notion-ocr-env.js";
 import { pushDecisionsFromSoT } from "./notion/push-decisions.js";
+import { OcrPushInputSchema, pushOcrResourceAndSummary } from "./notion/push-ocr.js";
 import { pullNotionDatabaseToQueue } from "./notion/pull-queue.js";
 import { loadNotionQueuePreview } from "./notion-queue.js";
 import { searchMemory } from "./search/memory-search.js";
@@ -82,7 +84,7 @@ async function main(): Promise<void> {
     "get_context",
     {
       description:
-        "Yohan OS 에이전트 SoT: profile, active-project, 최근 decisions, 최근 인제스트 요약, 노션 풀 큐(`notion_queue`) 미리보기. 노션 동기는 MCP `notion_push_decisions` / `notion_pull_to_queue` 또는 npm 스크립트. 세션 시작 시 호출.",
+        "Yohan OS 에이전트 SoT: profile, active-project, 최근 decisions, 최근 인제스트 요약, 노션 풀 큐(`notion_queue`) 미리보기. 노션 동기는 MCP `notion_push_decisions` / `notion_push_ocr_pair` / `notion_pull_to_queue` 또는 npm 스크립트. 세션 시작 시 호출.",
     },
     async () => {
       const root = getMemoryDir();
@@ -381,6 +383,37 @@ async function main(): Promise<void> {
         const r = await pullNotionDatabaseToQueue(env, { pageSize: args?.page_size ?? 50 });
         return {
           content: [{ type: "text", text: JSON.stringify({ ok: true, ...r, queue_file: "memory/inbox/notion-queue.md" }, null, 2) }],
+        };
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        return {
+          content: [{ type: "text", text: JSON.stringify({ ok: false, error: msg }, null, 2) }],
+        };
+      }
+    },
+  );
+
+  server.registerTool(
+    "notion_push_ocr_pair",
+    {
+      description:
+        "텔레그램 OCR 파이프라인: 리소스 DB(원문 OCR)·서머리 DB(정제본)에 각각 페이지 생성, 서머리는 리소스와 relation 연결. NOTION_TOKEN·NOTION_OCR_* 및 DB 열 이름(.env) 필요. memory/rules/notion-ocr-pipeline.md 참조.",
+      inputSchema: OcrPushInputSchema.shape,
+    },
+    async (args) => {
+      try {
+        const env = loadNotionOcrEnv();
+        const parsed = OcrPushInputSchema.safeParse(args);
+        if (!parsed.success) {
+          return {
+            content: [
+              { type: "text", text: JSON.stringify({ ok: false, error: "validation", details: parsed.error.format() }, null, 2) },
+            ],
+          };
+        }
+        const r = await pushOcrResourceAndSummary(env, parsed.data);
+        return {
+          content: [{ type: "text", text: JSON.stringify(r, null, 2) }],
         };
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);

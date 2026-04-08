@@ -1,6 +1,7 @@
 ---
 
 ## id: vibe-coding-pipeline
+
 date: 2026-04-07
 domain: ai-engineering
 tags: [vibe-coding, SoT, cursor, pipeline, context-engineering]

@@ -1,6 +1,7 @@
 ---
 
 ## id: vibe-coding-planning-importance
+
 date: 2026-04-08
 domain: ai-engineering
 tags: [vibe-coding, planning, product, context-engineering]

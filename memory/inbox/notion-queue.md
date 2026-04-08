@@ -1,6 +1,7 @@
 ---
 
 ## queue: notion-pull
+
 purpose: "노션 → SoT 병합 전 제안만 쌓는다. SoT는 memory/가 우선 (memory/rules/notion-sync.md)."
 updated: "2026-04-05T00:00:00.000Z"
 
@@ -17,6 +18,7 @@ updated: "2026-04-05T00:00:00.000Z"
 ---
 
 ## pulled_at: 2026-04-06T13:49:16.864Z
+
 source: notion.pull_to_queue
 database_id: 33a9740a-b072-80cf-8180-cc8b19663fb5
 

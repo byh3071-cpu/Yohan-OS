@@ -20,9 +20,22 @@
     "mcp:check": "node -e \"import('./dist/index.js').then(()=>console.log('MCP bundle OK')).catch(e=>{console.error(e);process.exit(1)})\"",
     "search:memory": "tsx src/search-memory-cli.ts",
     "plan:task": "tsx src/plan-task-cli.ts",
+    "route:task": "tsx src/route-task-cli.ts",
+    "route:run": "tsx src/route-and-run-cli.ts",
+    "route:dry": "tsx src/route-and-run-cli.ts --dry-run",
+    "route:json": "tsx src/route-and-run-cli.ts --json",
+    "route:dry:json": "tsx src/route-and-run-cli.ts --dry-run --json",
+    "route:help": "tsx src/route-and-run-cli.ts --help",
+    "check:router": "tsx scripts/router-fixture-check.ts",
     "bot": "tsx src/telegram-bot.ts",
     "sync:notion:push": "tsx src/notion-push-cli.ts",
-    "sync:notion:pull": "tsx src/notion-pull-cli.ts"
+    "sync:notion:pull": "tsx src/notion-pull-cli.ts",
+    "sync:notion:ocr": "tsx src/notion-ocr-push-cli.ts",
+    "sync:notion:ocr:telegram-batch": "tsx scripts/telegram-ocr-batch.ts",
+    "automation:batch": "tsx scripts/automation-batch.ts",
+    "automation:batch:force": "tsx scripts/automation-batch.ts --force",
+    "automation:batch:dry": "tsx scripts/automation-batch.ts --dry-run",
+    "automation:batch:test": "tsx scripts/automation-batch.ts --dry-run --no-notify"
   },
   "engines": {
     "node": ">=20"

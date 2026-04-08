@@ -7,6 +7,17 @@ message_id: 1
 
 /start
 
+> **레거시 인박스.** 신규 수신은 `memory/inbox/telegram/YYYY-MM-DD.md`에 append 됩니다. 반영·아카이브: `memory/rules/telegram-inbox.md`.
+
+---
+
+## received_at: 2026-04-06T11:17:13.000Z
+
+from_chat_id: 8636994274
+message_id: 1
+
+/start
+
 ---
 
 ## received_at: 2026-04-06T11:17:13.000Z
@@ -27,90 +38,37 @@ message_id: 7
 
 ---
 
-## type: screenshot
+## 처리 로그: 텔레그램 OCR (스크린샷 일괄)
 
-received_at: 2026-04-06T14:14:48.000Z
-message_id: 20
-from_chat_id: 8636994274
-
-We 사용 방법은 간단한데
-
-1. 모든 raw datas Inbox0l 던져놓기
-2. 추후 에게 10700×에 있는 레거시 노트들을 이 헌
-
-법에 맞게 리팩토링 할것
-그런데 역시 안드레카파시의 구조를 보니 훨씬 대단한사
-람이였고..
-구조적으로 더 깔끔해서 안드레카파시 버전으로 업데이
-트 하고 더 정교하게 관리해야겠습니다 ㅎㅎ 2/2
+- **2026-04-08:** `message_id` **18–20**, **29–36** 정제본 → `memory/ingest/insights/` (`karpathy-obsidian-para-workflow`, `obsidian-vault-para-system-guide`, `personal-finance-low-energy-top3`, `self-made-wealth-five-elements`, `system-income-leverage-structure`). 원문 OCR 스냅샷: **`memory/inbox/telegram-ocr-snapshot-20260408.md`** — 노션 배치: `npm run sync:notion:ocr:telegram-batch -- memory/inbox/telegram-ocr-snapshot-20260408.md` (`memory/rules/notion-ocr-pipeline.md`). 레거시 본 파일의 스크린샷 블록은 정리 시 제거됨.
 
 ---
-
-## type: screenshot
-
-received_at: 2026-04-06T14:14:48.000Z
-message_id: 18
+---
+type: screenshot
+received_at: 2026-04-08T13:28:44.000Z
+message_id: 47
 from_chat_id: 8636994274
-
-안드레 카파시가(씨이 Karpathy) 공유한 옵시디언 지식관
-리법 기존에 제가 쓰고 있던 방식과 너무 유사해서 놀랐습니다.
-예전부터 옵시디언을 잘 쓰고싶은 마음이 있었고 아래와같은 것
-SO XM AUC
-
-1. 저장하거나 캡쳐해놓은 지식들이 너무 많고 정리하기 힘들
-
-다..
-
-1. 찾았던 지식 다시 구글링하기 지친다..
-2. 매번 똑같은 질문 하기 힘들다..
-3. 더 좋은 방법을 찾으면 하나하나 업데이트 하기 귀찮다..
-4. 옵시디언의 백링크를 못써서 너무 아쉽다..
-5. 그리고 이렇게 모아놓은 지식을 추후 개발할때 참고하게 하고
-
-싶었다..
-
-그래서 내 고민에 맞는 해결책이 기존에 있는지 확인하고 "HalM
-치와 브레인스토밍을 3일하고 나온 결론은 PARA Method 였
-습니다. 12
-
 ---
 
-## type: screenshot
+호 Prompt 1
 
-received_at: 2026-04-06T14:14:48.000Z
-message_id: 19
-from_chat_id: 8636994274
+“내 상황을 기반으로, 내가 수입 SEE 가장 빠르게 달성할 수 있는
+방법은 무엇인가? 단 하나의 상품(오퍼)과 단 하나의 채널로만 제한
+해줘."
 
-옵시디언 운영 시스템
-속성
-턴 996                £12026 03 06 ㅇ@
-= topic             obsidian-system
-© tags              playbook X review x system X
-= status            active
+«" Prompt 2
 
-- 속성추가
-표 옵시디언 #1 (System Guide)
-이 문서는 이 BE (Vault)? 무너지지 않고 영구적인 제2의 뇌(56600 Brain)**2 기능하기 위한 절대 원칙과
-뼈대를 기록한 지침서입니다.
+이걸 실현하기 위해 내가 배워야 할 가장 성공한 단 한 명은 누구인
+가? 이름 한 명만 알려줘."
 
-# 핵심 28} (Low Friction)
+«" Prompt 3
 
-수집은 마찰 10| (Frictionless) 가장 빠르게, 정리는 Al 레버리지를 통해 가장 완벽하게!
+“7 사람이 된 것처럼 행동해줘. 초기 비용 10002] 이하(약 백만
+원 이하)로 시작하고 가능한 한 빨리 첫 유료 고객을 만들 수 있는
+90일 실행 계획을 만들어줘."
 
-1. 6 볼트 구조 (76 Architecture)
+«" Prompt 4
 
-폴더는 철저히 PARA 방법론을 변형한 10개의 대분류만 유지하며, 하위 폴더의 무분별한 생성을 금지합니다.
-© 00_Inbox : && (수집함) 모든 스크린샷, 메모, URLO| 최초로 도달하는 목적지
-＊ 00 대시보드 : [] 각 영역을 한눈에 보는 캔버스 및 진입점 모음
-＊ 10 사업 : 빼 [Areas] 현재 운영 중인 수익 창출 파이프라인 (사업1, 사업2 등)
-＊ 20 프로젝트 : 7? [Projects] 마감 기한과 목표가 명확한 단기 태스크 (, 웹, 자동화 개발 등)
-＊ 30 지식 리소스 : ® [Resources| 나중에 검색해서 쓸 영구 지식 (마케팅, 개발 등)
-＊ 40_보관함 : @ [Archive] 종료된 사업/프로젝트. 휴지통 대신 이곳으로 이동
-ㅜ 50 일기 데일리 : WER 기반의 하루 기록 및 일기 모음
-＊ 60 개인 : § 비즈니스 외의 개인사 (취미, 물건 구매 기록 등)
-© 90._시스템 : # 템플릿, AEN (Attachments), 그리고 이 헌법 문서
-2.출 수집과 정리의 분리 (Inbox Rule)
-수집 (모바일/이동 중)
-ㆍ 무조건 00_1060※ 에 던집니다.
-＊ 양식을 지킬 URE, 폴더를 고민할 필요도 없습니다. 캡처, 긴 텍스트 복사, URL 등 무엇이든 빠르게 넣고 일
-상으로 돌아갑니다.
+“내 창업 코치처럼 행동해줘. 나에게 질문을 하나씩 하면서 내가 at
+혀 있는 단 하나의 문제를 찾아줘. 그리고 그것을 재해석한 뒤, 효과
+를 증명할 수 있는 2주 실행 계획을 만들어줘."

@@ -16,7 +16,7 @@
 
 ## 2. 저장소·경로
 
-1. 에이전트 SoT 루트는 `**memory/`** 이다. 레포 루트는 MCP `cwd` 또는 환경 변수 `**YOHAN_OS_ROOT**` 로 결정된다.
+1. 에이전트 SoT 루트는 `**memory/`** 이다. 레포 루트는 MCP `cwd` 또는 환경 변수 `**YOHAN_OS_ROOT`** 로 결정된다.
 2. **비밀번호·API 키·토큰**은 SoT 마크다운·YAML·커밋에 **평문으로 넣지 않는다**. 필요하면 `.env`·OS 시크릿·예시만 문서화한다.
 3. **노션·다른 툴이 “최종 진실”이 되게 설계 변경을 제안하지 않는다.** 사람용 미러·입력은 가능하나, **런타임 진실은 `memory/`**다. 노션과 양방향을 쓸 때는 `**memory/rules/notion-sync.md`** (SoT 항상 우선)를 따른다.
 
@@ -28,15 +28,15 @@
 
 1. **Planner**: 복잡한 요청이면 MCP `**plan_task`** 로 `plan.v0` JSON을 받거나, 관련 자료를 `**search_memory`** 로 찾는다. (가벼운 요청은 생략 가능.)
 2. **Generator**: 플랜·요청에 따라 코드·문서를 실제로 수정한다.
-3. **Evaluator**: `.cursor/rules/evaluator-vision-gate.mdc` 및 `memory/rules/evaluator-checklist.md`에 따라 응답 말미에 **판정**을 적는다. (단순 한 줄 응답은 생략 가능.) MCP가 있으면 텍스트 Evaluator 블록 **직후** `**log_evaluation`** 으로 구조화 로그를 남긴다. **경로:** SoT 기준 `**memory/metrics/evaluations/`** (실제 절대 경로는 `get_context`의 `memory_root` + `/metrics/evaluations/`). **파일명:** `eval-YYYY-MM-DD-NNN.md` (`NNN`은 그 날짜의 다음 순번, 3자리 0패딩). 인자·필드 의미는 MCP 도구 설명·`evaluator-checklist.md` **구조화 로그**·`evaluator-vision-gate.mdc`를 본다.
+3. **Evaluator**: `.cursor/rules/evaluator-vision-gate.mdc` 및 `memory/rules/evaluator-checklist.md`에 따라 응답 말미에 **판정**을 적는다. **실질 산출물(코드/문서/설정 변경)이 있는 턴은 항상 수행**한다. MCP가 있으면 텍스트 Evaluator 블록 **직후** `**log_evaluation`** 으로 구조화 로그를 남긴다. **경로:** SoT 기준 `**memory/metrics/evaluations/`** (실제 절대 경로는 `get_context`의 `memory_root` + `/metrics/evaluations/`). **파일명:** `eval-YYYY-MM-DD-NNN.md` (`NNN`은 그 날짜의 다음 순번, 3자리 0패딩). 인자·필드 의미는 MCP 도구 설명·`evaluator-checklist.md` **구조화 로그**·`evaluator-vision-gate.mdc`를 본다.
 
 ---
 
 ## 4. 결정 로그
 
 1. **아키텍처·스택·비전과 충돌할 수 있는 선택**을 했거나, **사용자와 합의한 “이렇게 하기로”**가 있으면 MCP `**append_decision`** 으로 `memory/decisions/`에 남긴다. (제목·summary 필수 권장.)
-2. 반복되는 선호·스타일은 `**memory/profile.yaml**` 또는 `**active-project.yaml**` 갱신을 검토한다.
-3. **Evaluator 판정 메트릭**은 `**log_evaluation`** 으로만 구조화 저장한다 (`append_decision`과 역할이 다름). 디렉터리: `**memory/metrics/evaluations/`** — 파일 한 건당 `**eval-{날짜}-{순번}.md**` 하나.
+2. 반복되는 선호·스타일은 `**memory/profile.yaml**` 또는 `**active-project.yaml**` 갱신을 검토한다. `active-project.yaml`은 최소 **주 1회** 목표·브랜치·메모를 업데이트한다.
+3. **Evaluator 판정 메트릭**은 `**log_evaluation`** 으로만 구조화 저장한다 (`append_decision`과 역할이 다름). 디렉터리: `**memory/metrics/evaluations/`** — 파일 한 건당 `**eval-{날짜}-{순번}.md`** 하나.
 
 ---
 
@@ -65,3 +65,5 @@
 | `memory/rules/evaluator-checklist.md`     | Evaluator 대조 항목·`log_evaluation` 호출 안내          |
 | `.cursor/rules/evaluator-vision-gate.mdc` | Cursor에서 Evaluator 응답 형식·`log_evaluation` 매핑 강제 |
 | `memory/metrics/evaluations/`             | Evaluator 구조화 로그 (`MCP log_evaluation`)         |
+
+

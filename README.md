@@ -46,6 +46,9 @@ npm run build
 | `NOTION_PROPERTY_SOT_KEY`     | 멱등 키 열 이름 (기본 `SoT Key`, **DB에 텍스트 열로 생성**).            |
 | `NOTION_PROPERTY_SUMMARY`     | 요약 열 이름 (선택, 없으면 푸시 시 생략).                              |
 | `NOTION_PROPERTY_SOURCE_PATH` | SoT 상대 경로 열 (선택).                                       |
+| `NOTION_OCR_RESOURCE_DATABASE_ID` | 텔레그램 OCR **리소스** DB ID (`notion_push_ocr_pair` / `sync:notion:ocr`). |
+| `NOTION_OCR_SUMMARY_DATABASE_ID`  | OCR **서머리** DB ID. |
+| `NOTION_OCR_RESOURCE_PROP_*` 등 | 리소스·서머리 DB **열 이름**·기본값 오버라이드 — `notion-ocr-pipeline.md`. `상태`는 기본 **Notion Status**; Select 열이면 `NOTION_OCR_*_STATUS_KIND=select`. |
 | `TELEGRAM_BOT_TOKEN`          | 텔레그램 봇 (`npm run bot`). @BotFather 발급 토큰.               |
 | `TELEGRAM_CHAT_ID`            | (권장) 본인 채팅 ID만 처리. 비우면 모든 채팅 수신.                        |
 
@@ -62,9 +65,11 @@ npm run build
 ```bash
 npm run sync:notion:push -- 20    # memory/decisions 최근 20개 → 노션 DB (같은 SoT Key 는 갱신)
 npm run sync:notion:pull -- 50    # 노션 DB 행 → notion-queue.md 에 append 만 (이미 있는 page_id 는 스킵, SoT 자동 병합 없음)
+npm run sync:notion:ocr -- path/to/ocr-payload.json   # OCR 리소스(+선택 서머리) 페이지 생성 — `notion-ocr-pipeline.md`
+npm run sync:notion:ocr:telegram-batch -- memory/inbox/telegram-ocr-snapshot-20260408.md   # 인박스 스크린샷 블록 일괄 푸시
 ```
 
-MCP: `notion_push_decisions`, `notion_pull_to_queue`. 클라이언트는 `@notionhq/client@2.2` (Notion API `databases.query`).
+MCP: `notion_push_decisions`, `notion_push_ocr_pair`, `notion_pull_to_queue`. 클라이언트는 `@notionhq/client@2.2` (Notion API `databases.query`).
 
 ## 텔레그램 봇 인박스 (폴링)
 
@@ -77,7 +82,7 @@ MCP: `notion_push_decisions`, `notion_pull_to_queue`. 클라이언트는 `@notio
 | 수신 내용            | 동작                                                     |
 | ---------------- | ------------------------------------------------------ |
 | `http(s)` URL 포함 | 기존 `ingest/url` (`ingestUrl`)로 `memory/ingest/url/` 저장 |
-| URL 없는 텍스트만      | `memory/inbox/telegram-inbox.md`에 append               |
+| URL 없는 텍스트·사진(OCR) | `memory/inbox/telegram/YYYY-MM-DD.md`에 append (날짜는 Asia/Seoul). 과거 단일 파일 `telegram-inbox.md`는 레거시. |
 
 
 스크립트는 `tsx`로 실행한다(NodeNext `*.js` import 규약과 동일하게 동작).
@@ -166,7 +171,8 @@ memory/
     evaluator-checklist.md
   inbox/
     notion-queue.md      # 노션 풀 → SoT 병합 전 큐
-    telegram-inbox.md    # 텔레그램 텍스트-only (npm run bot)
+    telegram/            # 텔레그램 일별 인박스 YYYY-MM-DD.md (npm run bot)
+    telegram-inbox.md    # 레거시 단일 인박스(과거 로그)
 ```
 
 ## MCP 도구
@@ -181,6 +187,7 @@ memory/
 | `search_memory` | `memory/` 이하 `.md`/`.yaml`/`.txt` 부분 문자열 검색. 인자 `query`, 선택 `max_results`. |
 | `plan_task` | 목표를 `plan.v0` JSON 스텁으로 감싼다 (Planner). |
 | `notion_push_decisions` | `memory/decisions` 최근 항목 → 노션 DB (멱등 `SoT Key`). |
+| `notion_push_ocr_pair` | OCR 리소스 DB(원문)+서머리 DB(정제본, relation). 인자·`.env`는 `memory/rules/notion-ocr-pipeline.md`. |
 | `notion_pull_to_queue` | 노션 DB 행 → `memory/inbox/notion-queue.md`에 append 만. |
 
 그 외 RSS 전용 MCP(`ingest_yozm_rss`, `ingest_aitimes_rss`, `ingest_themilk_rss`, `ingest_paulgraham_rss`, `ingest_samaltman_rss`, `ingest_karpathy_rss`)는 각각 대응 피드를 `memory/ingest/rss/{이름}/`에 저장한다. 인자는 공통으로 선택 `limit` (1–100, 기본 20).

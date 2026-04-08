@@ -25,3 +25,23 @@ export function getNotionQueuePath(): string {
   if (override) return override;
   return join(getInboxDir(), "notion-queue.md");
 }
+
+/** 텔레그램 인박스 일별 디렉터리 `memory/inbox/telegram/` */
+export function getTelegramInboxDir(): string {
+  return join(getInboxDir(), "telegram");
+}
+
+/**
+ * 텔레그램 일별 인박스 파일 — `memory/inbox/telegram/YYYY-MM-DD.md`
+ * `tsSec`: Unix 초(UTC). **파일명 날짜는 Asia/Seoul** 기준.
+ */
+export function telegramDailyInboxPathFromUnix(tsSec: number): string {
+  const ymd = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(new Date(tsSec * 1000));
+  return join(getTelegramInboxDir(), `${ymd}.md`);
+}
+
+/** 봇 응답·문서용 — `memory/inbox/telegram/YYYY-MM-DD.md` (Asia/Seoul) */
+export function telegramDailyInboxRelPathFromUnix(tsSec: number): string {
+  const ymd = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(new Date(tsSec * 1000));
+  return `memory/inbox/telegram/${ymd}.md`;
+}

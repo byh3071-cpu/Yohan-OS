@@ -19,7 +19,14 @@ import TelegramBot from "node-telegram-bot-api";
 import type { Message } from "node-telegram-bot-api";
 import { ingestUrl } from "./ingest/url.js";
 import { recognizeImageBuffer } from "./telegram-ocr.js";
-import { getInboxDir, getMemoryDir, resolveRepoRoot } from "./paths.js";
+import {
+  getInboxDir,
+  getMemoryDir,
+  getTelegramInboxDir,
+  resolveRepoRoot,
+  telegramDailyInboxPathFromUnix,
+  telegramDailyInboxRelPathFromUnix,
+} from "./paths.js";
 
 config({ path: join(resolveRepoRoot(), ".env") });
 
@@ -139,11 +146,10 @@ function hasHttpUrl(text: string): boolean {
   return extractHttpUrls(text).length > 0;
 }
 
-const telegramInboxPath = () => join(getInboxDir(), "telegram-inbox.md");
-
 async function appendTextOnlyInbox(text: string, meta: { chatId: number; messageId: number; date?: number }): Promise<void> {
-  await mkdir(getInboxDir(), { recursive: true });
   const tsSec = meta.date ?? Math.floor(Date.now() / 1000);
+  const inboxFile = telegramDailyInboxPathFromUnix(tsSec);
+  await mkdir(getTelegramInboxDir(), { recursive: true });
   const iso = new Date(tsSec * 1000).toISOString();
   const block = [
     "",
@@ -156,7 +162,7 @@ async function appendTextOnlyInbox(text: string, meta: { chatId: number; message
     text.trim(),
     "",
   ].join("\n");
-  await appendFile(telegramInboxPath(), block, "utf8");
+  await appendFile(inboxFile, block, "utf8");
 }
 
 /** 사진 OCR 결과 — type: screenshot + received_at + message_id */
@@ -164,8 +170,9 @@ async function appendScreenshotOcrInbox(
   ocrText: string,
   meta: { chatId: number; messageId: number; date?: number },
 ): Promise<void> {
-  await mkdir(getInboxDir(), { recursive: true });
   const tsSec = meta.date ?? Math.floor(Date.now() / 1000);
+  const inboxFile = telegramDailyInboxPathFromUnix(tsSec);
+  await mkdir(getTelegramInboxDir(), { recursive: true });
   const iso = new Date(tsSec * 1000).toISOString();
   const body = ocrText.length > 0 ? ocrText : "_(OCR 결과 없음 — 이미지에 인쇄 텍스트가 없을 수 있음)_";
   const block = [
@@ -180,7 +187,7 @@ async function appendScreenshotOcrInbox(
     body,
     "",
   ].join("\n");
-  await appendFile(telegramInboxPath(), block, "utf8");
+  await appendFile(inboxFile, block, "utf8");
 }
 
 /**
@@ -216,11 +223,13 @@ async function handlePhotoMessage(msg: Message): Promise<void> {
       messageId: msg.message_id,
       date: msg.date,
     });
+    const tsSec = msg.date ?? Math.floor(Date.now() / 1000);
+    const relPath = telegramDailyInboxRelPathFromUnix(tsSec);
     const preview = text.length > 0 ? text.slice(0, 100) : "(비어 있음)";
     const suffix = text.length > 100 ? "…" : "";
     await bot.sendMessage(
       chatId,
-      `OCR 완료 · 미리보기(100자):\n${preview}${suffix}\n\n→ memory/inbox/telegram-inbox.md`,
+      `OCR 완료 · 미리보기(100자):\n${preview}${suffix}\n\n→ ${relPath}`,
       { disable_web_page_preview: true },
     );
   } catch (e) {
@@ -272,7 +281,9 @@ async function onMessage(msg: Message): Promise<void> {
         messageId: msg.message_id,
         date: msg.date,
       });
-      await bot.sendMessage(chatId, "memory/inbox/telegram-inbox.md 에 기록했습니다.");
+      const tsSec = msg.date ?? Math.floor(Date.now() / 1000);
+      const relPath = telegramDailyInboxRelPathFromUnix(tsSec);
+      await bot.sendMessage(chatId, `${relPath} 에 기록했습니다.`);
     }
   } catch (e) {
     const err = e instanceof Error ? e.message : String(e);
