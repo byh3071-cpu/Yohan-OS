@@ -60,7 +60,7 @@ export function DocPreview({ relPath, onClose }: DocPreviewProps) {
     )
   }
 
-  const sourceUrl = typeof doc.frontmatter.source_url === "string" ? doc.frontmatter.source_url : null
+  const sourceUrl = typeof doc.frontmatter?.source_url === "string" ? doc.frontmatter.source_url : null
 
   return (
     <div className="flex-1 flex flex-col border-l border-border bg-background">
@@ -68,7 +68,7 @@ export function DocPreview({ relPath, onClose }: DocPreviewProps) {
         <h2 className="text-sm font-semibold truncate flex-1">{doc.title}</h2>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleCopy}>
-            {copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+            {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
           </Button>
           {sourceUrl && (
             <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
@@ -83,10 +83,10 @@ export function DocPreview({ relPath, onClose }: DocPreviewProps) {
         </div>
       </div>
 
-      {doc.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1 px-4 py-2 border-b border-border">
+      {doc.tags?.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5 px-4 py-2 border-b border-border">
           {doc.tags.map((t) => (
-            <Badge key={t} variant="secondary" className="text-[11px] font-medium h-auto px-2 py-0.5">
+            <Badge key={t} variant="secondary" className="text-[10px] font-medium h-5 px-2 py-0">
               {t}
             </Badge>
           ))}
@@ -97,7 +97,7 @@ export function DocPreview({ relPath, onClose }: DocPreviewProps) {
       )}
 
       <ScrollArea className="flex-1 min-h-0">
-        <article className="prose prose-sm dark:prose-invert max-w-none px-5 py-4 prose-headings:scroll-mt-4 prose-pre:bg-muted prose-pre:text-muted-foreground prose-code:text-primary">
+        <article className="prose prose-sm dark:prose-invert max-w-none px-5 py-4 prose-headings:scroll-mt-4 prose-pre:bg-muted prose-pre:text-muted-foreground prose-code:text-foreground">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {doc.content}
           </ReactMarkdown>

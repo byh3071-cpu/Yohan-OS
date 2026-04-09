@@ -76,10 +76,10 @@ export function DocCard({ doc, isActive, onClick }: DocCardProps) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left p-3 rounded-lg border transition-all ${
+      className={`w-full text-left p-3 rounded-lg border transition-colors ${
         isActive
-          ? "border-primary bg-primary/5 shadow-sm shadow-primary/10"
-          : "border-border hover:border-primary/40 hover:bg-accent/30"
+          ? "border-foreground/20 bg-accent"
+          : "border-border hover:bg-accent/50"
       }`}
     >
       <h3 className="text-sm font-medium leading-snug line-clamp-2 mb-1.5">
@@ -94,7 +94,7 @@ export function DocCard({ doc, isActive, onClick }: DocCardProps) {
             <Badge
               key={t}
               variant="outline"
-              className={`text-[11px] font-medium px-1.5 py-0.5 h-auto leading-tight ${tagColor(t)}`}
+              className={`text-[10px] font-medium px-1.5 py-0 h-5 leading-tight ${tagColor(t)}`}
             >
               {t}
             </Badge>

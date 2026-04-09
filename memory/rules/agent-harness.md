@@ -1,11 +1,11 @@
 ---
-id: agent-harness
+
+## id: agent-harness
 date: 2026-04-09
 domain: harness
 tags: [harness, agent, session, rules]
 related: [pge-pipeline, evaluator-checklist, decision-trigger]
 status: active
----
 
 # Agent Harness — 세션·작업 규칙 (Yohan OS v0)
 

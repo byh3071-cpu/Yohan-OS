@@ -3,9 +3,8 @@
 import { useState } from "react"
 import {
   Lightbulb, Rss, Link2, BookCheck, Scale, FileText,
-  Zap, Globe, RefreshCw, BarChart3, Search, PlusCircle,
+  Zap, Globe, RefreshCw, BarChart3, Search,
   Bot, Play, Wrench, ArrowDownToLine, ArrowUpFromLine, GitBranch,
-  Upload, History, ClipboardCheck, FilePlus,
   ChevronsLeft, ChevronsRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -39,15 +38,10 @@ const QUICK_ACTIONS: QuickAction[] = [
   { label: "주간 리포트", icon: <BarChart3 size={16} />, action: "report:weekly" },
   { label: "드리프트 점검", icon: <Search size={16} />, action: "check:drift" },
   { label: "메모리 검색", icon: <Search size={16} />, action: "search:memory" },
-  { label: "새 결정", icon: <PlusCircle size={16} />, action: "new:decision" },
   { label: "봇 상태", icon: <Bot size={16} />, action: "bot:status" },
   { label: "배치 실행", icon: <Play size={16} />, action: "automation:batch" },
   { label: "MCP 빌드", icon: <RefreshCw size={16} />, action: "build" },
   { label: "Git 동기화", icon: <GitBranch size={16} />, action: "git:sync" },
-  { label: "새 인사이트", icon: <FilePlus size={16} />, action: "new:insight" },
-  { label: "OCR 업로드", icon: <Upload size={16} />, action: "ocr:upload" },
-  { label: "체인지로그", icon: <History size={16} />, action: "view:changelog" },
-  { label: "평가 로그", icon: <ClipboardCheck size={16} />, action: "view:evaluator" },
 ]
 
 interface SidebarProps {
@@ -67,10 +61,10 @@ export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickActio
         collapsed ? "w-[3.25rem]" : "w-72"
       )}
     >
-      <div className={cn("flex items-center border-b border-border/60 px-1 py-1", collapsed ? "justify-center" : "justify-end")}>
+      <div className={cn("flex items-center border-b border-border px-1 py-1", collapsed ? "justify-center" : "justify-end")}>
         <button
           type="button"
-          className="size-9 flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          className="size-9 flex items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           onClick={() => setCollapsed((c) => !c)}
           aria-label={collapsed ? "사이드바 펼치기" : "사이드바 접기"}
         >
@@ -88,13 +82,15 @@ export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickActio
               const count = c.id === "all" ? counts.all ?? 0 : counts[c.id] ?? 0
               const active = activeCategory === c.id
               const baseStyle = active
-                ? "bg-accent text-accent-foreground font-medium"
-                : "text-sidebar-foreground/70 hover:bg-accent/50 hover:text-accent-foreground"
+                ? "bg-accent text-foreground font-medium border-l-2 border-foreground"
+                : "text-sidebar-foreground/60 hover:bg-accent/50 hover:text-accent-foreground border-l-2 border-transparent"
 
               if (collapsed) {
                 const cellClass = cn(
-                  "size-9 flex items-center justify-center rounded-md transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                  baseStyle
+                  "size-9 flex items-center justify-center rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                  active
+                    ? "bg-accent text-foreground"
+                    : "text-sidebar-foreground/60 hover:bg-accent/50 hover:text-accent-foreground"
                 )
                 return (
                   <Tooltip key={c.id}>
@@ -124,7 +120,7 @@ export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickActio
                   type="button"
                   onClick={() => onCategoryChange(c.id)}
                   className={cn(
-                    "w-full flex items-center gap-2 rounded-md text-sm px-2 py-1.5 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                    "w-full flex items-center gap-2 rounded-r-lg text-sm px-2 py-1.5 transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
                     baseStyle
                   )}
                 >
@@ -141,14 +137,14 @@ export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickActio
 
         <div className={cn("p-2 pb-4", collapsed && "flex flex-col items-center px-0 py-1 pb-4")}>
           {!collapsed && (
-            <p className="text-xs font-medium text-muted-foreground mb-2 px-2 flex items-center gap-1">
-              <Zap size={14} /> 빠른 실행
+            <p className="text-[11px] font-medium text-muted-foreground mb-2 px-2 flex items-center gap-1">
+              <Zap size={12} /> 빠른 실행
             </p>
           )}
           <div className={cn("flex flex-col gap-0.5", collapsed && "items-center")}>
             {QUICK_ACTIONS.map((a) => {
               if (collapsed) {
-                const cellClass = "size-9 flex items-center justify-center rounded-md text-sidebar-foreground/70 transition-colors outline-none select-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
+                const cellClass = "size-9 flex items-center justify-center rounded-lg text-sidebar-foreground/50 transition-all outline-none select-none hover:bg-accent/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
                 return (
                   <Tooltip key={a.action}>
                     <TooltipTrigger
@@ -175,7 +171,7 @@ export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickActio
                 <button
                   key={a.action}
                   type="button"
-                  className="flex w-full items-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-left text-xs text-sidebar-foreground/70 transition-colors outline-none select-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
+                  className="flex w-full items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left text-xs text-sidebar-foreground/55 transition-all outline-none select-none hover:bg-accent/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
                   onClick={() => onQuickAction(a.action)}
                 >
                   <span className="shrink-0 [&_svg]:pointer-events-none [&_svg]:shrink-0">{a.icon}</span>

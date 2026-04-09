@@ -1,5 +1,6 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { useEffect, useState, useMemo, useCallback } from "react"
 import { Header } from "@/components/header"
 import { Sidebar } from "@/components/sidebar"
@@ -15,6 +16,35 @@ import { FullCharts } from "@/components/full-charts"
 import { TimelineView } from "@/components/timeline-view"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import type { DocMeta, DocCategory, Stats, ChartData, SerendipityDoc, GitCommit, DecisionEntry, SessionLog } from "@/lib/types"
+import {
+  type ConstellationData,
+  filterConstellationAtDate,
+  ymdToDayKey,
+  dayKeyToYmd,
+} from "@/lib/constellation"
+
+const ConstellationCanvas = dynamic(
+  () =>
+    import("@/components/constellation-view").then((m) => m.ConstellationView),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+        별자리 뷰 로드 중…
+      </div>
+    ),
+  }
+)
+
+const CAT_LABEL: Record<string, string> = {
+  all: "전체",
+  insights: "인사이트",
+  rss: "RSS",
+  url: "URL",
+  decisions: "결정로그",
+  rules: "규칙",
+  templates: "템플릿",
+}
 
 export default function DashboardPage() {
   const [docs, setDocs] = useState<DocMeta[]>([])
@@ -36,9 +66,13 @@ export default function DashboardPage() {
   const [cmdOpen, setCmdOpen] = useState(false)
   const [statsCollapsed, setStatsCollapsed] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [constellationData, setConstellationData] = useState<ConstellationData | null>(null)
+  const [constellationAsOfYmd, setConstellationAsOfYmd] = useState<string | null>(null)
+  const [constellationHubGravity, setConstellationHubGravity] = useState(false)
+  const [constellationNebula, setConstellationNebula] = useState(true)
 
   useEffect(() => {
-    fetch("/api/docs")
+    fetch(`/api/docs?t=${Date.now()}`)
       .then((r) => r.json())
       .then((data) => {
         setDocs(data.docs ?? [])
@@ -52,6 +86,33 @@ export default function DashboardPage() {
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (activeView !== "constellation" || constellationData) return
+    fetch(`/api/constellation?t=${Date.now()}`)
+      .then((r) => r.json())
+      .then((data: ConstellationData) => {
+        setConstellationData(data)
+        if (data.timeRange?.dateMin && data.timeRange?.dateMax) {
+          setConstellationAsOfYmd((prev) => prev ?? data.timeRange.dateMax!)
+        }
+      })
+      .catch(console.error)
+  }, [activeView, constellationData])
+
+  const constellationViewData = useMemo(() => {
+    if (!constellationData || !constellationAsOfYmd) return constellationData
+    const { dateMin, dateMax } = constellationData.timeRange
+    if (!dateMin || !dateMax) return constellationData
+    return filterConstellationAtDate(constellationData, constellationAsOfYmd)
+  }, [constellationData, constellationAsOfYmd])
+
+  useEffect(() => {
+    if (activeView !== "constellation" || !constellationViewData || !selectedDoc) return
+    if (!constellationViewData.nodes.some((n) => n.relPath === selectedDoc)) {
+      setSelectedDoc(null)
+    }
+  }, [activeView, constellationViewData, selectedDoc])
 
   const counts = useMemo(() => {
     const map: Record<string, number> = { all: docs.length }
@@ -69,27 +130,14 @@ export default function DashboardPage() {
   const [actionResult, setActionResult] = useState<{ action: string; ok: boolean; message: string } | null>(null)
   const [actionRunning, setActionRunning] = useState<string | null>(null)
 
-  const handleQuickAction = useCallback(async (action: string) => {
-    if (action === "new:insight" || action === "new:decision") {
-      setActionResult({ action, ok: true, message: "커맨드 팔레트에서 생성 가능 (v2 예정)" })
-      return
-    }
-    if (action === "ocr:upload") {
-      setActionResult({ action, ok: true, message: "OCR 업로드 기능 (v2 예정)" })
-      return
-    }
-    if (action === "view:changelog" || action === "view:evaluator") {
-      setActionResult({ action, ok: true, message: "뷰 기능 (v2 예정)" })
-      return
-    }
-
+  const runServerAction = useCallback(async (action: string, args?: string) => {
     setActionRunning(action)
     setActionResult(null)
     try {
       const res = await fetch("/api/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
+        body: JSON.stringify({ action, args }),
       })
       const data = await res.json()
       setActionResult({
@@ -106,14 +154,29 @@ export default function DashboardPage() {
     }
   }, [])
 
+  const handleQuickAction = useCallback(async (action: string) => {
+    if (action === "ingest:url") {
+      const url = window.prompt("인제스트할 URL을 입력하세요:")
+      if (!url?.trim()) return
+      return runServerAction(action, url.trim())
+    }
+
+    if (action === "search:memory") {
+      setCmdOpen(true)
+      return
+    }
+
+    return runServerAction(action)
+  }, [runServerAction])
+
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center animate-pulse">
-            <span className="text-primary font-bold text-lg">Y</span>
+          <div className="w-10 h-10 rounded-xl bg-foreground flex items-center justify-center animate-pulse">
+            <span className="text-background font-bold text-lg">Y</span>
           </div>
-          <p className="text-sm text-muted-foreground">Yohan OS 로딩 중…</p>
+          <p className="text-sm text-muted-foreground">로딩 중…</p>
         </div>
       </div>
     )
@@ -139,7 +202,7 @@ export default function DashboardPage() {
 
         <div className="flex-1 flex flex-col overflow-hidden min-h-0">
           {activeView === "home" && !selectedDoc && (
-            <div className="shrink-0 px-3 pt-3 pb-2 border-b border-border">
+            <div className="shrink-0 px-3 pt-3 pb-2 border-b border-border/60">
               <SerendipityCard doc={serendipity} onSelect={(p) => { setSelectedDoc(p) }} />
             </div>
           )}
@@ -168,13 +231,92 @@ export default function DashboardPage() {
             </ScrollArea>
           )}
 
+          {activeView === "constellation" && (
+            <div className="flex flex-1 min-h-0 overflow-hidden">
+              <div className="flex min-w-0 flex-1 flex-col border-r border-border">
+                <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
+                  <p className="text-[11px] text-muted-foreground">
+                    사이드바 카테고리로 은하 필터 · 드래그 회전 · 휠 줌 · 별 클릭 → 미리보기
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label className="flex cursor-pointer items-center gap-2 text-[10px] text-muted-foreground">
+                      <input
+                        type="checkbox"
+                        className="size-3.5 rounded border-border accent-foreground"
+                        checked={constellationHubGravity}
+                        onChange={(e) => setConstellationHubGravity(e.target.checked)}
+                      />
+                      허브 중력
+                    </label>
+                    <label className="flex cursor-pointer items-center gap-2 text-[10px] text-muted-foreground">
+                      <input
+                        type="checkbox"
+                        className="size-3.5 rounded border-border accent-foreground"
+                        checked={constellationNebula}
+                        onChange={(e) => setConstellationNebula(e.target.checked)}
+                      />
+                      성운
+                    </label>
+                  </div>
+                </div>
+                {constellationData?.timeRange.dateMin &&
+                  constellationData.timeRange.dateMax &&
+                  constellationAsOfYmd && (
+                    <div className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border/60 px-3 py-2">
+                      <span className="text-[10px] font-medium text-muted-foreground">시점</span>
+                      <input
+                        type="range"
+                        className="h-1.5 min-w-[120px] flex-1 cursor-pointer accent-foreground"
+                        min={ymdToDayKey(constellationData.timeRange.dateMin) ?? 0}
+                        max={ymdToDayKey(constellationData.timeRange.dateMax) ?? 0}
+                        value={ymdToDayKey(constellationAsOfYmd) ?? 0}
+                        onChange={(e) => setConstellationAsOfYmd(dayKeyToYmd(Number(e.target.value)))}
+                      />
+                      <span className="text-[11px] tabular-nums text-foreground">
+                        {constellationAsOfYmd}
+                      </span>
+                      <button
+                        type="button"
+                        className="rounded-md border border-border px-2 py-0.5 text-[10px] text-muted-foreground hover:bg-accent hover:text-foreground"
+                        onClick={() =>
+                          constellationData.timeRange.dateMax &&
+                          setConstellationAsOfYmd(constellationData.timeRange.dateMax)
+                        }
+                      >
+                        최신
+                      </button>
+                    </div>
+                  )}
+                <div className="min-h-0 flex-1 bg-background">
+                  {constellationViewData ? (
+                    <ConstellationCanvas
+                      data={constellationViewData}
+                      filterCategory={activeCategory}
+                      selectedRelPath={selectedDoc}
+                      onSelectDoc={(p) => setSelectedDoc(p)}
+                      asOfYmd={constellationAsOfYmd}
+                      hubGravity={constellationHubGravity}
+                      nebula={constellationNebula}
+                      className="h-full min-h-[320px] w-full"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+                      그래프 준비 중…
+                    </div>
+                  )}
+                </div>
+              </div>
+              <DocPreview relPath={selectedDoc} onClose={() => setSelectedDoc(null)} />
+            </div>
+          )}
+
           {activeView === "home" && (
             <div className="flex-1 flex overflow-hidden min-h-0">
               <ScrollArea className="w-80 shrink-0 border-r border-border min-h-0">
                 <div className="p-3 space-y-2">
                   <div className="flex items-center justify-between px-1 mb-1">
                     <p className="text-xs font-medium text-muted-foreground">
-                      {activeCategory === "all" ? "전체" : activeCategory} · {filtered.length}건
+                      {CAT_LABEL[activeCategory] ?? activeCategory} · {filtered.length}건
                     </p>
                   </div>
                   {filtered.length === 0 ? (
@@ -207,7 +349,7 @@ export default function DashboardPage() {
 
       {actionRunning && (
         <div className="fixed bottom-4 right-4 bg-card border border-border rounded-lg px-4 py-3 shadow-lg z-50 flex items-center gap-2">
-          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-foreground/30 border-t-foreground rounded-full animate-spin" />
           <span className="text-sm">{actionRunning} 실행 중…</span>
         </div>
       )}

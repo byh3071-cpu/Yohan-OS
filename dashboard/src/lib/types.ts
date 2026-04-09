@@ -11,6 +11,8 @@ export interface DocMeta {
   title: string
   date: string | null
   tags: string[]
+  /** Frontmatter `related` ids (kebab or note id) */
+  related: string[]
   category: DocCategory
   relPath: string
   excerpt: string

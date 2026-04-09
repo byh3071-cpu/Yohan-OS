@@ -47,7 +47,7 @@ status: active
 | `dashboard-design-system.md` | 04-09 | active | OK (오늘 갱신) |
 | `dashboard-quick-actions.md` | 04-09 | active | OK |
 | `decision-trigger.md` | 04-09 | active | OK |
-| `policy-decision-options-2026-04.md` | 04-08 | **draft** | 1주 미만, 유효 |
+| `decisions/policy-decision-options-2026-04.md` | 04-08 | **draft** | 1주 미만, 유효 |
 | `router-spec-v1.md` | 04-08 | **draft** | 1주 미만, 유효 |
 | `session-log.md` | 04-09 | active | OK |
 

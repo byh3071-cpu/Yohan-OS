@@ -6,8 +6,7 @@ import { Input } from "@/components/ui/input"
 import {
   Search, Lightbulb, Rss, Link2, Scale, Wrench, FileText,
   Globe, ArrowUpFromLine, ArrowDownToLine, BarChart3, Play,
-  Bot, PlusCircle, RefreshCw, GitBranch, FilePlus, Upload,
-  History, ClipboardCheck, Sparkles,
+  Bot, RefreshCw, GitBranch, Sparkles,
 } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import type { DocMeta } from "@/lib/types"
@@ -28,15 +27,10 @@ const ACTIONS = [
   { label: "주간 리포트", action: "report:weekly", icon: <BarChart3 size={14} /> },
   { label: "드리프트 점검", action: "check:drift", icon: <Search size={14} /> },
   { label: "메모리 검색", action: "search:memory", icon: <Search size={14} /> },
-  { label: "새 결정 기록", action: "new:decision", icon: <PlusCircle size={14} /> },
   { label: "배치 즉시 실행", action: "automation:batch", icon: <Play size={14} /> },
   { label: "봇 상태", action: "bot:status", icon: <Bot size={14} /> },
   { label: "MCP 빌드", action: "build", icon: <RefreshCw size={14} /> },
   { label: "Git 동기화", action: "git:sync", icon: <GitBranch size={14} /> },
-  { label: "새 인사이트", action: "new:insight", icon: <FilePlus size={14} /> },
-  { label: "OCR 업로드", action: "ocr:upload", icon: <Upload size={14} /> },
-  { label: "체인지로그", action: "view:changelog", icon: <History size={14} /> },
-  { label: "평가 로그", action: "view:evaluator", icon: <ClipboardCheck size={14} /> },
 ]
 
 const CAT_ICON: Record<string, React.ReactNode> = {

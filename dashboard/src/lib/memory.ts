@@ -18,6 +18,7 @@ export interface DocMeta {
   title: string
   date: string | null
   tags: string[]
+  related: string[]
   category: DocCategory
   relPath: string
   excerpt: string
@@ -96,6 +97,12 @@ function extractSourceName(data: Record<string, unknown>): string | null {
   return null
 }
 
+function extractRelated(data: Record<string, unknown>): string[] {
+  const r = data.related
+  if (!Array.isArray(r)) return []
+  return r.filter((x): x is string => typeof x === "string" && x.length > 0)
+}
+
 function extractTitle(data: Record<string, unknown>, content: string, fileName: string): string {
   if (typeof data.title === "string" && data.title) return data.title
   const h1 = content.match(/^#\s+(.+)$/m)
@@ -138,14 +145,19 @@ export async function listDocs(): Promise<DocMeta[]> {
       const relPath = relative(MEMORY_ROOT, filePath).replace(/\\/g, "/")
       const fileName = filePath.split(/[\\/]/).pop() ?? ""
 
+      const cat = categorize(relPath)
+      let title = extractTitle(data, content, fileName)
+      let excerpt = extractExcerpt(content)
+
       docs.push({
         id: typeof data.id === "string" ? data.id : relPath,
-        title: extractTitle(data, content, fileName),
+        title,
         date: extractDate(data, fileName),
         tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
-        category: categorize(relPath),
+        related: extractRelated(data),
+        category: cat,
         relPath,
-        excerpt: extractExcerpt(content),
+        excerpt,
         sourceName: extractSourceName(data),
       })
     } catch {
@@ -169,6 +181,7 @@ export async function getDoc(relPath: string): Promise<DocFull | null> {
       title: extractTitle(data, content, fileName),
       date: extractDate(data, fileName),
       tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
+      related: extractRelated(data),
       category: categorize(relPath),
       relPath,
       excerpt: extractExcerpt(content),
