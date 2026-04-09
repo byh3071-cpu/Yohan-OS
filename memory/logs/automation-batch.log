@@ -320,3 +320,38 @@
 
 [Yohan OS][batch] ?꾨즺: ?ㅼ틪=0 泥섎━=0 ?ㅽ궢=0 寃??0 ?ㅽ뙣=0
 [2026-04-10 00:00:04] DONE automation:batch
+[2026-04-10 00:30:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=0 泥섎━=0 ?ㅽ궢=0 寃??0 ?ㅽ뙣=0
+[2026-04-10 00:30:05] DONE automation:batch
+[2026-04-10 01:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=0 泥섎━=0 ?ㅽ궢=0 寃??0 ?ㅽ뙣=0
+[2026-04-10 01:00:04] DONE automation:batch
+[2026-04-10 01:30:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=16 泥섎━=16 ?ㅽ궢=0 寃??0 ?ㅽ뙣=0
+[2026-04-10 01:30:38] DONE automation:batch
+[2026-04-10 02:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=16 泥섎━=0 ?ㅽ궢=16 寃??0 ?ㅽ뙣=0
+[2026-04-10 02:00:04] DONE automation:batch
+[2026-04-10 02:30:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=16 泥섎━=0 ?ㅽ궢=16 寃??0 ?ㅽ뙣=0
+[2026-04-10 02:30:05] DONE automation:batch
