@@ -30,12 +30,20 @@ export type IngestUrlResult = {
 
 function normalizeUrlForId(href: string): string {
   try {
-    const u = new URL(href);
-    u.hash = "";
-    u.hostname = u.hostname.toLowerCase();
-    return u.toString();
+    const u = new URL(href)
+    u.hash = ""
+    u.hostname = u.hostname.toLowerCase()
+    const kept: Array<[string, string]> = []
+    for (const [k, v] of u.searchParams.entries()) {
+      const key = k.toLowerCase()
+      if (key.startsWith("utm_") || key.startsWith("media_") || key.startsWith("ranking_")) continue
+      kept.push([k, v])
+    }
+    u.search = ""
+    for (const [k, v] of kept) u.searchParams.append(k, v)
+    return u.toString()
   } catch {
-    return href;
+    return href
   }
 }
 
@@ -48,9 +56,16 @@ function isYoutubeHost(host: string): boolean {
   return h === "youtube.com" || h === "www.youtube.com" || h === "m.youtube.com" || h === "youtu.be" || h === "www.youtu.be";
 }
 
+const defaultFetchHeaders: Record<string, string> = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+  "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+};
+
 async function fetchWithTimeout(url: string, ms: number): Promise<Response> {
   return fetch(url, {
-    headers: { "User-Agent": "Mozilla/5.0 (compatible; YohanOS/1.0; +https://example.local)" },
+    headers: defaultFetchHeaders,
     signal: AbortSignal.timeout(ms),
   });
 }

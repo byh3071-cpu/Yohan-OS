@@ -19,6 +19,17 @@ ai_clients:
   secondary: [Antigravity]
   occasional: [Gemini, ChatGPT]
 
+# 배경·학습 특성
+background:
+  developer: false
+  technical_level: non-major
+  cli_familiarity: low # 16+ 커맨드 중 2~3개만 기억
+  learning_style:
+    primary: visual # 도식표·그림·마인드맵·조직도로 이해가 가장 빠름
+    secondary: text # 텍스트도 되지만 시각화 후 이해·기억이 훨씬 빠름
+    note: "흐름·맥락 파악에 시각 자료가 핵심. 머릿속에 그림으로 기억하는 타입."
+  knowledge_style: "도서관처럼 분류별로 꺼내 쓰는 구조를 선호. 깔끔·심플·직관적 정리."
+
 # 코딩·문서 선호 (예: 포매팅)
 preferences:
   code_style:

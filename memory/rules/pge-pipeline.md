@@ -1,3 +1,12 @@
+---
+id: pge-pipeline
+date: 2026-04-06
+domain: harness
+tags: [pge, planner, generator, evaluator, pipeline]
+related: [agent-harness, evaluator-checklist]
+status: active
+---
+
 # Planner → Generator → Evaluator (P/G/E)
 
 복잡하거나 SoT·비전과 충돌할 수 있는 작업은 **아래 순서**를 기본으로 한다.

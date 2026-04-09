@@ -55,7 +55,9 @@ status: draft
 
 ## 7. 참조 우선순위
 - 비전·요구: `docs/VISION-AND-REQUIREMENTS.md`
+- 대시보드 스펙: `docs/DASHBOARD-SPEC.md`
 - 하네스 규칙: `memory/rules/agent-harness.md`
+- 결정 기록 트리거: `memory/rules/decision-trigger.md`
 - 평가 체크리스트: `memory/rules/evaluator-checklist.md`
 - GitHub 레포 정리(URL + why-how 인사이트): `memory/rules/github-repo-why-how.md`, 템플릿 `memory/templates/github-repo-why-how-template.md`
 - 선별·맥락·파인만 2차 정제(URL/OCR/RSS 등): `memory/rules/archiving-appraisal-feynman.md`

@@ -35,7 +35,12 @@
     "automation:batch": "tsx scripts/automation-batch.ts",
     "automation:batch:force": "tsx scripts/automation-batch.ts --force",
     "automation:batch:dry": "tsx scripts/automation-batch.ts --dry-run",
-    "automation:batch:test": "tsx scripts/automation-batch.ts --dry-run --no-notify"
+    "automation:batch:test": "tsx scripts/automation-batch.ts --dry-run --no-notify",
+    "check:drift": "tsx scripts/check-rule-drift.ts",
+    "report:weekly": "tsx scripts/weekly-health-report.ts",
+    "dashboard": "npm --prefix dashboard run dev",
+    "dashboard:build": "npm --prefix dashboard run build",
+    "dashboard:start": "npm --prefix dashboard run start"
   },
   "engines": {
     "node": ">=20"

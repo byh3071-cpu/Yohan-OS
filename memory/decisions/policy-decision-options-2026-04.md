@@ -1,12 +1,11 @@
 ---
-
-## id: policy-decision-options-2026-04
-
+id: policy-decision-options-2026-04
 date: 2026-04-08
 domain: operations
 tags: [policy, decision, workflow, ocr, github, evaluator]
 related: [archiving-appraisal-feynman, github-repo-why-how, notion-ocr-pipeline, agent-harness, evaluator-checklist]
 status: draft
+---
 
 # 운영 정책 결정안 (A/B) — 2026-04
 

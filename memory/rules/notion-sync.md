@@ -1,3 +1,12 @@
+---
+id: notion-sync
+date: 2026-04-06
+domain: automation
+tags: [notion, sync, SoT, rules]
+related: [notion-ocr-pipeline, agent-harness]
+status: active
+---
+
 # 노션 동기 — 규칙 (양방향 + SoT 우선)
 
 `memory/`(자체 SoT)와 노션을 **둘 다** 쓰되, **항상 `memory/`가 진실의 원천(SoT)** 이다.

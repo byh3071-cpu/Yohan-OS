@@ -1,0 +1,41 @@
+"use client"
+
+import { Moon, Sun, Command, Search } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useTheme } from "@/components/theme-provider"
+
+interface HeaderProps {
+  onOpenSearch: () => void
+}
+
+export function Header({ onOpenSearch }: HeaderProps) {
+  const { theme, toggle } = useTheme()
+
+  return (
+    <header className="h-12 shrink-0 border-b border-border bg-background/80 backdrop-blur-sm flex items-center px-4 gap-3 z-50">
+      <div className="flex items-center gap-2 mr-4">
+        <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center">
+          <span className="text-primary font-bold text-sm">Y</span>
+        </div>
+        <span className="font-semibold text-sm tracking-tight">Yohan OS</span>
+      </div>
+
+      <button
+        onClick={onOpenSearch}
+        className="flex-1 max-w-md flex items-center gap-2 h-8 px-3 rounded-md border border-border bg-muted/50 text-muted-foreground text-sm hover:bg-muted transition-colors"
+      >
+        <Search size={14} />
+        <span className="flex-1 text-left">검색…</span>
+        <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-border bg-background px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+          <Command size={10} />K
+        </kbd>
+      </button>
+
+      <div className="ml-auto flex items-center gap-1">
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggle}>
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+        </Button>
+      </div>
+    </header>
+  )
+}

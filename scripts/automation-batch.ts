@@ -1,5 +1,6 @@
 import { config } from "dotenv"
 import { join } from "node:path"
+import { appendFile, mkdir } from "node:fs/promises"
 import { readTargetBlocks, extractHttpUrls, isGithubLikeUrl, normalizeTrackingParams } from "./automation/parse-telegram.js"
 import { prepareOcr } from "./automation/quality.js"
 import { findNearDuplicate, makeTextSignature } from "./automation/dedupe.js"
@@ -139,6 +140,14 @@ async function main(): Promise<void> {
     for (const line of issueDetails) {
       console.log(line)
     }
+  }
+
+  if (!opts.dryRun && (stats.failed > 0 || stats.review > 0)) {
+    const errDir = join(resolveRepoRoot(), "memory", "logs", "errors")
+    await mkdir(errDir, { recursive: true })
+    const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)
+    const lines = [`# Batch Error — ${ts}\n`, `${summary}\n`, ...issueDetails.map((l) => `- ${l}\n`)]
+    await appendFile(join(errDir, `batch-${ts}.md`), lines.join("\n"), "utf8")
   }
 }
 

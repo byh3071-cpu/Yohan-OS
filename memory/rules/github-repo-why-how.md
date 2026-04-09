@@ -1,3 +1,12 @@
+---
+id: github-repo-why-how
+date: 2026-04-06
+domain: ingest
+tags: [github, ingest, why-how, insights]
+related: [archiving-appraisal-feynman]
+status: active
+---
+
 # GitHub 레포 — URL 인제스트 + `why-how` 인사이트 짝
 
 피드·쓰레드·인스타 등에서 깃헙 링크만 모이면 **나중에 왜 넣었는지** 잊기 쉽다. **긴 README는 그대로 두고**, **판단용 한 장**을 `insights/`에 둔다.

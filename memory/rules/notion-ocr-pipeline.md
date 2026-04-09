@@ -1,3 +1,12 @@
+---
+id: notion-ocr-pipeline
+date: 2026-04-07
+domain: automation
+tags: [notion, ocr, telegram, pipeline]
+related: [notion-sync, telegram-inbox]
+status: active
+---
+
 # 텔레그램 OCR → 노션(유니버셜 메모리) + Cursor SoT 파이프라인
 
 `memory/rules/notion-sync.md` 원칙을 유지한다. **에이전트 런타임·검색의 1차 진실은 여전히 `memory/`**이며, 노션은 **사람용 미러·협업·단기(리소스)·작업결과(서머리)** 용도다.

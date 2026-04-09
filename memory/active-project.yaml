@@ -2,8 +2,11 @@
 
 id: yohan-os-mcp
 name: Yohan OS — SoT + MCP v0
-goal: get_context로 맥락 통일, append_decision으로 결정 로그 축적
+goal: get_context로 맥락 통일, append_decision으로 결정 로그 축적, 하네스 체계 안정화
 repo_path: null
 branch: null
 notes: |
-  첫 목표: Cursor에서 MCP 연결 후 get_context 호출로 동일 맥락 확인.
+  - [완료] get_context 파이프 검증, Cursor MCP 연결 확인.
+  - [완료] ingest_url·RSS 인제스트, 노션 양방향 동기(push/pull).
+  - [완료] 하네스 엔지니어링 1인 운영 원칙 정리 및 문서 반영.
+  - [진행] 규칙 드리프트 점검, Evaluator 루프 안정화, 세션당 1건 정리 습관화.

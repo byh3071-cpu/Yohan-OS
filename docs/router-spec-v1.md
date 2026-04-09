@@ -1,12 +1,11 @@
 ---
-
-## id: router-spec-v1
-
+id: router-spec-v1
 date: 2026-04-08
 domain: operations
 tags: [router, orchestration, pge, automation]
-related: [pge-pipeline, automation-pipeline-v1-2026-04, automation-runbook-v1, daily-2026-04-08]
+related: [pge-pipeline, automation-pipeline-v1-2026-04, automation-runbook-v1]
 status: draft
+---
 
 # Router Spec v1
 

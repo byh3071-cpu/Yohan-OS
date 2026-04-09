@@ -1,0 +1,112 @@
+export type DocCategory =
+  | "insights"
+  | "rss"
+  | "url"
+  | "decisions"
+  | "rules"
+  | "templates"
+
+export interface DocMeta {
+  id: string
+  title: string
+  date: string | null
+  tags: string[]
+  category: DocCategory
+  relPath: string
+  excerpt: string
+  sourceName: string | null
+}
+
+export interface DocFull extends DocMeta {
+  content: string
+  frontmatter: Record<string, unknown>
+}
+
+export interface SourceSlice {
+  source: string
+  count: number
+  color: string
+}
+
+export interface CategorySlice {
+  category: string
+  label: string
+  count: number
+  color: string
+}
+
+export interface SessionLog {
+  id: string
+  date: string
+  summary: string[]
+  filesChanged: number
+}
+
+export interface Stats {
+  totalDocs: number
+  decisions: number
+  ingests: number
+  batchStatus: "ok" | "error" | "unknown"
+  batchLastRun: string | null
+}
+
+export interface IngestTrend {
+  date: string
+  count: number
+}
+
+export interface DomainSlice {
+  domain: string
+  count: number
+  color: string
+}
+
+export interface BatchDay {
+  date: string
+  ok: number
+  fail: number
+}
+
+export interface ActivityPoint {
+  date: string
+  commits: number
+  ingests: number
+  decisions: number
+}
+
+export interface DecisionPoint {
+  date: string
+  count: number
+}
+
+export interface ChartData {
+  ingestTrend: IngestTrend[]
+  domainDist: DomainSlice[]
+  categoryDist: CategorySlice[]
+  sourceDist: SourceSlice[]
+  batchHistory: BatchDay[]
+  activity: ActivityPoint[]
+  decisionHistory: DecisionPoint[]
+}
+
+export interface SerendipityDoc {
+  title: string
+  excerpt: string
+  relPath: string
+  category: DocCategory
+  date: string | null
+  tags: string[]
+}
+
+export interface GitCommit {
+  hash: string
+  date: string
+  message: string
+}
+
+export interface DecisionEntry {
+  title: string
+  date: string
+  relPath: string
+  summary: string
+}

@@ -1,8 +1,29 @@
+---
+id: agent-harness
+date: 2026-04-09
+domain: harness
+tags: [harness, agent, session, rules]
+related: [pge-pipeline, evaluator-checklist, decision-trigger]
+status: active
+---
+
 # Agent Harness — 세션·작업 규칙 (Yohan OS v0)
 
 이 파일은 **에이전트(Cursor 등)**가 이 레포에서 일할 때 따라야 할 **최소 하네스**다. 비전 전체는 `docs/VISION-AND-REQUIREMENTS.md`를 본다. **컨텍스트·하네스 엔지니어링을 레포 구조에 어떻게 매핑했는지**는 `docs/CONTEXT-AND-HARNESS-SYSTEM.md`를 본다. **하네스는 비전·안전·안정의 바닥이지 창의성을 없애기 위한 족쇄가 아니라는 점**은 동 문서 **§1.1**에 정리되어 있다.
 
 > **팁:** 같은 맥락을 여러 문서에 옮길 때는 `docs/CONTEXT-AND-HARNESS-SYSTEM.md`만 먼저 고치고, `AGENTS.md` 등 진입점은 **다음 턴**이나 **사용자 범위 확인** 후에 손본다(한 턴에 다파일이면 `.cursor/rules/evaluator-vision-gate.mdc` 강제 revise와 맞물리기 쉽다).
+
+---
+
+## 0. 1인 운영 전제
+
+이 프로젝트는 **Yohan 1명 + AI 에이전트**로 운영된다. 팀 리뷰·전담 QA·다수 병렬 PR 같은 팀 패턴은 없으며, 아래 전제가 모든 규칙 위에 있다.
+
+- **사람 시간이 최대 병목** — 에이전트 Evaluator `pass`는 빠르게 훑고, `revise`/`reject`만 집중 확인한다.
+- **경계는 적고 강하게** — `must_not` + SoT 우선 + Evaluator 게이트 등 소수 불변식만 기계적으로 지킨다.
+- **대화 속 결정은 즉시 SoT에** — `append_decision`을 미루면 1인 환경에서는 그대로 유실된다.
+- **세션당 정리 1건** — 대규모 리팩터보다 소규모 상시 정리가 현실적이다.
+- **도구 추가 > 프롬프트 튜닝** — `.cursorrules` 문구를 다듬는 것보다 **MCP 도구 1개 추가**가 에이전트 성능에 더 효과적이다. 새 기능이 필요하면 규칙 문서 수정보다 도구 구현을 먼저 검토한다. (참고: AutoAgent 분석 — `memory/decisions/2026-04-09-1520-autoagent-*.md`)
 
 ---
 
@@ -57,13 +78,12 @@
 ## 7. 참조 파일
 
 
-| 파일                                        | 역할                                              |
-| ----------------------------------------- | ----------------------------------------------- |
-| `docs/CONTEXT-AND-HARNESS-SYSTEM.md`      | 컨텍스트 vs 하네스, 파이프라인·산출물 인덱스                      |
-| `docs/VISION-AND-REQUIREMENTS.md`         | 비전·요구 통합                                        |
-| `memory/rules/pge-pipeline.md`            | Planner→Generator→Evaluator 도구 매핑               |
-| `memory/rules/evaluator-checklist.md`     | Evaluator 대조 항목·`log_evaluation` 호출 안내          |
-| `.cursor/rules/evaluator-vision-gate.mdc` | Cursor에서 Evaluator 응답 형식·`log_evaluation` 매핑 강제 |
-| `memory/metrics/evaluations/`             | Evaluator 구조화 로그 (`MCP log_evaluation`)         |
-
-
+| 파일                                        | 역할                                                                                                                                                                                |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/CONTEXT-AND-HARNESS-SYSTEM.md`      | 컨텍스트 vs 하네스, 파이프라인·산출물 인덱스                                                                                                                                                        |
+| `docs/VISION-AND-REQUIREMENTS.md`         | 비전·요구 통합                                                                                                                                                                          |
+| `memory/rules/pge-pipeline.md`            | Planner→Generator→Evaluator 도구 매핑                                                                                                                                                 |
+| `memory/rules/evaluator-checklist.md`     | Evaluator 대조 항목·`log_evaluation` 호출 안내                                                                                                                                            |
+| `.cursor/rules/evaluator-vision-gate.mdc` | Cursor에서 Evaluator 응답 형식·`log_evaluation` 매핑 강제                                                                                                                                   |
+| `memory/metrics/evaluations/`             | Evaluator 구조화 로그 (`MCP log_evaluation`)                                                                                                                                           |
+| 외부 (개념 정렬)                                | [OpenAI — Harness Engineering (ko-KR)](https://openai.com/ko-KR/index/harness-engineering/) — 에이전트 우선 환경·피드백 루프·짧은 `AGENTS.md` 등; 로컬: `memory/ingest/url/url-5c5e7aedc9912aae.md` |

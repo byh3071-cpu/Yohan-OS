@@ -1,3 +1,12 @@
+---
+id: evaluator-checklist
+date: 2026-04-08
+domain: harness
+tags: [evaluator, checklist, pge, quality]
+related: [agent-harness, pge-pipeline]
+status: active
+---
+
 # Evaluator — 비전·방향성 대조 체크리스트
 
 대조 기준 문서: `docs/VISION-AND-REQUIREMENTS.md` (단일 비전 기록)

@@ -1,3 +1,12 @@
+---
+id: archiving-appraisal-feynman
+date: 2026-04-06
+domain: ingest
+tags: [archiving, appraisal, feynman, ingest, curation]
+related: [notion-sync, github-repo-why-how]
+status: active
+---
+
 # 선별·맥락·파인만(2차 정제) — URL / GitHub / 유튜브 / OCR / RSS
 
 `memory/` SoT 전제는 `notion-sync.md`, GitHub 짝 규칙은 `github-repo-why-how.md`와 같이 쓴다. 여기서는 **무엇을 오래 남길지**, **맥락 필드가 무엇인지**, **노션에서 쓰는 파인만·요약 구조를 SoT에서 어떻게 줄일지**만 정한다.
@@ -80,7 +89,7 @@
 ## 5. 애매한 점·추가 논의 후보
 
 - **full + feynman 둘 다?** → 비추. Full이면 **인사이트 분석 안에** “쉬운 한 줄”만 넣고, 별도 파인만 3단은 생략해도 된다.  
-- **궁금한 점**은 나중에 검색 큐로 쓰기 좋다 — `memory/inbox`나 별도 `open-questions.md`로 빼도 됨 (미정).  
+- **궁금한 점**은 나중에 검색 큐로 쓰기 좋다 — `memory/inbox`나 별도 open-questions 파일로 빼도 됨 (미정, 파일 미생성).  
 - **무결성·보안:** 민감본은 `memory/`가 아닌 저장소 정책 따름; **Archive 폴더**(`memory/archive/` 등)는 나중에 생기면 읽기 전용·드물게 갱신 원칙을 붙이면 된다.
 
 ---

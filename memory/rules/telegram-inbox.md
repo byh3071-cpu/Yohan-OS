@@ -1,3 +1,12 @@
+---
+id: telegram-inbox
+date: 2026-04-07
+domain: automation
+tags: [telegram, inbox, bot, automation]
+related: [notion-ocr-pipeline, archiving-appraisal-feynman]
+status: active
+---
+
 # 텔레그램 인박스 — 일별 파일·반영·아카이브
 
 ## 저장 위치 (봇 append)
