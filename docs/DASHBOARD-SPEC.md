@@ -275,6 +275,8 @@ npm run dashboard:start
 
 포트 충돌 시: `npx next dev --port 4000` (dashboard/ 디렉토리에서)
 
+런타임 안정화·장애 복구 표준은 `memory/rules/dashboard-runtime-stability.md`를 단일 참조로 따른다. (Node 프로세스 폭증, `tailwindcss` resolve 오류, `EADDRINUSE` 포함)
+
 ---
 
 ## 10. 혁신 기능 상세 (v2~v4 참조)

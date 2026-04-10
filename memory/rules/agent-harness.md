@@ -1,6 +1,7 @@
 ---
 
 ## id: agent-harness
+
 date: 2026-04-09
 domain: harness
 tags: [harness, agent, session, rules]
@@ -78,12 +79,13 @@ status: active
 ## 7. 참조 파일
 
 
-| 파일                                        | 역할                                                                                                                                                                                |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docs/CONTEXT-AND-HARNESS-SYSTEM.md`      | 컨텍스트 vs 하네스, 파이프라인·산출물 인덱스                                                                                                                                                        |
-| `docs/VISION-AND-REQUIREMENTS.md`         | 비전·요구 통합                                                                                                                                                                          |
-| `memory/rules/pge-pipeline.md`            | Planner→Generator→Evaluator 도구 매핑                                                                                                                                                 |
-| `memory/rules/evaluator-checklist.md`     | Evaluator 대조 항목·`log_evaluation` 호출 안내                                                                                                                                            |
-| `.cursor/rules/evaluator-vision-gate.mdc` | Cursor에서 Evaluator 응답 형식·`log_evaluation` 매핑 강제                                                                                                                                   |
-| `memory/metrics/evaluations/`             | Evaluator 구조화 로그 (`MCP log_evaluation`)                                                                                                                                           |
-| 외부 (개념 정렬)                                | [OpenAI — Harness Engineering (ko-KR)](https://openai.com/ko-KR/index/harness-engineering/) — 에이전트 우선 환경·피드백 루프·짧은 `AGENTS.md` 등; 로컬: `memory/ingest/url/url-5c5e7aedc9912aae.md` |
+| 파일                                            | 역할                                                                                                                                                                                |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/CONTEXT-AND-HARNESS-SYSTEM.md`          | 컨텍스트 vs 하네스, 파이프라인·산출물 인덱스                                                                                                                                                        |
+| `docs/VISION-AND-REQUIREMENTS.md`             | 비전·요구 통합                                                                                                                                                                          |
+| `memory/rules/pge-pipeline.md`                | Planner→Generator→Evaluator 도구 매핑                                                                                                                                                 |
+| `memory/rules/evaluator-checklist.md`         | Evaluator 대조 항목·`log_evaluation` 호출 안내                                                                                                                                            |
+| `memory/rules/dashboard-runtime-stability.md` | 대시보드 로컬 실행/장애 복구 표준 (Node 폭증, tailwind resolve, EADDRINUSE)                                                                                                                       |
+| `.cursor/rules/evaluator-vision-gate.mdc`     | Cursor에서 Evaluator 응답 형식·`log_evaluation` 매핑 강제                                                                                                                                   |
+| `memory/metrics/evaluations/`                 | Evaluator 구조화 로그 (`MCP log_evaluation`)                                                                                                                                           |
+| 외부 (개념 정렬)                                    | [OpenAI — Harness Engineering (ko-KR)](https://openai.com/ko-KR/index/harness-engineering/) — 에이전트 우선 환경·피드백 루프·짧은 `AGENTS.md` 등; 로컬: `memory/ingest/url/url-5c5e7aedc9912aae.md` |

@@ -39,8 +39,12 @@
     "check:drift": "tsx scripts/check-rule-drift.ts",
     "report:weekly": "tsx scripts/weekly-health-report.ts",
     "dashboard": "npm --prefix dashboard run dev",
+    "dashboard:dev:4000": "npm --prefix dashboard run dev -- --port 4000",
+    "dashboard:dev:safe": "node scripts/dashboard-dev-safe.mjs",
+    "dashboard:dev:diag": "node scripts/dashboard-dev-safe.mjs --diag",
     "dashboard:build": "npm --prefix dashboard run build",
-    "dashboard:start": "npm --prefix dashboard run start"
+    "dashboard:start": "npm --prefix dashboard run start",
+    "dashboard:start:4000": "npm --prefix dashboard run start -- -p 4000"
   },
   "engines": {
     "node": ">=20"
@@ -59,9 +63,11 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/jsdom": "^28.0.1",
     "@types/node": "^22.10.0",
     "@types/node-telegram-bot-api": "^0.64.14",
+    "tailwindcss": "^4.2.2",
     "tsx": "^4.21.0",
     "typescript": "^5.7.0"
   }
