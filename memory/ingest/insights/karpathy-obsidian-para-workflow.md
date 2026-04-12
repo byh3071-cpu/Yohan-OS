@@ -4,7 +4,7 @@
 date: 2026-04-08
 domain: productivity
 tags: [obsidian, PARA, Karpathy, second-brain, OCR-telegram]
-related: [knowledge-base-strategy, obsidian-vault-para-system-guide]
+related: [knowledge-base-strategy, obsidian-vault-para-system-guide, andrej-karpathy, obsidian, para-method]
 status: insight
 source_telegram:
   from_chat_id: "8636994274"

@@ -5,7 +5,7 @@
 date: 2026-04-07
 domain: ai-engineering
 tags: [knowledge-base, atomic-notes, RAG, layered-context, harness, vector-db]
-related: [exploration-vs-exploitation, vibe-coding-pipeline, yohan-os-mcp]
+related: [exploration-vs-exploitation, vibe-coding-pipeline, yohan-os-mcp, andrej-karpathy, cursor, rag, layered-context, single-source-of-truth, second-brain, harness-engineering]
 reference: Andrej Karpathy
 status: insight
 

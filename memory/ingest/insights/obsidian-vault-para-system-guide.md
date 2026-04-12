@@ -5,7 +5,7 @@
 date: 2026-04-08
 domain: productivity
 tags: [obsidian, PARA, vault, inbox, system-guide, OCR-telegram]
-related: [karpathy-obsidian-para-workflow, knowledge-base-strategy]
+related: [karpathy-obsidian-para-workflow, knowledge-base-strategy, obsidian, para-method, second-brain]
 status: insight
 source_telegram:
   from_chat_id: "8636994274"

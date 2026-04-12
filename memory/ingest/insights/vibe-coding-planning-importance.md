@@ -5,7 +5,7 @@
 date: 2026-04-08
 domain: ai-engineering
 tags: [vibe-coding, planning, product, context-engineering]
-related: [vibe-coding-pipeline]
+related: [vibe-coding-pipeline, single-source-of-truth]
 status: insight
 
 # 바이브 코딩에서 기획의 중요성

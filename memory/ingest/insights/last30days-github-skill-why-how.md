@@ -5,7 +5,7 @@
 date: 2026-04-08
 domain: tools-research
 tags: [github, claude-code, skill, last30days, 워크플로, 인스타, 쓰레드]
-related: [knowledge-base-strategy, karpathy-obsidian-para-workflow]
+related: [knowledge-base-strategy, karpathy-obsidian-para-workflow, cursor, claude-code]
 status: insight
 
 # last30days-skill (GitHub) — 왜 쓰는지 · 어떻게 쓰는지

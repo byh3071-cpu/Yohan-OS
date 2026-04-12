@@ -20,4 +20,6 @@
 2. **필수 하네스:** `[memory/rules/agent-harness.md](memory/rules/agent-harness.md)` — 세션 시작 `get_context`, SoT, P/G/E, 결정 로그.
 3. **Cursor:** `.cursor/rules/` — 세션 시작·Evaluator 형식 등 워크스페이스 규칙. 요약 스킬: `.cursor/skills/yohan-os-workflow/SKILL.md`.
 
+4. **Wiki:** `memory/wiki/` — 지식 레이어. 명세: `[docs/WIKI-SPEC-v2.md](docs/WIKI-SPEC-v2.md)` | 규칙: `memory/rules/wiki-ops.md` | 스킬: `.cursor/skills/wiki-ops/SKILL.md`.
+
 MCP `yohan-os` 사용 시 레포 루트가 `cwd`이고 `dist/index.js`가 빌드되어 있어야 한다. `[README.md](README.md)` 트러블슈팅 참고.
