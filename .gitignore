@@ -1,3 +1,6 @@
+# yohan-ai-dictionary — public site, own repo (Phase 3 template); not part of private Yohan OS snapshot
+yohan-ai-dictionary/
+
 node_modules/
 dist/
 .env
