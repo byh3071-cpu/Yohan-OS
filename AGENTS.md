@@ -22,4 +22,8 @@
 
 4. **Wiki:** `memory/wiki/` — 지식 레이어. 명세: `[docs/WIKI-SPEC-v2.md](docs/WIKI-SPEC-v2.md)` | 규칙: `memory/rules/wiki-ops.md` | 스킬: `.cursor/skills/wiki-ops/SKILL.md`.
 
+5. **우선 wiki (에이전트·도구·검색 축)** — 필요할 때만 `@`로 **최소 주입** (한 세션 전부 금지). 목록·표는 `[memory/rules/agent-harness.md](memory/rules/agent-harness.md)` §1.1.
+   - `memory/wiki/entities/mcp.md` · `concepts/cursor-skills.md` · `entities/rag.md` · `concepts/layered-context.md` · `concepts/harness-engineering.md`
+   - 교재 인사이트: `memory/ingest/insights/modern-ai-ch*.md`
+
 MCP `yohan-os` 사용 시 레포 루트가 `cwd`이고 `dist/index.js`가 빌드되어 있어야 한다. `[README.md](README.md)` 트러블슈팅 참고.

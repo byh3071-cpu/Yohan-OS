@@ -3,9 +3,9 @@ id: cursor
 type: entity
 entity_type: tool
 created: 2026-04-12
-updated: 2026-04-12
+updated: 2026-04-16
 source_insights: [knowledge-base-strategy, vibe-coding-pipeline, last30days-github-skill-why-how]
-related_entities: [obsidian, claude-code, andrej-karpathy]
+related_entities: [obsidian, claude-code, andrej-karpathy, mcp]
 related_concepts: [vibe-coding-pipeline, harness-engineering, single-source-of-truth, layered-context]
 ---
 

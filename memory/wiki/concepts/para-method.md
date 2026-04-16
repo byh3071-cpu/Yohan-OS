@@ -3,8 +3,8 @@ id: para-method
 type: concept
 aliases: [PARA, PARA Method, PARA 메서드]
 created: 2026-04-12
-updated: 2026-04-12
-source_insights: [karpathy-obsidian-para-workflow, obsidian-vault-para-system-guide]
+updated: 2026-04-16
+source_insights: [karpathy-obsidian-para-workflow, obsidian-vault-para-system-guide, modern-ai-ch18-knowledge-management-karpathy-wiki]
 related_entities: [andrej-karpathy, obsidian]
 related_concepts: [second-brain]
 ---
@@ -20,6 +20,7 @@ related_concepts: [second-brain]
 - PARA를 변형한 대분류 약 10개만 유지 — 하위 폴더 난립 금지. [source: obsidian-vault-para-system-guide]
 - 수집과 정리 분리: 이동 중엔 인박스에만 던지고 폴더 고민 없이 복귀. [source: obsidian-vault-para-system-guide]
 - 저마찰 수집 / 고레버리지 정리 원칙. [source: obsidian-vault-para-system-guide]
+- 개인 PKM 네 원칙으로 제시되는 예: 원본 보존, 노트 간 최소 2링크, 주 1회 이상 정리, AI 요약·연결 제안 후 사람이 판단. [source: modern-ai-ch18-knowledge-management-karpathy-wiki]
 
 ## Inferred (추론/연결) — TTL 30일
 - Yohan OS의 memory/inbox → memory/ingest → memory/wiki 흐름은 PARA의 Inbox → 분류 패턴과 같은 구조.
@@ -31,3 +32,4 @@ related_concepts: [second-brain]
 ## 관련 소스
 - [karpathy-obsidian-para-workflow](../../ingest/insights/karpathy-obsidian-para-workflow.md)
 - [obsidian-vault-para-system-guide](../../ingest/insights/obsidian-vault-para-system-guide.md)
+- [modern-ai-ch18-knowledge-management-karpathy-wiki](../../ingest/insights/modern-ai-ch18-knowledge-management-karpathy-wiki.md)

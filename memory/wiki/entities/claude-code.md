@@ -3,9 +3,9 @@ id: claude-code
 type: entity
 entity_type: tool
 created: 2026-04-12
-updated: 2026-04-12
+updated: 2026-04-16
 source_insights: [last30days-github-skill-why-how]
-related_entities: [cursor]
+related_entities: [cursor, mcp]
 related_concepts: [vibe-coding-pipeline, harness-engineering]
 ---
 

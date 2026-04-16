@@ -34,6 +34,23 @@ status: active
 2. 응답에 포함된 `**profile`**·`**active_project`**·`**recent_decisions`**를 작업 맥락에 반영한다.
 3. `**memory/profile.yaml`의 `must_not`** 를 위반하는 제안·변경을 하지 않는다.
 
+### 1.1 우선 맥락 (wiki·교재 인사이트) — 적용 즉시
+
+아래는 **에이전트·MCP·RAG·스킬·Select·하네스** 축이 필요할 때 **최소 단위로** `@` 주입할 SoT다. 한 세션에 전부 넣지 않는다 — Attention 분산 방지(`.cursorrules` §8·`layered-context`와 동일).
+
+
+| 우선순위 | 경로                                            | 용도                              |
+| ---- | --------------------------------------------- | ------------------------------- |
+| 1    | `memory/wiki/entities/mcp.md`                 | MCP 구조·게이트웨이·도구 최소화             |
+| 2    | `memory/wiki/concepts/cursor-skills.md`       | SKILL.md·Progressive Disclosure |
+| 3    | `memory/wiki/entities/rag.md`                 | RAG 실패 유형·하이브리드·에이전틱            |
+| 4    | `memory/wiki/concepts/layered-context.md`     | Select·LC·토큰·KV-Cache           |
+| 5    | `memory/wiki/concepts/harness-engineering.md` | 하네스·경계·검증                       |
+
+
+- **교재 압축 인사이트:** `memory/ingest/insights/modern-ai-ch*.md` — 수치·연도·제품 단정은 `**memory/inbox/md_files/현대AI개론/` 원문**과 대조.
+- **사전 뷰어(용어 통일):** `yohan-ai-dictionary/` 로컬 빌드·`src/content/docs/terms/` — 4개 겹치 용어는 `memory/wiki/`가 원천(`source:`).
+
 ---
 
 ## 2. 저장소·경로

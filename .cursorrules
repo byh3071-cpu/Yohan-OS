@@ -68,6 +68,7 @@ status: draft
 - 한 번에 모든 문서 주입 금지 → Attention 분산·할루시네이션 유발
 - 해당 작업에 필요한 최소 맥락만 `@파일`/`@폴더`로 주입
 - 문서가 방대할 경우 AGENTS.md(목차) 먼저 읽고 세부 문서 탐색
+- MCP·RAG·스킬·하네스·Select 축이 필요하면 **우선 wiki 후보**를 `memory/rules/agent-harness.md` §1.1에서 고른 뒤 최소 주입 (교재 인사이트: `memory/ingest/insights/modern-ai-ch*.md`)
 
 ## 9. 커뮤니케이션
 - 언어: 한국어 기본, 코드·기술 용어는 영어 혼용

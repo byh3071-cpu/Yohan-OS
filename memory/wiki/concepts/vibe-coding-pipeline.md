@@ -6,7 +6,7 @@ created: 2026-04-12
 updated: 2026-04-12
 source_insights: [vibe-coding-pipeline, vibe-coding-planning-importance]
 related_entities: [cursor, claude-code]
-related_concepts: [harness-engineering, single-source-of-truth]
+related_concepts: [harness-engineering, single-source-of-truth, cursor-skills]
 ---
 
 # 바이브코딩 파이프라인 (Vibe Coding Pipeline)

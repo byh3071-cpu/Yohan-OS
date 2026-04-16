@@ -1,12 +1,21 @@
 # 현재 집중 중인 작업 (한 개만 또는 비워 두기)
 
-id: yohan-os-mcp
-name: Yohan OS — SoT + MCP v0
-goal: get_context로 맥락 통일, append_decision으로 결정 로그 축적, 하네스 체계 안정화
-repo_path: null
-branch: null
+id: yohan-ai-dictionary
+name: Yohan AI Dictionary — 나만의 AI 사전 뷰어
+goal: Phase 1 MVP·Phase 2 용어 7개 완료. 다음은 비전/Phase 3 또는 사전–wiki 문구 동기화.
+repo_path: memory/projects/yohan-ai-dictionary (스펙) · yohan-ai-dictionary (코드, 티켓 001 이후)
+branch: main
 notes: |
-  - [완료] get_context 파이프 검증, Cursor MCP 연결 확인.
-  - [완료] ingest_url·RSS 인제스트, 노션 양방향 동기(push/pull).
-  - [완료] 하네스 엔지니어링 1인 운영 원칙 정리 및 문서 반영.
-  - [진행] 규칙 드리프트 점검, Evaluator 루프 안정화, 세션당 1건 정리 습관화.
+  - [진행 기준] memory/projects/yohan-ai-dictionary/current-phase.md (active-project.yaml 아님).
+  - [완료] Phase 1 전부(001~006, 005 빌드·프리뷰 검증 포함, 2026-04-16 확인).
+  - [완료] Phase 2 용어 7개 — `phase2-term-candidates-notion-2026-04.md` 순서, 사전·빌드 반영 (2026-04-16).
+  - [복리] 용어·링크 구조는 카페 SOP 위키 등 동일 패턴으로 복제 가능.
+  - [규칙] 4개 겹치는 용어(harness/vibe-coding/rag/layered-context)는 memory/wiki/가 원천, `source:` 프론트매터 필수.
+  - [완료] Evaluator 로그 디렉터리 안내 — `memory/metrics/evaluations/README.md` (2026-04-16).
+
+# yohan-os-mcp는 완료된 기반 인프라 — 지속 유지/점검 대상
+background_ops: |
+  - [완료] get_context, append_decision, Cursor MCP 연결, ingest_url/RSS, 노션 양방향 동기.
+  - [완료] 하네스 엔지니어링 1인 운영 원칙 문서 반영.
+  - [완료] memory/wiki/ 지식 레이어 (Entities 6 + Concepts 8, Phase 1~5; Ch.15–18 인사이트 병합 반영).
+  - [유지] 규칙 드리프트 점검, Evaluator 루프 안정화, 세션당 1건 정리.

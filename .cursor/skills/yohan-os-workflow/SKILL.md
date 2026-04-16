@@ -13,6 +13,7 @@ description: >-
 
 1. MCP `yohan-os`가 있으면 **`get_context`** 를 코드·문서 작업 전에 한 번 호출한다.
 2. 실패·미연결 시: [`memory/rules/agent-harness.md`](memory/rules/agent-harness.md)와 [`README.md`](README.md)의 MCP 점검을 안내한다.
+3. MCP·RAG·스킬·하네스·Select 축이 주제면 [`memory/rules/agent-harness.md`](memory/rules/agent-harness.md) **§1.1** 표에서 필요한 `memory/wiki/` 파일만 최소 `@` 주입 (교재 인사이트: `memory/ingest/insights/modern-ai-ch*.md`).
 
 ## 컨텍스트 vs 하네스 (한 줄)
 
