@@ -1,10 +1,59 @@
 import { readdir, readFile, stat } from "node:fs/promises"
-import { join, relative, extname } from "node:path"
+import { join, relative, resolve, sep } from "node:path"
 import matter from "gray-matter"
-import { buildDomainCounts, DOMAIN_COLORS } from "./domains"
-import type { DocCategory, DocMeta, DocFull } from "./types"
+import { buildDomainCounts, DOMAIN_COLORS, tagToDomain } from "./domains"
+import type {
+  DocCategory,
+  DocMeta,
+  DocFull,
+  ChartData,
+  Stats,
+  EvaluatorRollup,
+  HeatmapDay,
+  IngestTrend,
+  DomainSlice,
+  CategorySlice,
+  SourceSlice,
+  BatchDay,
+  ActivityPoint,
+  DecisionPoint,
+  GitCommit,
+  DecisionEntry,
+  SessionLog,
+} from "./types"
 
-export type { DocCategory, DocMeta, DocFull } from "./types"
+export type {
+  DocCategory,
+  DocMeta,
+  DocFull,
+  ChartData,
+  Stats,
+  HeatmapDay,
+  EvaluatorRollup,
+  GitCommit,
+  DecisionEntry,
+  SessionLog,
+} from "./types"
+
+/** `listDocs` / `getDoc` 허용 경로 (memory/ 기준 상대, `.md`만) */
+export const DOC_SCAN_PREFIXES = [
+  "ingest/insights",
+  "ingest/rss",
+  "ingest/url",
+  "wiki",
+  "inbox/md_files",
+  "projects",
+  "decisions",
+  "rules",
+  "templates",
+] as const
+
+export function isDocPathAllowed(relPath: string): boolean {
+  if (!relPath || relPath.includes("\0")) return false
+  const norm = relPath.replace(/\\/g, "/").replace(/^\/+/, "")
+  if (norm.includes("..") || !norm.endsWith(".md")) return false
+  return DOC_SCAN_PREFIXES.some((p) => norm === p || norm.startsWith(`${p}/`))
+}
 
 const MEMORY_ROOT = join(process.cwd(), "..", "memory")
 
@@ -106,20 +155,8 @@ function extractExcerpt(content: string, max = 120): string {
 }
 
 export async function listDocs(): Promise<DocMeta[]> {
-  const scanDirs = [
-    "ingest/insights",
-    "ingest/rss",
-    "ingest/url",
-    "wiki",
-    "inbox/md_files",
-    "projects",
-    "decisions",
-    "rules",
-    "templates",
-  ]
-
   const allFiles: string[] = []
-  for (const d of scanDirs) {
+  for (const d of DOC_SCAN_PREFIXES) {
     allFiles.push(...(await collectMdFiles(join(MEMORY_ROOT, d), MEMORY_ROOT)))
   }
 
@@ -157,20 +194,27 @@ export async function listDocs(): Promise<DocMeta[]> {
 }
 
 export async function getDoc(relPath: string): Promise<DocFull | null> {
-  const filePath = join(MEMORY_ROOT, relPath)
+  const norm = relPath.replace(/\\/g, "/")
+  if (!isDocPathAllowed(norm)) return null
+
+  const absRoot = resolve(MEMORY_ROOT)
+  const filePath = resolve(join(MEMORY_ROOT, norm))
+  const relToRoot = relative(absRoot, filePath)
+  if (relToRoot.startsWith("..") || relToRoot.includes(`..${sep}`)) return null
+
   try {
     const raw = await readFile(filePath, "utf8")
     const { data, content } = matter(raw)
     const fileName = filePath.split(/[\\/]/).pop() ?? ""
 
     return {
-      id: typeof data.id === "string" ? data.id : relPath,
+      id: typeof data.id === "string" ? data.id : norm,
       title: extractTitle(data, content, fileName),
       date: extractDate(data, fileName),
       tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
       related: extractRelated(data),
-      category: categorize(relPath),
-      relPath,
+      category: categorize(norm),
+      relPath: norm,
       excerpt: extractExcerpt(content),
       sourceName: extractSourceName(data),
       content,
@@ -181,33 +225,7 @@ export async function getDoc(relPath: string): Promise<DocFull | null> {
   }
 }
 
-export interface Stats {
-  totalDocs: number
-  decisions: number
-  ingests: number
-  batchStatus: "ok" | "error" | "unknown"
-  batchLastRun: string | null
-}
-
-export interface IngestTrend { date: string; count: number }
-export interface DomainSlice { domain: string; count: number; color: string }
-export interface BatchDay { date: string; ok: number; fail: number }
-export interface ActivityPoint { date: string; commits: number; ingests: number; decisions: number }
-export interface DecisionPoint { date: string; count: number }
-export interface CategorySlice { category: string; label: string; count: number; color: string }
-export interface SourceSlice { source: string; count: number; color: string }
-
-export interface ChartData {
-  ingestTrend: IngestTrend[]
-  domainDist: DomainSlice[]
-  categoryDist: CategorySlice[]
-  sourceDist: SourceSlice[]
-  batchHistory: BatchDay[]
-  activity: ActivityPoint[]
-  decisionHistory: DecisionPoint[]
-}
-
-export async function parseBatchHistory(): Promise<BatchDay[]> {
+  export async function parseBatchHistory(): Promise<BatchDay[]> {
   const days: Record<string, { ok: number; fail: number }> = {}
   try {
     const log = await readFile(join(MEMORY_ROOT, "logs", "automation-batch.log"), "utf8")
@@ -307,10 +325,134 @@ export function buildChartData(docs: DocMeta[], batchHistory: BatchDay[]): Chart
     .map(([source, count], i) => ({ source, count, color: SOURCE_COLORS[i % SOURCE_COLORS.length] }))
     .sort((a, b) => b.count - a.count)
 
-  return { ingestTrend, domainDist, categoryDist, sourceDist, batchHistory, activity, decisionHistory }
+  const heatCounts: Record<string, number> = {}
+  const heatDomain: Record<string, Partial<Record<string, number>>> = {}
+  for (const d of docs) {
+    if (!d.date) continue
+    heatCounts[d.date] = (heatCounts[d.date] ?? 0) + 1
+    const domLabel = d.tags.length ? tagToDomain(d.tags[0]) : "기타"
+    if (!heatDomain[d.date]) heatDomain[d.date] = {}
+    const slice = heatDomain[d.date]!
+    slice[domLabel] = (slice[domLabel] ?? 0) + 1
+  }
+  const localYmd = (d: Date) => {
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, "0")
+    const day = String(d.getDate()).padStart(2, "0")
+    return `${y}-${m}-${day}`
+  }
+  const anchor = new Date()
+  const heatmap: HeatmapDay[] = []
+  for (let i = 97; i >= 0; i--) {
+    const dt = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() - i)
+    const key = localYmd(dt)
+    heatmap.push({
+      date: key,
+      count: heatCounts[key] ?? 0,
+      byDomain: heatDomain[key] && Object.keys(heatDomain[key]!).length > 0 ? heatDomain[key] : undefined,
+    })
+  }
+
+  return {
+    ingestTrend,
+    domainDist,
+    categoryDist,
+    sourceDist,
+    batchHistory,
+    activity,
+    decisionHistory,
+    heatmap,
+    evaluatorRollup: null,
+  }
 }
 
-export interface GitCommit { hash: string; date: string; message: string }
+export async function getEvaluatorRollup(): Promise<EvaluatorRollup | null> {
+  const dir = join(MEMORY_ROOT, "metrics", "evaluations")
+  try {
+    const names = (await readdir(dir)).filter((n) => n.startsWith("eval-") && n.endsWith(".md"))
+    if (names.length === 0) return null
+
+    const rollup: EvaluatorRollup = { pass: 0, revise: 0, reject: 0, recent: [] }
+    const scored: { mtime: number; id: string; date: string; verdict: string }[] = []
+
+    for (const name of names) {
+      const p = join(dir, name)
+      let raw: string
+      try {
+        raw = await readFile(p, "utf8")
+      } catch {
+        continue
+      }
+      const { data } = matter(raw)
+      const id = typeof data.id === "string" ? data.id : name.replace(/\.md$/, "")
+      const date = typeof data.date === "string" ? data.date : ""
+      const verdictRaw = typeof data.verdict === "string" ? data.verdict : ""
+      const v = verdictRaw === "pass" || verdictRaw === "revise" || verdictRaw === "reject" ? verdictRaw : "unknown"
+      if (v === "pass") rollup.pass++
+      else if (v === "revise") rollup.revise++
+      else if (v === "reject") rollup.reject++
+
+      try {
+        const st = await stat(p)
+        scored.push({ mtime: st.mtimeMs, id, date, verdict: v })
+      } catch {
+        scored.push({ mtime: 0, id, date, verdict: v })
+      }
+    }
+
+    scored.sort((a, b) => b.mtime - a.mtime)
+    rollup.recent = scored.slice(0, 10).map(({ id, date, verdict }) => ({ id, date, verdict }))
+    return rollup
+  } catch {
+    return null
+  }
+}
+
+export interface EvaluationListItem {
+  id: string
+  date: string
+  verdict: string
+  preview: string
+}
+
+export async function listEvaluationDetails(limit = 24): Promise<EvaluationListItem[]> {
+  const dir = join(MEMORY_ROOT, "metrics", "evaluations")
+  const out: EvaluationListItem[] = []
+  try {
+    const names = (await readdir(dir)).filter((n) => n.startsWith("eval-") && n.endsWith(".md"))
+    const scored: { mtime: number; path: string }[] = []
+    for (const name of names) {
+      const p = join(dir, name)
+      try {
+        const st = await stat(p)
+        scored.push({ mtime: st.mtimeMs, path: p })
+      } catch {
+        /* skip */
+      }
+    }
+    scored.sort((a, b) => b.mtime - a.mtime)
+    const cap = Math.min(Math.max(1, limit), 80)
+    for (const { path } of scored.slice(0, cap)) {
+      let raw: string
+      try {
+        raw = await readFile(path, "utf8")
+      } catch {
+        continue
+      }
+      const { data, content } = matter(raw)
+      const id = typeof data.id === "string" ? data.id : path.split(/[\\/]/).pop() ?? ""
+      const date = typeof data.date === "string" ? data.date : ""
+      const verdictRaw = typeof data.verdict === "string" ? data.verdict : "unknown"
+      const body = content.trim()
+      const preview =
+        body.length > 400 ? `${body.slice(0, 400).replace(/\s+/g, " ")}…` : body.replace(/\s+/g, " ")
+      out.push({ id, date, verdict: verdictRaw, preview })
+    }
+  } catch {
+    return []
+  }
+  return out
+}
 
 export async function getGitLog(limit = 30): Promise<GitCommit[]> {
   const { execSync } = require("node:child_process") as typeof import("node:child_process")
@@ -329,8 +471,6 @@ export async function getGitLog(limit = 30): Promise<GitCommit[]> {
   }
 }
 
-export interface DecisionEntry { title: string; date: string; relPath: string; summary: string }
-
 export function extractDecisions(docs: DocMeta[]): DecisionEntry[] {
   return docs
     .filter((d) => d.category === "decisions")
@@ -342,8 +482,6 @@ export function extractDecisions(docs: DocMeta[]): DecisionEntry[] {
     }))
     .sort((a, b) => a.date.localeCompare(b.date))
 }
-
-export interface SessionLog { id: string; date: string; summary: string[]; filesChanged: number }
 
 export async function getSessionLogs(): Promise<SessionLog[]> {
   const dir = join(MEMORY_ROOT, "logs", "sessions")

@@ -282,8 +282,11 @@ function Scene({
   const gravityTarget = useRef(0)
 
   const pulledMap = useMemo(
-    () => computePulledPositions(data.nodes, data.edges),
-    [data.nodes, data.edges]
+    () =>
+      computePulledPositions(data.nodes, data.edges, {
+        strength: hubGravity ? 0.47 : 0.26,
+      }),
+    [data.nodes, data.edges, hubGravity]
   )
 
   useEffect(() => {
@@ -292,10 +295,11 @@ function Scene({
 
   useFrame((_, delta) => {
     graphPop.current = THREE.MathUtils.lerp(graphPop.current, 1, Math.min(1, delta * 5))
+    const gb = hubGravity ? 2.05 : 3.1
     gravityBlend.current = THREE.MathUtils.lerp(
       gravityBlend.current,
       gravityTarget.current,
-      Math.min(1, delta * 2.8)
+      Math.min(1, delta * gb)
     )
   })
 

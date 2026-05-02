@@ -1,12 +1,18 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip as ReTooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, BarChart, Bar,
   LineChart, Line,
 } from "recharts"
-import { TrendingUp, PieChart as PieIcon, Activity, Scale, CheckCircle, Layers } from "lucide-react"
-import type { ChartData } from "@/lib/types"
+import {
+  TrendingUp, PieChart as PieIcon, Activity, Scale, CheckCircle, Layers,
+  LayoutGrid, ClipboardCheck,
+} from "lucide-react"
+import type { ChartData, HeatmapDay, EvaluatorRollup } from "@/lib/types"
+import { DOMAIN_AXIS_ORDER, DOMAIN_COLORS } from "@/lib/domains"
+import { cn } from "@/lib/utils"
 
 const TIP = { fontSize: 11, borderRadius: 8, border: "1px solid var(--border)", background: "var(--card)" }
 const TICK = { fontSize: 10 }
@@ -18,6 +24,175 @@ function Stat({ label, value }: { label: string; value: string }) {
     <span className="text-xs text-muted-foreground">
       {label} <span className="font-semibold text-foreground">{value}</span>
     </span>
+  )
+}
+
+function ActivityHeatmap({ days }: { days: HeatmapDay[] }) {
+  if (!days.length) return null
+  const max = Math.max(1, ...days.map((d) => d.count))
+
+  const tooltipText = (d: HeatmapDay) => {
+    const lines = [`${d.date}: ${d.count}건`]
+    if (d.byDomain && d.count > 0) {
+      for (const dom of DOMAIN_AXIS_ORDER) {
+        const n = d.byDomain[dom]
+        if (n) lines.push(`${dom} ${n}`)
+      }
+    }
+    return lines.join("\n")
+  }
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-4">
+      <div className="flex items-center gap-2 mb-1">
+        <LayoutGrid size={14} className="text-chart-3" />
+        <span className="text-xs font-medium text-muted-foreground">문서 활동 히트맵</span>
+      </div>
+      <p className="text-[10px] text-muted-foreground mb-2">
+        날짜가 있는 문서 · 도메인은 <strong className="text-foreground/80">첫 태그</strong> 기준 (§10.3) · 최근{" "}
+        {days.length}일
+      </p>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 mb-3 text-[9px] text-muted-foreground">
+        {DOMAIN_AXIS_ORDER.map((dom) => (
+          <span key={dom} className="inline-flex items-center gap-1">
+            <span className="inline-block size-2 rounded-sm shrink-0" style={{ background: DOMAIN_COLORS[dom] }} />
+            {dom}
+          </span>
+        ))}
+      </div>
+      <div
+        className="grid gap-1 w-full max-w-full overflow-x-auto pb-1"
+        style={{ gridAutoFlow: "column", gridTemplateRows: "repeat(7, minmax(0, 1fr))", gridAutoColumns: "10px" }}
+      >
+        {days.map((d) => {
+          const by = d.byDomain
+          const hasStack = by && d.count > 0 && Object.keys(by).length > 0
+          return (
+            <div
+              key={d.date}
+              title={tooltipText(d)}
+              className="rounded-[2px] min-h-[10px] w-[10px] shrink-0 border border-border/40 flex flex-col overflow-hidden"
+            >
+              {d.count === 0 ? (
+                <div className="flex-1 min-h-[8px] bg-muted-foreground/10" />
+              ) : hasStack ? (
+                DOMAIN_AXIS_ORDER.map((dom) => {
+                  const c = by![dom] ?? 0
+                  if (c <= 0) return null
+                  const pct = (c / d.count) * 100
+                  return (
+                    <div
+                      key={`${d.date}-${dom}`}
+                      className="w-full shrink-0"
+                      style={{
+                        height: `${pct}%`,
+                        minHeight: 1,
+                        backgroundColor: DOMAIN_COLORS[dom],
+                      }}
+                    />
+                  )
+                })
+              ) : (
+                <div
+                  className="flex-1 min-h-[8px] w-full"
+                  style={{
+                    backgroundColor: `color-mix(in oklab, #818cf8 ${Math.round(25 + 75 * (d.count / max))}%, transparent)`,
+                  }}
+                />
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function EvaluatorPanel({ rollup }: { rollup: EvaluatorRollup | null }) {
+  const [open, setOpen] = useState(false)
+  const [items, setItems] = useState<{ id: string; date: string; verdict: string; preview: string }[]>([])
+  const [loading, setLoading] = useState(false)
+  const [vf, setVf] = useState<"all" | "pass" | "revise" | "reject">("all")
+
+  useEffect(() => {
+    if (!open) return
+    setLoading(true)
+    fetch(`/api/evaluations?limit=32`)
+      .then((r) => r.json())
+      .then((d) => setItems(Array.isArray(d.items) ? d.items : []))
+      .catch(() => setItems([]))
+      .finally(() => setLoading(false))
+  }, [open])
+
+  const filtered = vf === "all" ? items : items.filter((x) => x.verdict === vf)
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-4">
+      <div className="flex items-center gap-2 mb-1">
+        <ClipboardCheck size={14} className="text-chart-5" />
+        <span className="text-xs font-medium text-muted-foreground">Evaluator 요약</span>
+      </div>
+      {!rollup ? (
+        <p className="text-xs text-muted-foreground py-8 text-center">memory/metrics/evaluations 로그 없음</p>
+      ) : (
+        <>
+          <div className="flex flex-wrap gap-3 mb-3 text-xs">
+            <Stat label="pass" value={`${rollup.pass}`} />
+            <Stat label="revise" value={`${rollup.revise}`} />
+            <Stat label="reject" value={`${rollup.reject}`} />
+          </div>
+          <ul className="space-y-1 max-h-28 overflow-y-auto text-[10px] text-muted-foreground mb-2">
+            {rollup.recent.map((r) => (
+              <li key={r.id} className="truncate">
+                <span className="font-medium text-foreground/90">{r.verdict}</span>
+                {" · "}
+                {r.date} — {r.id}
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            className="text-[10px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
+          >
+            {open ? "상세 목록 닫기" : "본문 미리보기 상세"}
+          </button>
+          {open && (
+            <div className="mt-2 space-y-2 border-t border-border/60 pt-2">
+              <div className="flex flex-wrap gap-1">
+                {(["all", "pass", "revise", "reject"] as const).map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => setVf(k)}
+                    className={cn(
+                      "rounded px-1.5 py-0.5 text-[9px] border",
+                      vf === k ? "border-foreground bg-accent text-foreground" : "border-border text-muted-foreground"
+                    )}
+                  >
+                    {k}
+                  </button>
+                ))}
+              </div>
+              {loading ? (
+                <p className="text-[10px] text-muted-foreground">불러오는 중…</p>
+              ) : (
+                <ul className="max-h-48 space-y-2 overflow-y-auto text-[10px]">
+                  {filtered.map((it) => (
+                    <li key={it.id} className="rounded border border-border/50 bg-background/50 p-2">
+                      <div className="font-medium text-foreground/90">
+                        {it.verdict} · {it.date} · {it.id}
+                      </div>
+                      <p className="mt-1 text-muted-foreground leading-snug">{it.preview || "(본문 없음)"}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </>
+      )}
+    </div>
   )
 }
 
@@ -129,6 +304,11 @@ export function FullCharts({ data }: Props) {
             <p className="text-xs text-muted-foreground text-center py-10">데이터 없음</p>
           )}
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ActivityHeatmap days={data.heatmap} />
+        <EvaluatorPanel rollup={data.evaluatorRollup} />
       </div>
 
       {/* 5. 활동 타임라인 */}

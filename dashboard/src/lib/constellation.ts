@@ -115,7 +115,16 @@ export function dayKeyToYmd(day: number): string {
   return `${y}-${mo}-${da}`
 }
 
-/** asOf(포함) 이전에 존재하던 노드·엣지만. degree는 부분 그래프 기준 재계산. */
+/**
+ * D-2 시점 필터 규칙 (§10.1):
+ * - `asOfYmd`: 해당 날짜 **포함**까지 보이는 스냅샷(종료일 닫힌 구간).
+ * - 노드 `date === null` · 파싱 불가: 날짜 미상 → **항상 표시**(과거 인제스트 등).
+ * - 노드에 유효한 YYYY-MM-DD가 있으면: `dayKey(date) <= dayKey(asOfYmd)` 일 때만 표시.
+ * - 엣지: 양 끝 노드가 모두 보일 때만 유지.
+ * - `degree`: 보이는 부분 그래프에서 연결 수로 재계산.
+ * - `galaxies[].count`: 필터 후 해당 카테고리 노드 수로 갱신.
+ * - `timeRange`: 원본 스펙트럼 유지(슬라이더 바운드용); 필터링하지 않음.
+ */
 export function filterConstellationAtDate(data: ConstellationData, asOfYmd: string): ConstellationData {
   const cutoff = ymdToDayKey(asOfYmd)
   if (cutoff === null) return data

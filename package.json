@@ -45,7 +45,11 @@
     "dashboard:dev:diag": "node scripts/dashboard-dev-safe.mjs --diag",
     "dashboard:build": "npm --prefix dashboard run build",
     "dashboard:start": "npm --prefix dashboard run start",
-    "dashboard:start:4000": "npm --prefix dashboard run start -- -p 4000"
+    "dashboard:start:4000": "npm --prefix dashboard run start -- -p 4000",
+    "workspace:health": "node scripts/workspace-health.mjs",
+    "health": "npm run build && npm run mcp:check && npm run dashboard:build && npm run workspace:health",
+    "issues:dashboard:dry": "node scripts/gh-issue-create-dashboard-tickets.mjs --dry-run",
+    "issues:dashboard": "node scripts/gh-issue-create-dashboard-tickets.mjs"
   },
   "engines": {
     "node": ">=20"

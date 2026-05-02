@@ -7,6 +7,17 @@ export type Domain =
   | "생산성"
   | "기타"
 
+/** 히트맵 스택·범례 순서 (§10.3) */
+export const DOMAIN_AXIS_ORDER: readonly Domain[] = [
+  "개발",
+  "운영/자동화",
+  "지식관리",
+  "창업/비즈니스",
+  "AI/ML",
+  "생산성",
+  "기타",
+] as const
+
 const TAG_TO_DOMAIN: Record<string, Domain> = {
   github: "개발",
   cursor: "개발",

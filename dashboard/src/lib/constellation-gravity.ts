@@ -1,13 +1,15 @@
 import type { ConstellationEdgePayload, ConstellationNodePayload } from "./constellation"
 
 const HUB_MIN_DEGREE = 2
-const PULL = 0.26
+const DEFAULT_PULL = 0.28
 
-/** 허브는 고정, 인접 허브가 있는 일반 노드만 허브 군집 방향으로 당김(최대 PULL 비율). */
+/** 허브는 고정, 인접 허브가 있는 일반 노드만 허브 방향으로 당김. `strength`는 허브 쪽 이동 비율(0~1에 가깝게). */
 export function computePulledPositions(
   nodes: ConstellationNodePayload[],
-  edges: ConstellationEdgePayload[]
+  edges: ConstellationEdgePayload[],
+  opts?: { strength?: number }
 ): Map<string, { x: number; y: number; z: number }> {
+  const PULL = typeof opts?.strength === "number" ? opts.strength : DEFAULT_PULL
   const pos = new Map(nodes.map((n) => [n.relPath, { x: n.x, y: n.y, z: n.z }]))
   const hubs = new Set(
     nodes.filter((n) => n.degree >= HUB_MIN_DEGREE).map((n) => n.relPath)

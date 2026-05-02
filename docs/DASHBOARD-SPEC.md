@@ -391,6 +391,8 @@ npm run dashboard:start
 6. ~~**빠른 실행 오류 수정**~~ — ✅ 완료 (URL 프롬프트, 메모리 검색→팔레트)
 7. ~~**반응형 모바일 (기본)**~~ — ✅ 완료 (`md` 미만 메뉴 드로어·미리보기 오버레이)
 8. ~~**v3 지식 별자리 D-1**~~ — ✅ 완료 (`/api/constellation`, 별자리 탭). 이후: **D-2~D-4 고도화** · **AI 초안→확정(§10.11)** · 히트맵 등
+9. **티켓 순서표** — [`DASHBOARD-TICKET-BACKLOG.md`](./DASHBOARD-TICKET-BACKLOG.md)에서 `DB-1xx`~`DB-401` 순으로 진행 (Linear/GitHub 이슈 제목에 동일 ID 접두어 권장).
+10. **GitHub 이슈 일괄 생성** — [`LINEAR-GITHUB-WORKFLOW.md`](./LINEAR-GITHUB-WORKFLOW.md): `npm run issues:dashboard`
 
 ---
 

@@ -84,6 +84,21 @@ export interface DecisionPoint {
   count: number
 }
 
+export interface HeatmapDay {
+  date: string
+  count: number
+  /** 문서당 첫 태그 → 도메인 1회 (§10.3 레이어) */
+  byDomain?: Partial<Record<string, number>>
+}
+
+export interface EvaluatorRollup {
+  pass: number
+  revise: number
+  reject: number
+  /** 최신순 */
+  recent: { id: string; date: string; verdict: string }[]
+}
+
 export interface ChartData {
   ingestTrend: IngestTrend[]
   domainDist: DomainSlice[]
@@ -92,6 +107,8 @@ export interface ChartData {
   batchHistory: BatchDay[]
   activity: ActivityPoint[]
   decisionHistory: DecisionPoint[]
+  heatmap: HeatmapDay[]
+  evaluatorRollup: EvaluatorRollup | null
 }
 
 export interface SerendipityDoc {

@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useEffect, useState, useMemo, useCallback } from "react"
+import { useEffect, useState, useMemo, useCallback, useDeferredValue } from "react"
 import { Header } from "@/components/header"
 import { Sidebar } from "@/components/sidebar"
 import { StatCards } from "@/components/stat-cards"
@@ -12,6 +12,7 @@ import { ViewTabs, type ViewTab } from "@/components/view-tabs"
 import { SerendipityCard } from "@/components/serendipity-card"
 // MiniCharts removed from home — charts live in chart tab only
 import { BriefingCard } from "@/components/briefing-card"
+import { SotDraftPanel } from "@/components/sot-draft-panel"
 import { FullCharts } from "@/components/full-charts"
 import { TimelineView } from "@/components/timeline-view"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -59,7 +60,17 @@ export default function DashboardPage() {
     batchStatus: "unknown",
     batchLastRun: null,
   })
-  const [charts, setCharts] = useState<ChartData>({ ingestTrend: [], domainDist: [], categoryDist: [], sourceDist: [], batchHistory: [], activity: [], decisionHistory: [] })
+  const [charts, setCharts] = useState<ChartData>({
+    ingestTrend: [],
+    domainDist: [],
+    categoryDist: [],
+    sourceDist: [],
+    batchHistory: [],
+    activity: [],
+    decisionHistory: [],
+    heatmap: [],
+    evaluatorRollup: null,
+  })
   const [serendipity, setSerendipity] = useState<SerendipityDoc | null>(null)
   const [changelog, setChangelog] = useState<GitCommit[]>([])
   const [decisionEntries, setDecisionEntries] = useState<DecisionEntry[]>([])
@@ -76,21 +87,38 @@ export default function DashboardPage() {
   const [constellationHubGravity, setConstellationHubGravity] = useState(false)
   const [constellationNebula, setConstellationNebula] = useState(true)
 
-  useEffect(() => {
-    fetch(`/api/docs?t=${Date.now()}`)
-      .then((r) => r.json())
-      .then((data) => {
-        setDocs(data.docs ?? [])
-        setStats(data.stats ?? stats)
-        setCharts(data.charts ?? { ingestTrend: [], domainDist: [], categoryDist: [], sourceDist: [], batchHistory: [], activity: [], decisionHistory: [] })
-        setSerendipity(data.serendipity ?? null)
-        setChangelog(data.changelog ?? [])
-        setDecisionEntries(data.decisions ?? [])
-        setSessionLogs(data.sessions ?? [])
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false))
+  const loadDashboard = useCallback(async (fresh = false) => {
+    const url = fresh ? `/api/docs?fresh=1&t=${Date.now()}` : `/api/docs?t=${Date.now()}`
+    try {
+      const r = await fetch(url)
+      const data = await r.json()
+      setDocs(data.docs ?? [])
+      setStats((prev) => data.stats ?? prev)
+      setCharts(
+        data.charts ?? {
+          ingestTrend: [],
+          domainDist: [],
+          categoryDist: [],
+          sourceDist: [],
+          batchHistory: [],
+          activity: [],
+          decisionHistory: [],
+          heatmap: [],
+          evaluatorRollup: null,
+        }
+      )
+      setSerendipity(data.serendipity ?? null)
+      setChangelog(data.changelog ?? [])
+      setDecisionEntries(data.decisions ?? [])
+      setSessionLogs(data.sessions ?? [])
+    } catch (e) {
+      console.error(e)
+    }
   }, [])
+
+  useEffect(() => {
+    loadDashboard(false).finally(() => setLoading(false))
+  }, [loadDashboard])
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)")
@@ -114,12 +142,14 @@ export default function DashboardPage() {
       .catch(console.error)
   }, [activeView, constellationData])
 
+  const deferredConstellationAsOf = useDeferredValue(constellationAsOfYmd)
+
   const constellationViewData = useMemo(() => {
-    if (!constellationData || !constellationAsOfYmd) return constellationData
+    if (!constellationData || !deferredConstellationAsOf) return constellationData
     const { dateMin, dateMax } = constellationData.timeRange
     if (!dateMin || !dateMax) return constellationData
-    return filterConstellationAtDate(constellationData, constellationAsOfYmd)
-  }, [constellationData, constellationAsOfYmd])
+    return filterConstellationAtDate(constellationData, deferredConstellationAsOf)
+  }, [constellationData, deferredConstellationAsOf])
 
   useEffect(() => {
     if (activeView !== "constellation" || !constellationViewData || !selectedDoc) return
@@ -241,6 +271,9 @@ export default function DashboardPage() {
           {activeView === "home" && (
             <BriefingCard />
           )}
+          {activeView === "home" && (
+            <SotDraftPanel onSaved={() => void loadDashboard(true)} />
+          )}
 
           {activeView === "charts" && (
             <ScrollArea className="flex-1 min-h-0">
@@ -298,6 +331,7 @@ export default function DashboardPage() {
                       <span className="text-[10px] font-medium text-muted-foreground">시점</span>
                       <input
                         type="range"
+                        aria-label="별자리 시점(as-of 날짜)"
                         className="h-1.5 min-w-[120px] flex-1 cursor-pointer accent-foreground"
                         min={ymdToDayKey(constellationData.timeRange.dateMin) ?? 0}
                         max={ymdToDayKey(constellationData.timeRange.dateMax) ?? 0}
