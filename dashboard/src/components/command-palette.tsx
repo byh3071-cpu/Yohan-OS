@@ -7,6 +7,7 @@ import {
   Search, Lightbulb, Rss, Link2, Scale, Wrench, FileText,
   Globe, ArrowUpFromLine, ArrowDownToLine, BarChart3, Play,
   Bot, RefreshCw, GitBranch, Sparkles,
+  Library, GraduationCap, FolderKanban,
 } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import type { DocMeta } from "@/lib/types"
@@ -37,6 +38,9 @@ const CAT_ICON: Record<string, React.ReactNode> = {
   insights: <Lightbulb size={14} />,
   rss: <Rss size={14} />,
   url: <Link2 size={14} />,
+  wiki: <Library size={14} />,
+  curriculum: <GraduationCap size={14} />,
+  projects: <FolderKanban size={14} />,
   decisions: <Scale size={14} />,
   rules: <Wrench size={14} />,
   templates: <FileText size={14} />,

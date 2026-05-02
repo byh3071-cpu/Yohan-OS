@@ -124,7 +124,7 @@ dashboard/
 | 기능                 | 상태    | 파일                                        |
 | ------------------ | ----- | ----------------------------------------- |
 | 하이브리드 레이아웃         | ✅ 구현  | `page.tsx`                                |
-| 카테고리 분류 (7종)       | ✅ 구현  | `sidebar.tsx`                             |
+| 카테고리 분류 (10종)       | ✅ 구현  | `sidebar.tsx` · 스캔: `wiki`, `inbox/md_files`, `projects` + 기존 6경로 (`memory.ts`) |
 | 현황 카드 4개           | ✅ 구현  | `stat-cards.tsx`                          |
 | 문서 카드 목록           | ✅ 구현  | `doc-card.tsx`                            |
 | 마크다운 미리보기          | ✅ 구현  | `doc-preview.tsx`                         |

@@ -6,6 +6,7 @@ import {
   Zap, Globe, RefreshCw, BarChart3, Search,
   Bot, Play, Wrench, ArrowDownToLine, ArrowUpFromLine, GitBranch,
   ChevronsLeft, ChevronsRight,
+  Library, GraduationCap, FolderKanban,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -19,6 +20,9 @@ const CATEGORIES: { id: DocCategory | "all"; label: string; icon: React.ReactNod
   { id: "insights", label: "인사이트", icon: <Lightbulb size={16} /> },
   { id: "rss", label: "RSS", icon: <Rss size={16} /> },
   { id: "url", label: "URL", icon: <Link2 size={16} /> },
+  { id: "wiki", label: "위키", icon: <Library size={16} /> },
+  { id: "curriculum", label: "교재", icon: <GraduationCap size={16} /> },
+  { id: "projects", label: "프로젝트", icon: <FolderKanban size={16} /> },
   { id: "decisions", label: "결정로그", icon: <Scale size={16} /> },
   { id: "rules", label: "규칙", icon: <Wrench size={16} /> },
   { id: "templates", label: "템플릿", icon: <FileText size={16} /> },

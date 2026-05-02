@@ -26,6 +26,8 @@ const TAG_TO_DOMAIN: Record<string, Domain> = {
   daily: "운영/자동화",
 
   SoT: "지식관리",
+  wiki: "지식관리",
+  curriculum: "지식관리",
   obsidian: "지식관리",
   notion: "지식관리",
   rss: "지식관리",

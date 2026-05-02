@@ -47,6 +47,7 @@ status: active
 ## 3. 주의
 
 - 빠른 실행은 서버에서 **허용된 액션만** 실행한다 (`dashboard/src/app/api/run/route.ts`의 `ALLOWED_ACTIONS`).
+- 라이브러리 문서 스캔 경로: `ingest/insights`, `ingest/rss`, `ingest/url`, **`wiki/`**, **`inbox/md_files/`**(교재), **`projects/`**, `decisions`, `rules`, `templates` — 그 외 `memory/` 경로는 목록에 안 나온다.
 - 일부 CLI는 `.env`·노션 키·네트워크가 없으면 실패한다 — 토스트/응답의 stderr를 본다.
 - **Git 동기화**는 충돌·인증 문제 시 실패할 수 있다.
 
