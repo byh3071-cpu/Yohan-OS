@@ -1590,3 +1590,10 @@
 
 [Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
 [2026-05-02 14:00:24] DONE automation:batch
+[2026-05-02 15:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=0 泥섎━=0 ?ㅽ궢=0 寃??0 ?ㅽ뙣=0
+[2026-05-02 15:00:37] DONE automation:batch
