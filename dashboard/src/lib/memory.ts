@@ -2,38 +2,19 @@ import { readdir, readFile, stat } from "node:fs/promises"
 import { join, relative, extname } from "node:path"
 import matter from "gray-matter"
 import { buildDomainCounts, DOMAIN_COLORS } from "./domains"
+import type { DocCategory, DocMeta, DocFull } from "./types"
+
+export type { DocCategory, DocMeta, DocFull } from "./types"
 
 const MEMORY_ROOT = join(process.cwd(), "..", "memory")
 
-export type DocCategory =
-  | "insights"
-  | "rss"
-  | "url"
-  | "decisions"
-  | "rules"
-  | "templates"
-
-export interface DocMeta {
-  id: string
-  title: string
-  date: string | null
-  tags: string[]
-  related: string[]
-  category: DocCategory
-  relPath: string
-  excerpt: string
-  sourceName: string | null
-}
-
-export interface DocFull extends DocMeta {
-  content: string
-  frontmatter: Record<string, unknown>
-}
-
 const CATEGORY_MAP: Record<string, DocCategory> = {
+  "inbox/md_files": "curriculum",
   "ingest/insights": "insights",
   "ingest/rss": "rss",
   "ingest/url": "url",
+  wiki: "wiki",
+  projects: "projects",
   decisions: "decisions",
   rules: "rules",
   templates: "templates",
@@ -50,6 +31,9 @@ const CATEGORY_LABELS: Record<DocCategory, string> = {
   insights: "인사이트",
   rss: "RSS",
   url: "URL",
+  wiki: "위키",
+  curriculum: "교재",
+  projects: "프로젝트",
   decisions: "결정로그",
   rules: "규칙",
   templates: "템플릿",
@@ -126,6 +110,9 @@ export async function listDocs(): Promise<DocMeta[]> {
     "ingest/insights",
     "ingest/rss",
     "ingest/url",
+    "wiki",
+    "inbox/md_files",
+    "projects",
     "decisions",
     "rules",
     "templates",
@@ -295,8 +282,15 @@ export function buildChartData(docs: DocMeta[], batchHistory: BatchDay[]): Chart
     .sort((a, b) => a.date.localeCompare(b.date))
 
   const CAT_COLORS: Record<string, string> = {
-    insights: "#818cf8", rss: "#a78bfa", url: "#34d399",
-    decisions: "#fbbf24", rules: "#f472b6", templates: "#38bdf8",
+    insights: "#818cf8",
+    rss: "#a78bfa",
+    url: "#34d399",
+    wiki: "#22d3ee",
+    curriculum: "#86efac",
+    projects: "#fb923c",
+    decisions: "#fbbf24",
+    rules: "#f472b6",
+    templates: "#38bdf8",
   }
   const catCounts: Record<string, number> = {}
   for (const d of docs) catCounts[d.category] = (catCounts[d.category] ?? 0) + 1
@@ -378,7 +372,10 @@ export async function getSessionLogs(): Promise<SessionLog[]> {
 }
 
 export function pickSerendipity(docs: DocMeta[]): DocMeta | null {
-  const pool = docs.filter((d) => ["insights", "rss", "url"].includes(d.category) && d.excerpt.length > 20)
+  const pool = docs.filter(
+    (d) =>
+      ["insights", "rss", "url", "wiki", "curriculum"].includes(d.category) && d.excerpt.length > 20,
+  )
   if (pool.length === 0) return null
   return pool[Math.floor(Math.random() * pool.length)]
 }
