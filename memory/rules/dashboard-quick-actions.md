@@ -34,8 +34,8 @@ status: active
 | `search:memory` | 메모리 검색 | memory/ 검색 CLI | `npm run search:memory` |
 | `automation:batch` | 배치 실행 | 자동화 배치 한 번 실행 | `npm run automation:batch` |
 | `build` | MCP 빌드 | TypeScript 빌드(MCP 번들) | `npm run build` |
-| `git:sync` | Git 동기화 | `git pull && git push` | PowerShell에서 순차 실행 |
-| `bot:status` | 봇 상태 | 텔레그램 봇은 별도 프로세스 | **MCP 번들 점검**으로 대체: `npm run mcp:check` (봇 PID는 v2 예정) |
+| `git:sync` | Git 동기화 | `git pull && git push` | Windows는 **cmd.exe**로 실행(PS 5.1의 `&&` 파서 오류 회피). 그 외는 기본 셸 |
+| `bot:status` | 봇 상태 | 텔레그램 Bot API `getMe` + 로컬 `memory/.telegram-bot.lock` PID | `npm run telegram:health` — MCP는 별도 `npm run mcp:check` |
 | `new:decision` | 새 결정 | 결정 노트 생성 | v1: 안내 메시지만 (v2에서 폼·템플릿) |
 | `new:insight` | 새 인사이트 | 인사이트 노트 생성 | v1: 안내 메시지만 |
 | `ocr:upload` | OCR 업로드 | 이미지 OCR 파이프 | v1: 안내 메시지만 |

@@ -28,6 +28,7 @@
     "route:help": "tsx src/route-and-run-cli.ts --help",
     "check:router": "tsx scripts/router-fixture-check.ts",
     "bot": "tsx src/telegram-bot.ts",
+    "telegram:health": "tsx scripts/telegram-health.ts",
     "sync:notion:push": "tsx src/notion-push-cli.ts",
     "sync:notion:pull": "tsx src/notion-pull-cli.ts",
     "sync:notion:ocr": "tsx src/notion-ocr-push-cli.ts",

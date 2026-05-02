@@ -3,7 +3,7 @@ id: telegram-inbox
 date: 2026-04-07
 domain: automation
 tags: [telegram, inbox, bot, automation]
-related: [notion-ocr-pipeline, archiving-appraisal-feynman]
+related: [notion-ocr-pipeline, archiving-appraisal-feynman, telegram-workflow]
 status: active
 ---
 

@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic"
 
 const ROOT = resolve(process.cwd(), "..")
 
-const ALLOWED_ACTIONS: Record<string, { cmd: string; cwd?: string }> = {
+const ALLOWED_ACTIONS: Record<string, { cmd: string; cwd?: string; shell?: string }> = {
   "ingest:url": { cmd: "npx tsx src/ingest-url-cli.ts" },
   "ingest:all": { cmd: "npm run ingest:all" },
   "sync:notion:push": { cmd: "npm run sync:notion:push" },
@@ -16,13 +16,20 @@ const ALLOWED_ACTIONS: Record<string, { cmd: string; cwd?: string }> = {
   "search:memory": { cmd: "npm run search:memory" },
   "automation:batch": { cmd: "npm run automation:batch" },
   build: { cmd: "npm run build" },
-  "git:sync": { cmd: "git pull && git push" },
-  "bot:status": { cmd: "npm run mcp:check" },
+  /** Windows PowerShell 5.1은 `&&` 미지원 → CMD에서 실행 */
+  "git:sync": { cmd: "git pull && git push", shell: process.platform === "win32" ? "cmd.exe" : undefined },
+  "bot:status": { cmd: "npm run telegram:health" },
 }
 
-function runCmd(cmd: string, cwd: string): Promise<{ stdout: string; stderr: string }> {
+function runCmd(cmd: string, cwd: string, shell?: string): Promise<{ stdout: string; stderr: string }> {
+  const shellOpt =
+    shell !== undefined
+      ? shell
+      : process.platform === "win32"
+        ? "powershell.exe"
+        : undefined
   return new Promise((resolve, reject) => {
-    exec(cmd, { cwd, timeout: 60000, shell: "powershell.exe" }, (err, stdout, stderr) => {
+    exec(cmd, { cwd, timeout: 120_000, ...(shellOpt ? { shell: shellOpt } : {}) }, (err, stdout, stderr) => {
       if (err) reject({ stdout, stderr, message: err.message })
       else resolve({ stdout, stderr })
     })
@@ -48,7 +55,7 @@ export async function POST(req: NextRequest) {
   const cwd = spec.cwd ?? ROOT
 
   try {
-    const { stdout, stderr } = await runCmd(cmd, cwd)
+    const { stdout, stderr } = await runCmd(cmd, cwd, spec.shell)
     return NextResponse.json({ ok: true, action, stdout: stdout.slice(-2000), stderr: stderr.slice(-500) })
   } catch (e: unknown) {
     const err = e as { stdout?: string; stderr?: string; message?: string }
