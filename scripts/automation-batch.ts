@@ -1,6 +1,7 @@
 import { config } from "dotenv"
 import { join } from "node:path"
-import { appendFile, mkdir } from "node:fs/promises"
+import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises"
+import { existsSync } from "node:fs"
 import { readTargetBlocks, extractHttpUrls, isGithubLikeUrl, normalizeTrackingParams } from "./automation/parse-telegram.js"
 import { prepareOcr } from "./automation/quality.js"
 import { findNearDuplicate, makeTextSignature } from "./automation/dedupe.js"
@@ -13,6 +14,31 @@ import type { AutomationState, CliOptions, ScreenshotBlock, Stats } from "./auto
 import { resolveRepoRoot } from "../src/paths.js"
 
 config({ path: join(resolveRepoRoot(), ".env") })
+
+/** 루틴 완료 요약 텔레그램 알림 최소 간격 (검토/실패 알림은 제외) */
+const ROUTINE_NOTIFY_INTERVAL_MS = 2 * 60 * 60 * 1000
+
+function lastRoutineNotifyPath(): string {
+  return join(resolveRepoRoot(), "memory", "metrics", "automation", "last-telegram-notify.json")
+}
+
+async function readLastRoutineNotifyAt(): Promise<number | null> {
+  const p = lastRoutineNotifyPath()
+  if (!existsSync(p)) return null
+  try {
+    const raw = await readFile(p, "utf8")
+    const j = JSON.parse(raw) as { sentAt?: number }
+    return typeof j.sentAt === "number" ? j.sentAt : null
+  } catch {
+    return null
+  }
+}
+
+async function writeLastRoutineNotifyAt(): Promise<void> {
+  const p = lastRoutineNotifyPath()
+  await mkdir(join(resolveRepoRoot(), "memory", "metrics", "automation"), { recursive: true })
+  await writeFile(p, JSON.stringify({ sentAt: Date.now() }, null, 2), "utf8")
+}
 
 function parseArgs(argv: string[]): CliOptions {
   const inboxArg = argv.find((a) => a.startsWith("--inbox-file="))
@@ -130,10 +156,25 @@ async function main(): Promise<void> {
   }
 
   const summary = `[Yohan OS][batch] 완료: 스캔=${stats.scanned} 처리=${stats.processed} 스킵=${stats.skipped} 검토=${stats.review} 실패=${stats.failed}`
-  if (stats.review > 0 || stats.failed > 0) {
-    await notifyTelegram([summary, ...issueDetails.slice(0, 20)], opts.noNotify)
-  } else {
-    await notifyTelegram([summary], opts.noNotify)
+  const needsAttention = stats.review > 0 || stats.failed > 0
+  const lastNotify = await readLastRoutineNotifyAt()
+  const routineDue =
+    lastNotify === null || Date.now() - lastNotify >= ROUTINE_NOTIFY_INTERVAL_MS
+  const shouldTelegram = opts.noNotify ? false : needsAttention || routineDue
+
+  if (shouldTelegram) {
+    if (needsAttention) {
+      await notifyTelegram([summary, ...issueDetails.slice(0, 20)], false)
+    } else {
+      await notifyTelegram([summary], false)
+    }
+    if (!opts.dryRun) {
+      await writeLastRoutineNotifyAt()
+    }
+  } else if (!opts.noNotify) {
+    console.log(
+      `[batch] 텔레그램 완료 알림 생략 (루틴 요약은 ${ROUTINE_NOTIFY_INTERVAL_MS / 3_600_000}시간에 최대 1회)`,
+    )
   }
   console.log(summary)
   if (issueDetails.length > 0) {

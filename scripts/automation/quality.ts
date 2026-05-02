@@ -2,6 +2,29 @@ import { classifyBody } from "./parse-telegram.js"
 import { inferDomainTags } from "./tags.js"
 import type { OcrPrepared, ScreenshotBlock, SummaryTemplateKind } from "./types.js"
 
+/** 인스타·유튜브·릴스 캡처에서 반복되는 UI OCR 줄만 제거 (본문 추출 보수적으로 유지) */
+function stripSocialMediaOcrNoise(raw: string): string {
+  const lines = raw.split(/\r?\n/)
+  const out: string[] = []
+  for (const line of lines) {
+    const t = line.trim()
+    if (!t) {
+      out.push("")
+      continue
+    }
+    if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(t)) continue
+    if (/^PLAY\s*>?\s*:?\s*$/i.test(t)) continue
+    if (/^\d{1,2}\s*\/\s*\d{1,3}$/.test(t)) continue
+    if (/^\d\s*\+\s*$/.test(t)) continue
+    if (/^[«®]+$/.test(t)) continue
+    if (/^[\[\]〇◇●□■◆▪︎]+$/.test(t)) continue
+    if (/^(?:\[|:|\])$/.test(t)) continue
+    if (/^\[?~\s/.test(t) && /\d{1,2}\s*…/.test(t) && t.length < 100) continue
+    out.push(line)
+  }
+  return out.join("\n")
+}
+
 function conservativeNormalizeOcr(raw: string): string {
   let out = raw
     .replace(/[“”]/g, "\"")
@@ -89,7 +112,7 @@ function evaluateReviewBalanced(cleaned: string): { shouldReview: boolean; reaso
 }
 
 export function prepareOcr(block: ScreenshotBlock): OcrPrepared {
-  const cleanedBody = conservativeNormalizeOcr(block.body)
+  const cleanedBody = conservativeNormalizeOcr(stripSocialMediaOcrNoise(block.body))
   const promptCount = countPromptBlocks(cleanedBody)
   const templateKind = detectTemplateKind(promptCount)
   const classification = classifyBody(cleanedBody)

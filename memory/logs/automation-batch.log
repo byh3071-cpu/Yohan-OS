@@ -1272,3 +1272,321 @@
 
 [Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
 [2026-04-14 01:30:04] DONE automation:batch
+[2026-04-17 00:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-17 00:00:08] DONE automation:batch
+[2026-04-17 01:01:20] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-17 09:45:04] DONE automation:batch
+[2026-04-17 10:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-17 10:00:08] DONE automation:batch
+[2026-04-17 11:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-17 11:00:08] DONE automation:batch
+[2026-04-17 12:16:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[2026-04-17 12:51:02] FAIL automation:batch :: [notify] telegram ?덉쇅(臾댁떆): fetch failed
+[2026-04-17 13:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-17 13:00:16] DONE automation:batch
+[2026-04-17 14:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-17 14:00:05] DONE automation:batch
+[2026-04-17 15:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-17 15:00:04] DONE automation:batch
+[2026-04-17 16:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-17 16:00:05] DONE automation:batch
+[2026-04-18 16:49:17] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-18 16:49:22] DONE automation:batch
+[2026-04-18 17:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-18 17:00:05] DONE automation:batch
+[2026-04-18 18:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-18 18:00:05] FAIL automation:batch :: npm notice
+[2026-04-18 19:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-18 19:00:04] DONE automation:batch
+[2026-04-19 06:05:52] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-20 22:43:12] FAIL automation:batch :: [notify] telegram ?덉쇅(臾댁떆): fetch failed
+[2026-04-20 23:25:23] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-20 23:25:41] DONE automation:batch
+[2026-04-21 07:52:36] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-21 07:52:40] DONE automation:batch
+[2026-04-21 08:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-21 08:00:09] DONE automation:batch
+[2026-04-21 09:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-21 09:00:06] DONE automation:batch
+[2026-04-21 22:13:45] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-21 22:13:53] DONE automation:batch
+[2026-04-21 23:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-21 23:00:07] DONE automation:batch
+[2026-04-22 00:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 00:00:05] DONE automation:batch
+[2026-04-22 01:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 01:00:06] DONE automation:batch
+[2026-04-22 09:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 09:00:28] DONE automation:batch
+[2026-04-22 10:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 10:00:05] DONE automation:batch
+[2026-04-22 11:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 11:00:05] DONE automation:batch
+[2026-04-22 12:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 12:00:05] DONE automation:batch
+[2026-04-22 13:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 13:00:05] DONE automation:batch
+[2026-04-22 14:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 14:00:05] DONE automation:batch
+[2026-04-22 16:03:48] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 16:03:52] FAIL automation:batch :: [notify] telegram ?덉쇅(臾댁떆): fetch failed
+[2026-04-22 17:01:44] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[2026-04-22 17:45:10] FAIL automation:batch :: [notify] telegram ?덉쇅(臾댁떆): fetch failed
+[2026-04-22 18:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-22 18:00:07] DONE automation:batch
+[2026-04-23 05:51:16] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-23 05:51:18] FAIL automation:batch :: [notify] telegram ?덉쇅(臾댁떆): fetch failed
+[2026-04-23 18:00:04] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-23 18:00:19] DONE automation:batch
+[2026-04-23 18:02:45] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-23 18:02:52] DONE automation:batch
+[2026-04-23 19:00:04] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-23 19:00:17] FAIL automation:batch :: [notify] telegram ?덉쇅(臾댁떆): fetch failed
+[2026-04-23 20:08:44] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[2026-04-23 21:18:17] FAIL automation:batch :: [notify] telegram ?덉쇅(臾댁떆): fetch failed
+[2026-04-25 14:55:09] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-25 14:55:48] DONE automation:batch
+[2026-04-25 15:00:43] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-25 15:00:49] DONE automation:batch
+[2026-04-25 16:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-25 16:00:08] DONE automation:batch
+[2026-04-25 17:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-25 17:00:06] DONE automation:batch
+[2026-04-25 20:31:23] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[2026-04-25 20:31:31] FAIL automation:batch :: [notify] telegram ?덉쇅(臾댁떆): fetch failed
+[2026-04-25 21:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-04-25 21:00:08] DONE automation:batch
+[2026-05-02 12:39:46] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-05-02 12:41:10] DONE automation:batch
+[2026-05-02 12:45:16] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-05-02 12:45:31] DONE automation:batch
+[2026-05-02 13:00:02] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-05-02 13:00:08] DONE automation:batch
+[2026-05-02 14:00:03] START automation:batch
+
+> yohan-os@0.1.0 automation:batch
+> tsx scripts/automation-batch.ts
+
+[Yohan OS][batch] ?꾨즺: ?ㅼ틪=1 泥섎━=0 ?ㅽ궢=1 寃??0 ?ㅽ뙣=0
+[2026-05-02 14:00:24] DONE automation:batch
