@@ -12,9 +12,11 @@ import type { DocFull } from "@/lib/types"
 interface DocPreviewProps {
   relPath: string | null
   onClose: () => void
+  /** 좁은 화면: 미선택 시 패널 숨김, 선택 시 전체 화면 오버레이 */
+  fullscreenMobile?: boolean
 }
 
-export function DocPreview({ relPath, onClose }: DocPreviewProps) {
+export function DocPreview({ relPath, onClose, fullscreenMobile }: DocPreviewProps) {
   const [doc, setDoc] = useState<DocFull | null>(null)
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -37,24 +39,31 @@ export function DocPreview({ relPath, onClose }: DocPreviewProps) {
   }
 
   if (!relPath) {
+    if (fullscreenMobile) return null
     return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-        <p>문서를 선택하면 여기에 미리보기가 표시됩니다</p>
+      <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm px-4">
+        <p className="text-center">문서를 선택하면 여기에 미리보기가 표시됩니다</p>
       </div>
     )
   }
 
   if (loading) {
+    const shell = fullscreenMobile
+      ? "flex flex-1 items-center justify-center max-md:fixed max-md:inset-x-0 max-md:top-12 max-md:bottom-0 max-md:z-[45] max-md:bg-background"
+      : "flex flex-1 items-center justify-center"
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className={shell}>
         <div className="animate-pulse text-muted-foreground text-sm">로딩 중…</div>
       </div>
     )
   }
 
   if (!doc) {
+    const shell = fullscreenMobile
+      ? "flex flex-1 flex-col items-center justify-center px-4 max-md:fixed max-md:inset-x-0 max-md:top-12 max-md:bottom-0 max-md:z-[45] max-md:bg-background text-muted-foreground text-sm"
+      : "flex flex-1 flex-col items-center justify-center text-muted-foreground text-sm"
     return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+      <div className={shell}>
         <p>문서를 찾을 수 없습니다</p>
       </div>
     )
@@ -63,7 +72,13 @@ export function DocPreview({ relPath, onClose }: DocPreviewProps) {
   const sourceUrl = typeof doc.frontmatter?.source_url === "string" ? doc.frontmatter.source_url : null
 
   return (
-    <div className="flex-1 flex flex-col border-l border-border bg-background">
+    <div
+      className={
+        fullscreenMobile
+          ? "flex flex-1 flex-col border-l border-border bg-background min-h-0 max-md:fixed max-md:inset-x-0 max-md:top-12 max-md:bottom-0 max-md:z-[45] max-md:border-l-0"
+          : "flex flex-1 flex-col border-l border-border bg-background min-h-0"
+      }
+    >
       <div className="flex items-center justify-between gap-2 px-4 py-2 border-b border-border shrink-0">
         <h2 className="text-sm font-semibold truncate flex-1">{doc.title}</h2>
         <div className="flex items-center gap-1">

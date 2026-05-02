@@ -15,6 +15,7 @@ import { BriefingCard } from "@/components/briefing-card"
 import { FullCharts } from "@/components/full-charts"
 import { TimelineView } from "@/components/timeline-view"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
 import type { DocMeta, DocCategory, Stats, ChartData, SerendipityDoc, GitCommit, DecisionEntry, SessionLog } from "@/lib/types"
 import {
   type ConstellationData,
@@ -66,6 +67,7 @@ export default function DashboardPage() {
   const [cmdOpen, setCmdOpen] = useState(false)
   const [statsCollapsed, setStatsCollapsed] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [constellationData, setConstellationData] = useState<ConstellationData | null>(null)
   const [constellationAsOfYmd, setConstellationAsOfYmd] = useState<string | null>(null)
   const [constellationHubGravity, setConstellationHubGravity] = useState(false)
@@ -85,6 +87,15 @@ export default function DashboardPage() {
       })
       .catch(console.error)
       .finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)")
+    const onChange = () => {
+      if (mq.matches) setMobileNavOpen(false)
+    }
+    mq.addEventListener("change", onChange)
+    return () => mq.removeEventListener("change", onChange)
   }, [])
 
   useEffect(() => {
@@ -184,7 +195,7 @@ export default function DashboardPage() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <Header onOpenSearch={() => setCmdOpen(true)} />
+      <Header onOpenSearch={() => setCmdOpen(true)} onOpenMobileNav={() => setMobileNavOpen(true)} />
       <StatCards
         stats={stats}
         collapsed={statsCollapsed || !!selectedDoc}
@@ -192,18 +203,36 @@ export default function DashboardPage() {
       />
       <ViewTabs active={activeView} onChange={setActiveView} />
 
-      <div className="flex-1 flex overflow-hidden">
-        <Sidebar
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-          counts={counts}
-          onQuickAction={handleQuickAction}
+      <div className="relative flex flex-1 overflow-hidden">
+        <button
+          type="button"
+          aria-label="메뉴 닫기"
+          className={cn(
+            "fixed left-0 right-0 top-12 bottom-0 z-[35] bg-black/40 transition-opacity md:hidden",
+            mobileNavOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          )}
+          onClick={() => setMobileNavOpen(false)}
         />
+        <div
+          className={cn(
+            "z-[40] flex h-full shrink-0 transition-transform duration-200 ease-out max-md:shadow-2xl",
+            "fixed left-0 top-12 bottom-0 md:relative md:top-auto md:bottom-auto md:shadow-none md:transition-none",
+            mobileNavOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          )}
+        >
+          <Sidebar
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+            counts={counts}
+            onQuickAction={handleQuickAction}
+            onNavigate={() => setMobileNavOpen(false)}
+          />
+        </div>
 
         <div className="flex-1 flex flex-col overflow-hidden min-h-0">
           {activeView === "home" && !selectedDoc && (
             <div className="shrink-0 px-3 pt-3 pb-2 border-b border-border/60">
-              <SerendipityCard doc={serendipity} onSelect={(p) => { setSelectedDoc(p) }} />
+              <SerendipityCard doc={serendipity} onSelect={(p) => { setSelectedDoc(p); setMobileNavOpen(false) }} />
             </div>
           )}
           {activeView === "home" && (
@@ -225,15 +254,15 @@ export default function DashboardPage() {
                   changelog={changelog}
                   decisions={decisionEntries}
                   sessions={sessionLogs}
-                  onSelectDoc={(p) => { setSelectedDoc(p); setActiveView("home") }}
+                  onSelectDoc={(p) => { setSelectedDoc(p); setActiveView("home"); setMobileNavOpen(false) }}
                 />
               </div>
             </ScrollArea>
           )}
 
           {activeView === "constellation" && (
-            <div className="flex flex-1 min-h-0 overflow-hidden">
-              <div className="flex min-w-0 flex-1 flex-col border-r border-border">
+            <div className="flex flex-1 min-h-0 flex-col overflow-hidden md:flex-row">
+              <div className="flex min-h-0 min-w-0 flex-1 flex-col border-border md:border-r">
                 <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
                   <p className="text-[11px] text-muted-foreground">
                     사이드바 카테고리로 은하 필터 · 드래그 회전 · 휠 줌 · 별 클릭 → 미리보기
@@ -293,7 +322,7 @@ export default function DashboardPage() {
                       data={constellationViewData}
                       filterCategory={activeCategory}
                       selectedRelPath={selectedDoc}
-                      onSelectDoc={(p) => setSelectedDoc(p)}
+                      onSelectDoc={(p) => { setSelectedDoc(p); setMobileNavOpen(false) }}
                       asOfYmd={constellationAsOfYmd}
                       hubGravity={constellationHubGravity}
                       nebula={constellationNebula}
@@ -306,13 +335,17 @@ export default function DashboardPage() {
                   )}
                 </div>
               </div>
-              <DocPreview relPath={selectedDoc} onClose={() => setSelectedDoc(null)} />
+              <DocPreview
+                relPath={selectedDoc}
+                onClose={() => setSelectedDoc(null)}
+                fullscreenMobile
+              />
             </div>
           )}
 
           {activeView === "home" && (
-            <div className="flex-1 flex overflow-hidden min-h-0">
-              <ScrollArea className="w-80 shrink-0 border-r border-border min-h-0">
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
+              <ScrollArea className="h-full min-h-0 w-full shrink-0 border-border md:w-80 md:border-r">
                 <div className="p-3 space-y-2">
                   <div className="flex items-center justify-between px-1 mb-1">
                     <p className="text-xs font-medium text-muted-foreground">
@@ -327,13 +360,20 @@ export default function DashboardPage() {
                         key={d.relPath}
                         doc={d}
                         isActive={selectedDoc === d.relPath}
-                        onClick={() => setSelectedDoc(d.relPath)}
+                        onClick={() => {
+                          setSelectedDoc(d.relPath)
+                          setMobileNavOpen(false)
+                        }}
                       />
                     ))
                   )}
                 </div>
               </ScrollArea>
-              <DocPreview relPath={selectedDoc} onClose={() => setSelectedDoc(null)} />
+              <DocPreview
+                relPath={selectedDoc}
+                onClose={() => setSelectedDoc(null)}
+                fullscreenMobile
+              />
             </div>
           )}
         </div>
@@ -343,7 +383,7 @@ export default function DashboardPage() {
         open={cmdOpen}
         onOpenChange={setCmdOpen}
         docs={docs}
-        onSelectDoc={(p) => setSelectedDoc(p)}
+        onSelectDoc={(p) => { setSelectedDoc(p); setMobileNavOpen(false) }}
         onQuickAction={handleQuickAction}
       />
 

@@ -137,7 +137,7 @@ dashboard/
 | memory/ 실제 데이터 연결  | ✅ 구현  | `lib/memory.ts`, API routes               |
 | 디자인 품질 개선          | ✅ 완료  | 다크: GitHub 다크 기반, 라이트: 무채색 유지             |
 | 빠른 실행 오류 수정        | ✅ 완료  | URL 인제스트(프롬프트), 메모리 검색(팔레트 연결)            |
-| 반응형 모바일            | 🔲 보류 | 필요 시 추후 진행                                |
+| 반응형 모바일            | ✅ 기본 | `page.tsx`, `header.tsx`, `doc-preview.tsx` — `md` 미만 드로어·미리보기 전체(헤더 아래) |
 
 
 ### v2 Phase 2-A (구현 완료)
@@ -154,10 +154,7 @@ dashboard/
 | API charts+serendipity | ✅ 구현 | `api/docs/route.ts`                                    |
 | 에러 로그 분리               | ✅ 구현 | `scripts/automation-batch.ts` → `memory/logs/errors/`  |
 | 세션 로그 구조               | ✅ 구현 | `memory/rules/session-log.md`, `memory/logs/sessions/` |
-| 디자인 시스템 규칙             | ✅ 구현 | `memory/rules/dashboard-design-system.md`              |
-
-
----
+| 지식 별자리 (별자리 탭·API)   | ✅ D-1+ | `api/constellation/route.ts`, `constellation-view.tsx`, `lib/constellation.ts` |
 
 ## 6. 디자인 확정 사항
 
@@ -392,8 +389,8 @@ npm run dashboard:start
 4. ~~**v1 디자인 품질 개선**~~ — ✅ 완료 (다크: GitHub, 라이트: 무채색)
 5. ~~**v2 기능**~~ — ✅ 완료 (브리핑, 차트, 타임라인, 세렌디피티, AI검색)
 6. ~~**빠른 실행 오류 수정**~~ — ✅ 완료 (URL 프롬프트, 메모리 검색→팔레트)
-7. **반응형 모바일** — 🔲 보류
-8. **v3 착수** — 지식 별자리 **D-1** 우선(§10.1), 이후 D-2~D-4 · AI 초안→확정(§10.11) · 히트맵 등 순
+7. ~~**반응형 모바일 (기본)**~~ — ✅ 완료 (`md` 미만 메뉴 드로어·미리보기 오버레이)
+8. ~~**v3 지식 별자리 D-1**~~ — ✅ 완료 (`/api/constellation`, 별자리 탭). 이후: **D-2~D-4 고도화** · **AI 초안→확정(§10.11)** · 히트맵 등
 
 ---
 

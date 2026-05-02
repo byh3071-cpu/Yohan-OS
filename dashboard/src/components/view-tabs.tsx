@@ -19,14 +19,14 @@ interface ViewTabsProps {
 
 export function ViewTabs({ active, onChange }: ViewTabsProps) {
   return (
-    <div className="flex items-center gap-0.5 px-4 border-b border-border bg-background/60">
+    <div className="flex items-center gap-0.5 px-2 sm:px-4 border-b border-border bg-background/60 overflow-x-auto overflow-y-hidden">
       {TABS.map((t) => (
         <button
           key={t.id}
           type="button"
           onClick={() => onChange(t.id)}
           className={cn(
-            "relative flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors",
+            "relative flex shrink-0 items-center gap-1.5 px-2.5 sm:px-3 py-2.5 text-xs font-medium transition-colors whitespace-nowrap",
             active === t.id
               ? "text-foreground"
               : "text-muted-foreground hover:text-foreground"

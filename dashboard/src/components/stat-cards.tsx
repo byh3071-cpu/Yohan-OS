@@ -36,12 +36,12 @@ export function StatCards({ stats, collapsed = false, onToggle }: StatCardsProps
       <button
         type="button"
         onClick={onToggle}
-        className="shrink-0 flex items-center gap-4 px-4 py-1.5 border-b border-border bg-background/60 hover:bg-accent/30 transition-colors text-xs text-muted-foreground"
+        className="shrink-0 flex w-full max-w-full items-center gap-4 overflow-x-auto px-4 py-1.5 border-b border-border bg-background/60 hover:bg-accent/30 transition-colors text-xs text-muted-foreground"
       >
         {cards.map((c, i) => {
           const color = i === 3 ? (batchOk ? "text-emerald-600 dark:text-emerald-400" : "text-red-500 dark:text-red-400") : "text-foreground/60"
           return (
-            <span key={c.label} className="flex items-center gap-1.5">
+            <span key={c.label} className="flex shrink-0 items-center gap-1.5">
               <span className={cn("shrink-0", color)}>{c.icon}</span>
               <span className="font-medium text-foreground">{c.value}</span>
             </span>

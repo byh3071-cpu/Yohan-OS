@@ -49,9 +49,11 @@ interface SidebarProps {
   onCategoryChange: (cat: DocCategory | "all") => void
   counts: Record<string, number>
   onQuickAction: (action: string) => void
+  /** 모바일 드로어: 탭/액션 후 닫기 */
+  onNavigate?: () => void
 }
 
-export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickAction }: SidebarProps) {
+export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickAction, onNavigate }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false)
 
   return (
@@ -101,7 +103,7 @@ export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickActio
                           type="button"
                           {...props}
                           className={cn(props.className, cellClass)}
-                          onClick={(e) => { props.onClick?.(e); onCategoryChange(c.id) }}
+                          onClick={(e) => { props.onClick?.(e); onCategoryChange(c.id); onNavigate?.() }}
                         >
                           {c.icon}
                         </button>
@@ -118,7 +120,7 @@ export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickActio
                 <button
                   key={c.id}
                   type="button"
-                  onClick={() => onCategoryChange(c.id)}
+                  onClick={() => { onCategoryChange(c.id); onNavigate?.() }}
                   className={cn(
                     "w-full flex items-center gap-2 rounded-r-lg text-sm px-2 py-1.5 transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
                     baseStyle
@@ -154,7 +156,7 @@ export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickActio
                           type="button"
                           {...props}
                           className={cn(props.className, cellClass)}
-                          onClick={(e) => { props.onClick?.(e); onQuickAction(a.action) }}
+                          onClick={(e) => { props.onClick?.(e); onQuickAction(a.action); onNavigate?.() }}
                         >
                           {a.icon}
                         </button>
@@ -172,7 +174,7 @@ export function Sidebar({ activeCategory, onCategoryChange, counts, onQuickActio
                   key={a.action}
                   type="button"
                   className="flex w-full items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 text-left text-xs text-sidebar-foreground/55 transition-all outline-none select-none hover:bg-accent/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
-                  onClick={() => onQuickAction(a.action)}
+                  onClick={() => { onQuickAction(a.action); onNavigate?.() }}
                 >
                   <span className="shrink-0 [&_svg]:pointer-events-none [&_svg]:shrink-0">{a.icon}</span>
                   <span className="min-w-0 flex-1 truncate">{a.label}</span>
