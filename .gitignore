@@ -1,6 +1,12 @@
 # yohan-ai-dictionary — public site, own repo (Phase 3 template); not part of private Yohan OS snapshot
 yohan-ai-dictionary/
 
+# yohan-profile-card — separate Next.js side project, own repo; not part of private Yohan OS snapshot
+yohan-profile-card/
+
+# Claude Code worktrees — temporary agent workspaces
+.claude/worktrees/
+
 node_modules/
 dist/
 .env
