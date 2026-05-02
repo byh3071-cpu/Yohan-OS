@@ -1,8 +1,9 @@
 # yohan-ai-dictionary — public site, own repo (Phase 3 template); not part of private Yohan OS snapshot
-yohan-ai-dictionary/
+# leading slash = repo-root only, so SoT 경로 memory/projects/yohan-ai-dictionary/는 추적된다
+/yohan-ai-dictionary/
 
 # yohan-profile-card — separate Next.js side project, own repo; not part of private Yohan OS snapshot
-yohan-profile-card/
+/yohan-profile-card/
 
 # Claude Code worktrees — temporary agent workspaces
 .claude/worktrees/

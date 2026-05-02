@@ -2,13 +2,14 @@
 
 id: yohan-ai-dictionary
 name: Yohan AI Dictionary — 나만의 AI 사전 뷰어
-goal: Phase 1 MVP·Phase 2 용어 7개 완료. 다음은 비전/Phase 3 또는 사전–wiki 문구 동기화.
-repo_path: memory/projects/yohan-ai-dictionary (스펙) · yohan-ai-dictionary (코드, 티켓 001 이후)
+goal: Phase 3 진입 — Vercel 1차 배포 → GitHub 템플릿화 → 학습 글 3편.
+repo_path: memory/projects/yohan-ai-dictionary (스펙·체크리스트·티켓) · yohan-ai-dictionary (코드, 티켓 001 이후)
 branch: main
 notes: |
-  - [진행 기준] memory/projects/yohan-ai-dictionary/current-phase.md (active-project.yaml 아님).
+  - [진행 기준] memory/projects/yohan-ai-dictionary/current-phase.md + phase3-checklist.md (active-project.yaml 아님).
   - [완료] Phase 1 전부(001~006, 005 빌드·프리뷰 검증 포함, 2026-04-16 확인).
-  - [완료] Phase 2 용어 7개 — `phase2-term-candidates-notion-2026-04.md` 순서, 사전·빌드 반영 (2026-04-16).
+  - [완료] Phase 2 용어 7개 — `phase2-term-candidates-notion-2026-04.md` 순서, 사전·빌드 반영 (2026-04-16). 빌드 회귀 OK (2026-05-02, 17용어).
+  - [진행] Phase 3 티켓 007 사양 확정 (2026-05-02). 실 Vercel 배포는 다음 세션 — 체크리스트 P3-2.
   - [복리] 용어·링크 구조는 카페 SOP 위키 등 동일 패턴으로 복제 가능.
   - [규칙] 4개 겹치는 용어(harness/vibe-coding/rag/layered-context)는 memory/wiki/가 원천, `source:` 프론트매터 필수.
   - [완료] Evaluator 로그 디렉터리 안내 — `memory/metrics/evaluations/README.md` (2026-04-16).
