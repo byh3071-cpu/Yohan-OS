@@ -37,6 +37,7 @@ status: active
 3) short 기준: 3줄 이하 또는 180자 이하
 4) short면 리소스-only 제안, long이면 리소스+서머리 제안
 5) 결과는 지정된 출력 형식 그대로 작성
+6) long일 때 본문 요약은 불릿 나열보다 짧은 문단 2~4개 우선 (`memory/rules/insight-summary-quality.md`)
 ```
 
 ## 출력 형식
@@ -49,12 +50,14 @@ id: {kebab-case-id}
 date: {YYYY-MM-DD}
 domain: ingest
 tags: [ocr, telegram]
-related: []
+related: [insight-summary-quality]
 status: draft
 # archive_tier: standard
 ---
 
 # {제목}
+
+품질 기준: [`memory/rules/insight-summary-quality.md`](memory/rules/insight-summary-quality.md) — 요약은 가능하면 **문단**, 「한 줄 요약」은 **단일 완전한 문장**으로 둔다.
 
 ## 원문 메타
 - source_file: `memory/inbox/telegram/{YYYY-MM-DD}.md`
@@ -88,4 +91,5 @@ status: draft
 
 - insights만 보고 업무 재개 가능
 - 출처(날짜·채팅·message_id)가 정제본에 남음
+- 요약이 [`insight-summary-quality.md`](memory/rules/insight-summary-quality.md)에 맞게 문단형으로 읽힘 (long일 때 특히)
 - (운용 시) 리소스 DB에 원본이 있으면 인박스 원 블록 제거로 큐가 가벼워짐

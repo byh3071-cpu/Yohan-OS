@@ -24,6 +24,7 @@ description: >-
 
 ## 작업 중
 
+- `memory/ingest/insights/`에 새 노트·정제본을 쓸 때: 요약은 [**인사이트 요약 품질**](memory/rules/insight-summary-quality.md)(문단 우선·사실/해석 분리·출처 명시).
 - 복잡한 목표: **`plan_task`** 또는 **`search_memory`** (Planner).
 - 구현·문서 수정 후: **`memory/rules/evaluator-checklist.md`** 기준으로 응답 말미 Evaluator 블록(프로젝트 규칙 준수).
 - Evaluator 블록 직후 MCP 가능하면 **`log_evaluation`** 으로 `memory/metrics/evaluations/` 에 판정 로그 저장.

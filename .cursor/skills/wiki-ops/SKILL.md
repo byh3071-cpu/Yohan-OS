@@ -17,7 +17,7 @@ description: >-
 **트리거:** 새 insights 파일 추가 시, 또는 사용자가 "wiki에 넣어줘" 요청 시.
 
 ```
-1. 대상 insights 파일 읽기.
+1. 대상 insights 파일 읽기. 요약·상단 블록은 [`memory/rules/insight-summary-quality.md`](memory/rules/insight-summary-quality.md)와 어긋나면(불릿만 요약 등) 본문 수정 없이 사용자에게 정제 제안만 한다.
 2. 엔티티/컨셉 추출 (WIKI-SPEC-v2 §3 기준).
    - 추출 조건: 2개+ 소스에서 등장 (신규는 사용자 확인).
    - telegram-ocr 계열 (status: draft) 스킵.
