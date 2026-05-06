@@ -28,6 +28,7 @@ status: active
 - 개발 모드(권장 단일 실행): `npm run dashboard:dev:safe` (4000 점유 PID 정리 + `--webpack` + `--max-old-space-size=3072`)
 - 개발 모드(진단): `npm run dashboard:dev:diag` (`--trace-gc`, `--trace-gc-verbose`, `--heapsnapshot-near-heap-limit=2`, dump dir=`dashboard/.debug/heap`)
 - 안정 모드(권장): `npm run dashboard:build` 후 `npm run dashboard:start:4000`
+- 원클릭 실행(비-CLI): 바탕화면 `Yohan-Dashboard.bat` (좀비 정리 → 빌드 캐시 없으면 자동 빌드 → `start:4000` + 브라우저 자동 오픈)
 
 ---
 
