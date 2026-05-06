@@ -1,11 +1,11 @@
 ---
-
-## id: fail-YYYY-MM-DD-제목
+id: fail-YYYY-MM-DD-제목
 date: YYYY-MM-DD
 domain: operations
 tags: [failure, postmortem]
 related: []
 status: draft
+---
 
 # (실패/버그 제목)
 

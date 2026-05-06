@@ -1,15 +1,14 @@
 ---
-
-## schema_version: ingest.v0
-
+schema_version: ingest.v0
 kind: rss
 source_name: geeknews
-source_feed: [https://news.hada.io/rss/news](https://news.hada.io/rss/news)
-source_url: [https://news.hada.io/topic?id=28219](https://news.hada.io/topic?id=28219)
+source_feed: https://news.hada.io/rss/news
+source_url: https://news.hada.io/topic?id=28219
 title: Apple, Arm Mac에서 Nvidia eGPU 사용을 허용하는 드라이버 승인
 published: 2026-04-05T04:32:27.000Z
 guid: null
 ingested_at: 2026-04-05T16:03:54.984Z
+---
 
 # Apple, Arm Mac에서 Nvidia eGPU 사용을 허용하는 드라이버 승인
 

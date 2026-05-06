@@ -1,12 +1,11 @@
 ---
-
-## id: repo-or-topic-github-why-how
-
+id: repo-or-topic-github-why-how
 date: YYYY-MM-DD
 domain: tools-research
 tags: [github, YOUR_TAG]
 related: []
 status: draft
+---
 
 # {레포 표시 이름} — 왜 쓰는지 · 어떻게 쓰는지
 
