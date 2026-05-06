@@ -10,6 +10,7 @@ related:
   - docs/adr/ADR-006-notion-as-sot-mirror.md
   - memory/ingest/insights/llm-wiki-gist-why-how.md
   - memory/ingest/insights/modern-ai-ch18-knowledge-management-karpathy-wiki.md
+  - memory/projects/yohan-ai-dictionary/blog-drafts/03-template-to-first-build.md
 status: draft
 target: yohan-ai-dictionary/src/content/docs/blog/ (Phase 3 P3-4 글 1편)
 ---
