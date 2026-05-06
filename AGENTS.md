@@ -19,11 +19,15 @@
 1. **구조 이해 (선택, 1회):** `[docs/CONTEXT-AND-HARNESS-SYSTEM.md](docs/CONTEXT-AND-HARNESS-SYSTEM.md)` — 컨텍스트 vs 하네스, 파이프라인 다이어그램. **대시보드 작업 시:** `[docs/DASHBOARD-SPEC.md](docs/DASHBOARD-SPEC.md)` — 전체 스펙·로드맵·디자인·기술 스택. **하네스 = 통제만이 아니라 바닥(비전·안전) + 그 위의 유연함**은 동 문서 **§1.1** 참고. Claude 등 **타 클라이언트에 프로젝트 전체 맥락 붙일 때**는 `[docs/CLAUDE-CONTEXT-BOOTSTRAP.md](docs/CLAUDE-CONTEXT-BOOTSTRAP.md)` 전체를 첨부하거나 첫 턴에 붙여 넣기.
 2. **필수 하네스:** `[memory/rules/agent-harness.md](memory/rules/agent-harness.md)` — 세션 시작 `get_context`, SoT, P/G/E, 결정 로그.
 3. **Cursor:** `.cursor/rules/` — 세션 시작·Evaluator 형식 등 워크스페이스 규칙. 요약 스킬: `.cursor/skills/yohan-os-workflow/SKILL.md`.
-
 4. **Wiki:** `memory/wiki/` — 지식 레이어. 명세: `[docs/WIKI-SPEC-v2.md](docs/WIKI-SPEC-v2.md)` | 규칙: `memory/rules/wiki-ops.md` | 스킬: `.cursor/skills/wiki-ops/SKILL.md`.
-
 5. **우선 wiki (에이전트·도구·검색 축)** — 필요할 때만 `@`로 **최소 주입** (한 세션 전부 금지). 목록·표는 `[memory/rules/agent-harness.md](memory/rules/agent-harness.md)` §1.1.
    - `memory/wiki/entities/mcp.md` · `concepts/cursor-skills.md` · `entities/rag.md` · `concepts/layered-context.md` · `concepts/harness-engineering.md`
    - 교재 인사이트: `memory/ingest/insights/modern-ai-ch*.md`
+
+6. **기록 레이어 (ADR · 작업 로그 · 트러블슈팅)** — 기록 규칙은 `[memory/rules/recording-rules.md](memory/rules/recording-rules.md)` 단일 파일이 SoT.
+   - **ADR (아키텍처 결정):** `[docs/adr/](docs/adr/)` — 되돌리기 비용 큰 결정. 템플릿: `[docs/adr/TEMPLATE.md](docs/adr/TEMPLATE.md)`.
+   - **운영 결정 메모:** `memory/decisions/` — 세션 단위 결정. `append_decision` MCP로 자동 생성.
+   - **세션 작업 로그:** `memory/logs/sessions/` — 세션별 변경 요약.
+   - **트러블슈팅:** `[docs/troubleshooting/](docs/troubleshooting/)` — 에러 해결 완료 시 증상→원인→해결→교훈.
 
 MCP `yohan-os` 사용 시 레포 루트가 `cwd`이고 `dist/index.js`가 빌드되어 있어야 한다. `[README.md](README.md)` 트러블슈팅 참고.
