@@ -1,0 +1,9 @@
+# Markdown is treated as SoT — do not auto-format.
+# Prettier (and other formatters honoring this file) historically
+# corrupted YAML frontmatter into setext headings (`---\n## id:`).
+*.md
+*.mdx
+
+# YAML frontmatter shares the same risk profile.
+*.yaml
+*.yml
