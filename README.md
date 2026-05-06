@@ -1,6 +1,6 @@
 # Yohan OS (v0)
 
-에이전트용 SoT(`memory/`) + MCP **stdio** 서버. 첫 목표: `**get_context`로 맥락 통일**.
+에이전트용 SoT(`memory/`) + MCP **stdio** 서버. 첫 목표: **`get_context`**로 맥락 통일.
 
 ## 빠른 시작
 
@@ -12,16 +12,16 @@ npm run build
 ## MCP `yohan-os`가 Error(빨간불)일 때
 
 1. **Show Output** 을 눌러 로그 한 줄이라도 확인한다.
-2. 레포 루트에서 `**npm install`** 후 `**npm run build`** — `dist/index.js`가 없으면 MCP가 뜨지 않는다.
-3. 진단: `**npm run mcp:check`** → `MCP bundle OK` 가 나와야 한다.
-4. `**cwd`** 가 이 레포 루트인지 확인 (`${workspaceFolder}` = Yohan OS 폴더).
+2. 레포 루트에서 **`npm install`** 후 **`npm run build`** — `dist/index.js`가 없으면 MCP가 뜨지 않는다.
+3. 진단: **`npm run mcp:check`** → `MCP bundle OK` 가 나와야 한다.
+4. **`cwd`** 가 이 레포 루트인지 확인 (`${workspaceFolder}` = Yohan OS 폴더).
 5. 터미널에서 `node dist/index.js` 실행 시 **아무 출력 없이 멈춤**이면 정상(stdio 대기). **바로 에러와 함께 종료**하면 그 메시지가 원인.
 
 ## Cursor에서 MCP 연결
 
 프로젝트에 `.cursor/mcp.json` 이 포함되어 있다. 워크스페이스를 **이 레포 루트**로 연 뒤:
 
-1. `**npm install` 후 `npm run build`** — `dist/index.js`가 있어야 MCP가 뜬다 (`dist/`는 Git에 포함하지 않음).
+1. **`npm install`** 후 **`npm run build`** — `dist/index.js`가 있어야 MCP가 뜬다 (`dist/`는 Git에 포함하지 않음).
 2. Cursor **설정 → Tools & MCP**에서 `yohan-os`를 켠다.
 
 수동 추가 시:
@@ -32,7 +32,7 @@ npm run build
 
 ## 환경 변수
 
-레포 루트에 `**.env.example`** 을 참고해 `.env` 를 만들 수 있다. MCP는 `dotenv`로 `.env`를 읽는다(워크스페이스 루트에 둘 것).
+레포 루트에 **`.env.example`** 을 참고해 `.env` 를 만들 수 있다. MCP는 `dotenv`로 `.env`를 읽는다(워크스페이스 루트에 둘 것).
 
 
 | 변수                            | 의미                                                      |
@@ -61,7 +61,7 @@ npm run build
 
 1. [My integrations](https://www.notion.so/my-integrations)에서 Integration 생성 → **토큰**을 `.env`의 `NOTION_TOKEN`에 넣는다.
 2. 노션에서 해당 DB 페이지에 Integration을 **연결**(공유)한다.
-3. DB에 열 추가: `**SoT Key`** (텍스트) — 멱등 키 저장용, **필수**. 선택: `Summary`, `Source Path` (텍스트).
+3. DB에 열 추가: **`SoT Key`** (텍스트) — 멱등 키 저장용, **필수**. 선택: `Summary`, `Source Path` (텍스트).
 4. `.env`: `NOTION_DATABASE_ID=` URL의 32자 hex(예: `…/33a9740ab07280cf8180cc8b19663fb5?…` → 앞 32자).
 
 ```bash
@@ -122,7 +122,7 @@ npm run ingest:geeknews -- 20
 
 ### MCP 도구
 
-- `**ingest_geeknews_rss`**: 선택 인자 `limit` (1–100, 기본 20).
+- **`ingest_geeknews_rss`**: 선택 인자 `limit` (1–100, 기본 20).
 
 ## 인제스천 v1 — 단일 URL (유튜브·일반 페이지)
 
@@ -141,7 +141,7 @@ npm run ingest:url -- "https://www.youtube.com/watch?v=..."
 
 ### MCP
 
-- `**ingest_url**`: 인자 `url`
+- **`ingest_url`**: 인자 `url`
 
 ## get_context — `recent_ingest` · `notion_queue`
 
@@ -150,8 +150,8 @@ npm run ingest:url -- "https://www.youtube.com/watch?v=..."
 
 ## 2순위 — 검색·플랜 (P/G/E)
 
-- `**search_memory`**: `memory/` 이하 `.md`/`.yaml`/`.txt` 부분 문자열 검색 (대소문자 무시).
-- `**plan_task`**: 목표를 `**plan.v0` JSON** 스텁으로 감싼다 (Planner). 이어서 에이전트가 실행(Generator)·말미 Evaluator.
+- **`search_memory`**: `memory/` 이하 `.md`/`.yaml`/`.txt` 부분 문자열 검색 (대소문자 무시).
+- **`plan_task`**: 목표를 **`plan.v0` JSON** 스텁으로 감싼다 (Planner). 이어서 에이전트가 실행(Generator)·말미 Evaluator.
 - 흐름 문서: `memory/rules/pge-pipeline.md`
 
 ### CLI
