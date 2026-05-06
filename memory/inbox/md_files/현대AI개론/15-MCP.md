@@ -1,4 +1,8 @@
-// Chapter 15 — MCP: 만능 프로토콜의 약속과 현실
+---
+id: curriculum-modern-ai-ch15-mcp-source
+date: 2026-04-16
+tags: [curriculum, modern-ai, mcp, anthropic, source]
+---
 
 # MCP: AI의 USB-C는 만능이 아니었다
 
