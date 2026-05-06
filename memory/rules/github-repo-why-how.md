@@ -1,9 +1,9 @@
 ---
 id: github-repo-why-how
-date: 2026-04-06
+date: 2026-05-06
 domain: ingest
 tags: [github, ingest, why-how, insights]
-related: [archiving-appraisal-feynman]
+related: [archiving-appraisal-feynman, insight-summary-quality]
 status: active
 ---
 
@@ -31,6 +31,8 @@ SoT 우선은 `memory/rules/notion-sync.md`와 같다. 노션 미러는 선택.
 ---
 
 ## `why-how` 인사이트 길이·톤
+
+요약·문장 품질의 공통 기준은 [`insight-summary-quality.md`](./insight-summary-quality.md)와 맞춘다.
 
 - **너무 짧음:** 링크만 있고 “언제 쓰는지”가 없으면 나중에 또 README를 정독해야 함.
 - **너무 김:** README를 복붙한 수준이면 인제스트와 중복되어 유지보수가 두 배.

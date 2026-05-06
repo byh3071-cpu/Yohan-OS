@@ -48,7 +48,7 @@ status: active
 | 5    | `memory/wiki/concepts/harness-engineering.md` | 하네스·경계·검증                       |
 
 
-- **교재 압축 인사이트:** `memory/ingest/insights/modern-ai-ch*.md` — 수치·연도·제품 단정은 `**memory/inbox/md_files/현대AI개론/` 원문**과 대조.
+- **교재 압축 인사이트:** `memory/ingest/insights/modern-ai-ch*.md` — 수치·연도·제품 단정은 `**memory/inbox/md_files/현대AI개론/` 원문**과 대조. 요약 문단·정제 기준은 **`memory/rules/insight-summary-quality.md`**.
 - **사전 뷰어(용어 통일):** `yohan-ai-dictionary/` 로컬 빌드·`src/content/docs/terms/` — 4개 겹치 용어는 `memory/wiki/`가 원천(`source:`).
 
 ---

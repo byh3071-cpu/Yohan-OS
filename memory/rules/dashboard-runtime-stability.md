@@ -1,6 +1,6 @@
 ---
 id: dashboard-runtime-stability
-date: 2026-04-10
+date: 2026-05-06
 domain: dashboard
 tags: [dashboard, runtime, node, debugging, prevention]
 related: [dashboard-spec, dashboard-quick-actions, agent-harness]
@@ -29,6 +29,11 @@ status: active
 - 개발 모드(진단): `npm run dashboard:dev:diag` (`--trace-gc`, `--trace-gc-verbose`, `--heapsnapshot-near-heap-limit=2`, dump dir=`dashboard/.debug/heap`)
 - 안정 모드(권장): `npm run dashboard:build` 후 `npm run dashboard:start:4000`
 - 원클릭 실행(비-CLI): 바탕화면 `Yohan-Dashboard.bat` (좀비 정리 → 빌드 캐시 없으면 자동 빌드 → `start:4000` + 브라우저 자동 오픈)
+
+### 문서 목록이 첫 로드에서만 적게 보일 때
+
+- 원인은 보통 **브라우저가 GET `/api/docs` 응답을 휴리스틱 캐시**하는 경우와, 서버 프로세스의 **짧은 TTL 메모리 캐시**가 겹치는 경우다.
+- 대응: API에 `Cache-Control: no-store`, 클라이언트 `fetch(..., { cache: "no-store" })`, 첫 마운트 시 `?fresh=1`로 디스크 재스캔(코드에 반영됨). 증상이 나오면 먼저 일반 새로고침으로 재현 여부를 확인한다.
 
 ---
 
