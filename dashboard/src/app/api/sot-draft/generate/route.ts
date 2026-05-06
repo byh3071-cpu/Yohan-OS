@@ -16,9 +16,19 @@ export type SotDraftGenerateBody = {
   template?: "insight" | "decision" | "plan"
 }
 
+const INSIGHT_DRAFT_RULES = `마크다운 본문만. 코드펜스 금지. 한국어. 미사여구 금지.
+섹션 순서(제목은 # 한 번만, 나머지 ##):
+# {주제에 맞는 제목}
+## 목적 — 이 노트를 언제 다시 열지 한 문장
+## 요약 — 짧은 문단 2~4개. 첫 문장에 결론·주장. 요약을 불릿 키워드만으로 채우지 말 것. 사실과 해석 분리; 불확실하면 「확인 필요」
+## 출처·원문 — 상대 경로·URL·붙여넣은 맥락 출처
+## 본문 — 논지·단계·증거
+## 적용·주의 — Yohan OS 또는 본인 워크플로에 걸리는 점
+## 다음 액션 (선택)
+수치·연도·제품명은 사용자 맥락에 있을 때만 쓰고, 없으면 만들지 말 것.`
+
 const TEMPLATE_HINT: Record<NonNullable<SotDraftGenerateBody["template"]>, string> = {
-  insight:
-    "YAML 프론트매터 아래에 마크다운 본문. 불릿·제목(#/##) 사용. 미사여구 금지. 한국어.",
+  insight: INSIGHT_DRAFT_RULES,
   decision:
     "## 맥락\n## 결정\n## 근거\n## 리스크·후속\n 형식. 한국어, 팩트 위주.",
   plan:
@@ -72,9 +82,9 @@ function stubDraft(topic: string, template: NonNullable<SotDraftGenerateBody["te
       ? "## 맥락\n\n## 결정\n\n## 근거\n\n## 리스크·후속\n"
       : template === "plan"
         ? "## 목표\n\n## 단계\n\n1. \n2. \n\n## 완료 조건\n\n"
-        : "## 요약\n\n## 메모\n\n## 다음 액션\n"
+        : "## 목적\n\n## 요약\n\n(문단 2~4개. 불릿만으로 채우지 말 것.)\n\n## 출처·원문\n\n## 본문\n\n## 적용·주의\n\n## 다음 액션\n\n"
 
-  return `# ${topic}\n\n> OPENAI_API_KEY 없음 또는 오류 시 제공되는 **틀**입니다. 채운 뒤 확정 저장하세요.\n\n${head}\n`
+  return `# ${topic}\n\n> OPENAI_API_KEY 없음 또는 오류 시 틀. 품질 기준: memory/rules/insight-summary-quality.md\n\n${head}\n`
 }
 
 export async function POST(req: Request) {
