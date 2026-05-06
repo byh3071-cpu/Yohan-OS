@@ -174,20 +174,28 @@ npm run plan:task -- "이번에 달성할 목표 한 문장"
 memory/
   profile.yaml
   active-project.yaml
-  decisions/*.md
+  MEMORY.md                  # 활성 프로젝트·인프라·다음 후보 한눈 요약
+  decisions/*.md             # 운영 결정 메모 (append_decision MCP)
   metrics/evaluations/*.md   # Evaluator 구조화 로그 (MCP log_evaluation)
+  logs/sessions/*.md         # 세션 작업 로그 (한 일·변경 파일·결정·다음 세션)
   ingest/rss/geeknews/*.md
   ingest/url/*.md            # 단일 URL 인제스천
   rules/
     agent-harness.md
     pge-pipeline.md
     notion-sync.md
+    recording-rules.md       # ADR·작업 로그·트러블슈팅 기록 규칙 단일 SoT
     evaluator-checklist.md
   inbox/
     notion-queue.md      # 노션 풀 → SoT 병합 전 큐
     telegram/            # 텔레그램 일별 인박스 YYYY-MM-DD.md (npm run bot)
     telegram-inbox.md    # 레거시 단일 인박스(과거 로그)
+docs/
+  adr/                       # 아키텍처 결정 기록 (ADR-001~ ; TEMPLATE.md)
+  troubleshooting/           # 에러 해결 완료 기록 (증상→원인→해결→교훈)
 ```
+
+기록 규칙 분담은 `memory/rules/recording-rules.md` 단일 파일이 SoT. ADR·트러블슈팅·세션 로그의 노션 자동 동기는 위 §노션 동기 참고(`sync_to_notion` MCP / `npm run sync:notion:records` / Stop hook).
 
 ## MCP 도구
 
