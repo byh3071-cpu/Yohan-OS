@@ -12,7 +12,6 @@ related:
   - yohan-ai-dictionary/src/content/docs/terms/harness-engineering.md
   - yohan-ai-dictionary/src/content/docs/terms/rag.md
   - docs/adr/ADR-007-karpathy-llm-wiki.md
-  - memory/projects/yohan-ai-dictionary/blog-drafts/03-template-to-first-build.md
 status: draft
 target: yohan-ai-dictionary/src/content/docs/blog/ (Phase 3 P3-4 글 2편)
 ---

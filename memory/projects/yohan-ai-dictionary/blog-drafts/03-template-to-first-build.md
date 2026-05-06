@@ -3,103 +3,112 @@ id: blog-draft-03-template-to-first-build
 date: 2026-05-06
 domain: yohan-ai-dictionary
 project: yohan-ai-dictionary
-tags: [blog, draft, phase3, p3-3, p3-4, template, starlight, vercel, onboarding]
+tags: [blog, draft, phase3, p3-4, template, first-build, starlight, vercel]
 related:
   - memory/projects/yohan-ai-dictionary/vision.md
   - memory/projects/yohan-ai-dictionary/phase3-checklist.md
   - memory/projects/yohan-ai-dictionary/blog-drafts/01-why-starlight-md.md
   - memory/projects/yohan-ai-dictionary/blog-drafts/02-source-and-wiki.md
-  - memory/projects/yohan-ai-dictionary/tickets/006-github-public-repo.md
-  - memory/projects/yohan-ai-dictionary/tickets/007-vercel-deploy-and-template.md
   - yohan-ai-dictionary/README.md
 status: draft
-target: yohan-ai-dictionary/src/content/docs/blog/03-template-to-first-build.mdx (Phase 3 P3-4 글 3/3)
+target: yohan-ai-dictionary/src/content/docs/blog/ (Phase 3 P3-4 글 3편 — 시리즈 마지막)
 ---
 
 # 템플릿으로 복제해서 첫 빌드까지 — 5분 타임라인
 
-> Phase 3 P3-4 세 번째 글 초안. 1편(왜 Starlight + 마크다운)·2편(`source:`와 `memory/wiki` 정합)에 이은 마무리. **약속** — `Use this template` 한 번부터 로컬에서 `npm run preview`까지 **5분 안**에 도착한다. (Vercel 배포는 push 이후 **추가 2~3분**으로 분리한다.)
+> Phase 3 P3-4의 마지막 글 초안입니다. 1편(왜)·2편(운영)에 이어, **자기 사전을 5분 안에** 띄우는 길을 분 단위로 적습니다.
 
 ## 0분 — Use this template 한 번
 
-GitHub `byh3071-cpu/yohan-ai-dictionary`에서 우상단 초록 버튼 **`Use this template`** → `Create a new repository`. 이름은 `my-ai-dictionary`처럼 본인 것으로. **Public**으로 둬도 된다 — 사전은 공개되어야 검색·초대에 유리하다. fork가 아니라 **template**이라 커밋 히스토리·이슈가 따라오지 않는다(`phase3-checklist.md` P3-3, MIT 라이선스 유지).
+GitHub의 `yohan-ai-dictionary` 레포에 들어가서 우상단 초록 버튼 **`Use this template`** → `Create a new repository`를 누른다. 본인 이름으로 새 레포가 만들어진다. fork가 아니라 **template**이다 — 커밋 히스토리는 0부터, 라이선스는 MIT 그대로(`phase3-checklist.md` P3-3).
 
 ## 1분 — clone + npm install
 
 ```bash
-git clone https://github.com/<your-account>/my-ai-dictionary.git
-cd my-ai-dictionary
+git clone https://github.com/<your-name>/<your-repo>.git
+cd <your-repo>
 npm install
 ```
 
-`astro`, `@astrojs/starlight`, `astro-pagefind`(검색) 정도가 핵심이다. `sharp` 때문에 1~2분 더 걸리면 정상이다.
+`@astrojs/starlight`·`astro`·`sharp` 세 개가 설치된다. `sharp`가 가끔 늦으니 1~2분 걸리면 정상이다.
 
-> **Windows + OneDrive + 한글·공백 경로**면 빌드가 가끔 불안정하다. `C:\dev\<repo>`처럼 짧은 경로로 두거나 `subst`로 드라이브 문자를 잡는 편이 안전하다(템플릿 레포 `README.md`의 preview·404 절 참고).
+> **Windows + OneDrive + 한글·공백 경로**라면 빌드가 가끔 불안정하다. `C:\dev\<your-repo>` 같은 짧은 경로로 옮기거나 `subst`로 드라이브 문자를 잡는 게 안전하다(이 레포의 `README.md` "preview 404" 절 참고).
 
-## 2분 — `npm run dev`
+## 2분 — npm run dev
 
 ```bash
 npm run dev
 ```
 
-`http://localhost:4321`을 연다. 사이드바에 **17개 용어**가 보이고, 검색에서 `mcp`·`embedding`이 바로 잡힌다. **이 화면이 자기 사전의 출발점**이다 — 처음엔 17개를 굳이 지우지 말고 읽어도 된다. **가장 빠른 학습은 남이 정리한 인덱스를 일주일 읽는 것**이기도 하다.
+터미널에 찍힌 `http://localhost:4321`을 연다. **Starlight 기본 스플래시**가 보이면 끝. 사이드바·검색·다크모드는 이미 다 동작한다 — 1편에서 말한 *"Starlight는 비켜준다"*가 여기서 보인다.
 
-## 3분 — 첫 용어 한 개
+## 3분 — 첫 용어 한 줄
 
-`src/content/docs/terms/`에 `my-first-term.md`를 만든다.
+`src/content/docs/terms/` 안에 `your-first-term.md` 하나를 만든다.
 
-```markdown
+```yaml
 ---
-title: My First Term
-description: 내가 매일 검색하는 첫 번째 용어.
+title: 첫 용어
+description: 한 줄 정의 — 검색 미리보기에 그대로 노출된다
+status: draft
+updated: "2026-05-06"
+tags: [example]
 ---
 
 ## 정의
 
-(2~3줄)
+여기에 1~2문장. 그게 전부다.
 
 ## 관련 용어
 
-- [mcp](./mcp)
+- [다른 용어](/terms/another/) — 한 문장 설명
 ```
 
-저장하면 핫리로드된다. **사이드바에 항목이 뜨면 성공**이다. 카테고리·아이콘은 나중.
+저장하면 dev 서버가 즉시 갱신한다. **사이드바에 항목이 떠 있으면 성공**이다. 카테고리 분류·아이콘 같은 건 나중. **있는 것 부터 쓴다.**
 
 ## 4분 — `source:`는 있을 때만
 
-2편의 `source: memory/wiki/...` 한 줄은 **별도 위키 레이어가 있을 때**만 의미가 있다. 처음엔 사전만 정본이어도 된다. 줄을 빼면 그만이다. 위키를 붙일 시점은 용어가 많아 정의가 흔들리기 시작할 때 — 그때 2편의 *월 1회 빌드 + 한 건씩 동기화*로 돌아오면 된다.
+2편에서 말한 `source:` 프론트매터(`memory/wiki/...`로 가리키는 한 줄)는 **본인이 별도 위키 레이어를 가졌을 때**만 의미가 있다. 처음에는 사전 자체가 정본이어도 된다. 줄을 빼면 그만이다 — Starlight도 모른 척 잘 그린다.
 
-## 4분 30초 — 빌드·미리보기
+위키 레이어를 추가할 시점은 용어가 50개를 넘어 정의가 흔들리기 시작할 때. 그때 2편 운영 한 줄("월 1회 빌드 + 한 건씩 동기화")로 돌아오면 된다.
 
-```bash
-npm run build
-npm run preview
-```
+## 5분 — Vercel에 올리기
 
-`dist/`가 생기고 미리보기가 뜨면 로컬 v0는 끝이다. 이 단계가 통과하면 Vercel·Cloudflare Pages 등 정적 호스팅으로 그대로 올릴 수 있다.
+push만 끝내면 배포는 한 번이다.
 
-## 배포(선택) — Vercel
+1. 새 레포를 GitHub에 push (Use this template으로 만들었다면 이미 거기 있다).
+2. [vercel.com](https://vercel.com)에서 **Add New → Project → Import** → 그 레포를 고른다.
+3. Framework는 `Astro`로 자동 인식, Build는 `astro build`, Output은 `dist`. 그대로 **Deploy**.
 
-push 후 [vercel.com](https://vercel.com)에서 **Add New → Project → Import** → 해당 레포. Framework는 `Astro`, Build `astro build`, Output `dist`가 기본이다(`phase3-checklist.md` P3-2). 1~2분이면 `https://<project>.vercel.app`이 살아 있다.
+1~2분 안에 `https://<your-repo>.vercel.app`이 살아 있다(`phase3-checklist.md` P3-2). 모바일에서 한 번 열어보고 사이드바·검색·다크모드만 잘 뜨면 완료다.
 
-## 그 다음
+## 그 다음 — 자기 손에 맞춰 굳히기
 
-- **하루 한 용어**가 지속에 가장 잘 맞는다.
-- 사이드바가 길어지면 Starlight 사이드바 그룹만 한 번 정리한다.
-- 위키가 필요해지면 2편으로 돌아온다.
+여기까지가 **누구나 5분**이다. 그 다음은 본인 도메인이다.
+
+- **1주일 동안 매일 1~2개씩 용어를 추가**해 본다. 검색이 막히는 단어부터.
+- **사이드바가 길어지면 카테고리를 만든다.** Starlight 사이드바 그룹 설정 한 번이면 된다.
+- **위키 레이어가 필요해지면** 2편으로 돌아온다.
 
 ## 시리즈를 닫으며
 
-- **1편:** 노션은 입력에 강하고 정합에 약하다. 마크다운 + Starlight는 그 반대다.
-- **2편:** 두 레이어가 어긋나지 않게 하는 한 줄 — *월 1회 빌드 + 한 건씩 동기화.*
-- **3편:** 템플릿 → 5분 안에 자기 사전.
+세 편을 짧게 다시 묶으면 이렇다.
 
-Phase 3 P3-4 글 세 편은 여기서 닫는다. README 푸터에 한 줄 남기기 좋다 — *이 사전은 [yohan-ai-dictionary](https://github.com/byh3071-cpu/yohan-ai-dictionary) 템플릿으로 만들었다.*
+- **1편(왜):** 노션은 입력에 강하고 정합에 약하다. 마크다운 + Starlight는 그 반대다.
+- **2편(운영):** 두 레이어가 어긋나지 않게 하는 한 줄 — *월 1회 빌드 + 한 건씩 동기화.*
+- **3편(시작):** Use this template → 5분 안에 자기 사전.
+
+같은 패턴으로 **자기 도메인 사전**을 만들고 싶다면 이제 막힐 곳이 없다. Phase 3는 여기서 닫힌다.
 
 ---
 
 ## 초안 메모 (편집 시 제거)
 
-- **통합:** 기존 `03-template-clone-5min.md` 초안과 본 파일을 한 편으로 합침(2026-05-06).
-- **Starlight로 옮길 때:** `yohan-ai-dictionary/src/content/docs/blog/03-template-to-first-build.mdx` — 블로그 규약 `title`·`description`·`pubDate`로 변환.
-- **검수:** 실제 시계로 5분 이내인지, `byh3071-cpu/yohan-ai-dictionary` URL·레포 공개 상태, "Public" 문구가 `vision.md` 비공개 데이터 제약과 충돌 없는지(사전 **콘텐츠** 공개 가정).
+- **분량:** 약 1,300자. 1편(1,100)·2편(1,400) 사이로 수렴 — 시리즈 균형.
+- **인용 근거:** `vision.md` (Phase 3 끝 = 5분 안에 시작), `phase3-checklist.md` (P3-2 Vercel·P3-3 템플릿), `yohan-ai-dictionary/README.md` (Windows OneDrive 한글 경로 케이스·로컬 실행 명령), 1편/2편 본문 인용.
+- **이전 위치:** Phase 3 P3-2 배포 후 `yohan-ai-dictionary/src/content/docs/blog/03-template-to-first-build.mdx`로 카피 (frontmatter Starlight 형식 변환 필요: `title`·`description`·`pubDate`).
+- **검수 포인트:**
+  - GitHub repo URL/이름이 실제 공개 후 확정될 텐데, 본문에 placeholder(`<your-name>/<your-repo>`)로 둔 부분이 일관적인지.
+  - "5분"이라는 약속이 실제 첫 시도 측정과 어긋나지 않는지 — 본인 측정 한 번 권장(`sharp` install 시간 포함).
+  - Vercel Astro 자동 인식 단계가 현재 Vercel UI 문구와 일치하는지 (P3-2 실제 배포 시점에 한 번 더 캡처 검토).
+  - 시리즈 마무리 3줄 요약이 실제 1·2편 결론 문장과 정합한지 (현재는 정합).
