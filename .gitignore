@@ -26,3 +26,9 @@ git-autopull.log
 Thumbs.db
 desktop.ini
 ~$*
+
+# 에이전트/배치 런타임 상태 (대시보드 SSE 소스)
+memory/metrics/automation/agent-status.json
+
+# 로컬 커밋 메시지 초안
+.commit-msg-tmp.txt
