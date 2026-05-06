@@ -171,6 +171,11 @@ export default function DashboardPage() {
     return docs.filter((d) => d.category === activeCategory)
   }, [docs, activeCategory])
 
+  useEffect(() => {
+    if (!selectedDoc) return
+    if (!filtered.some((d) => d.relPath === selectedDoc)) setSelectedDoc(null)
+  }, [filtered, selectedDoc])
+
   const [actionResult, setActionResult] = useState<{ action: string; ok: boolean; message: string } | null>(null)
   const [actionRunning, setActionRunning] = useState<string | null>(null)
 
@@ -268,11 +273,13 @@ export default function DashboardPage() {
               <SerendipityCard doc={serendipity} onSelect={(p) => { setSelectedDoc(p); setMobileNavOpen(false) }} />
             </div>
           )}
-          {activeView === "home" && (
-            <BriefingCard />
-          )}
-          {activeView === "home" && (
-            <SotDraftPanel onSaved={() => void loadDashboard(true)} />
+          {activeView === "workroom" && (
+            <ScrollArea className="flex-1 min-h-0">
+              <div className="mx-auto max-w-3xl space-y-1 p-3">
+                <BriefingCard />
+                <SotDraftPanel onSaved={() => void loadDashboard(true)} />
+              </div>
+            </ScrollArea>
           )}
 
           {activeView === "charts" && (

@@ -10,7 +10,7 @@ config({ path: resolve(process.cwd(), "..", ".env") })
 export type NlpIntent =
   | { type: "search_docs"; query: string; dateFilter?: string }
   | { type: "run_action"; action: string; args?: string; confirm?: boolean }
-  | { type: "open_view"; view: "home" | "charts" | "timeline" | "constellation" }
+  | { type: "open_view"; view: "home" | "charts" | "timeline" | "workroom" | "constellation" }
   | { type: "unknown"; raw: string }
 
 const KNOWN_ACTIONS: Record<string, string> = {
@@ -36,12 +36,12 @@ const CLASSIFY_SYSTEM = `너는 Yohan OS 대시보드 커맨드 팔레트의 의
 1. 문서 검색: {"type":"search_docs","query":"검색어","dateFilter":"YYYY-MM-DD 또는 yesterday 또는 today 또는 null"}
 2. 빠른 실행: {"type":"run_action","action":"액션키","confirm":true}
    가능한 액션: ${ACTION_LIST}
-3. 뷰 전환: {"type":"open_view","view":"home|charts|timeline|constellation"}
+3. 뷰 전환: {"type":"open_view","view":"home|charts|timeline|workroom|constellation"}
 4. 모르겠으면: {"type":"unknown","raw":"원문"}
 
 규칙:
 - "어제" = yesterday, "오늘" = today, 특정 날짜 = YYYY-MM-DD
-- "별자리" = constellation, "차트"/"통계" = charts, "타임라인" = timeline
+- "별자리" = constellation, "차트"/"통계" = charts, "타임라인" = timeline, "작업실" = workroom
 - 액션은 위 목록에 있는 것만. 없으면 search_docs로.
 - confirm은 실행 액션에만 true.`
 
@@ -70,6 +70,7 @@ function keywordFallback(input: string, docs: Awaited<ReturnType<typeof listDocs
   }
 
   if (q.includes("별자리")) return { type: "open_view", view: "constellation" }
+  if (q.includes("작업실")) return { type: "open_view", view: "workroom" }
   if (q.includes("차트") || q.includes("통계")) return { type: "open_view", view: "charts" }
   if (q.includes("타임라인")) return { type: "open_view", view: "timeline" }
 
@@ -162,10 +163,10 @@ export async function POST(req: NextRequest) {
 
     if (t === "open_view") {
       const view = String(parsed.view ?? "home")
-      const allowed = ["home", "charts", "timeline", "constellation"]
+      const allowed = ["home", "charts", "timeline", "workroom", "constellation"]
       const intent: NlpIntent = {
         type: "open_view",
-        view: (allowed.includes(view) ? view : "home") as "home" | "charts" | "timeline" | "constellation",
+        view: (allowed.includes(view) ? view : "home") as "home" | "charts" | "timeline" | "workroom" | "constellation",
       }
       return NextResponse.json({ intent, results: [], method: "ai" })
     }

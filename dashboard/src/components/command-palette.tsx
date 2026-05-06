@@ -14,6 +14,14 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import type { DocMeta } from "@/lib/types"
 import type { ViewTab } from "@/components/view-tabs"
 
+const VIEW_LABEL: Record<ViewTab, string> = {
+  home: "홈",
+  charts: "차트",
+  timeline: "타임라인",
+  workroom: "작업실",
+  constellation: "별자리",
+}
+
 interface CommandPaletteProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -194,7 +202,7 @@ export function CommandPalette({ open, onOpenChange, docs, onSelectDoc, onQuickA
           {nlpIntent?.type === "open_view" && (
             <div className="p-3 flex items-center gap-2 text-xs text-muted-foreground border-b border-border/60">
               <Eye size={12} />
-              <span>뷰 전환: <strong className="text-foreground">{nlpIntent.view}</strong></span>
+              <span>뷰 전환: <strong className="text-foreground">{VIEW_LABEL[nlpIntent.view]}</strong></span>
             </div>
           )}
 

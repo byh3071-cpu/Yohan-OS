@@ -1,12 +1,25 @@
 import { NextResponse } from "next/server"
-import { readFile, writeFile, mkdir } from "node:fs/promises"
+import { readFile, writeFile, mkdir, unlink } from "node:fs/promises"
+import { existsSync } from "node:fs"
 import { listDocs, getStats, parseBatchHistory, getSessionLogs, extractDecisions } from "@/lib/memory"
 import { resolve, join } from "node:path"
 import { config } from "dotenv"
 
 export const dynamic = "force-dynamic"
 
-config({ path: resolve(process.cwd(), "..", ".env") })
+function loadDashboardEnv() {
+  const paths: [string, boolean][] = [
+    [resolve(process.cwd(), "..", ".env"), false],
+    [resolve(process.cwd(), "..", ".env.local"), true],
+    [resolve(process.cwd(), ".env"), true],
+    [resolve(process.cwd(), ".env.local"), true],
+  ]
+  for (const [p, override] of paths) {
+    if (existsSync(p)) config({ path: p, override })
+  }
+}
+
+loadDashboardEnv()
 
 const CACHE_DIR = join(process.cwd(), ".next", "cache", "briefing")
 
@@ -31,6 +44,13 @@ async function writeCache(data: CachedBriefing): Promise<void> {
     await mkdir(CACHE_DIR, { recursive: true })
     await writeFile(join(CACHE_DIR, `${data.date}.json`), JSON.stringify(data), "utf8")
   } catch { /* best effort */ }
+}
+
+function isBriefingFailurePlaceholder(text: string): boolean {
+  return (
+    text.includes("OPENAI_API_KEY 없음") ||
+    text.startsWith("(OpenAI 오류:")
+  )
 }
 
 async function callOpenAI(prompt: string): Promise<string> {
@@ -78,7 +98,15 @@ export async function GET(req: Request) {
   if (!forceRefresh) {
     const cached = await readCache(today)
     if (cached) {
-      return NextResponse.json({ ...cached, cached: true })
+      const key = process.env.OPENAI_API_KEY?.trim()
+      const failed = isBriefingFailurePlaceholder(cached.briefing)
+      if (!failed) {
+        return NextResponse.json({ ...cached, cached: true })
+      }
+      if (failed && !key) {
+        return NextResponse.json({ ...cached, cached: true })
+      }
+      await unlink(join(CACHE_DIR, `${today}.json`)).catch(() => { /* stale error cache */ })
     }
   }
 
@@ -130,7 +158,9 @@ ${lastSession ? `- ${lastSession.date}: ${lastSession.summary.join(", ")}` : "- 
     },
   }
 
-  await writeCache(result)
+  if (!isBriefingFailurePlaceholder(briefing)) {
+    await writeCache(result)
+  }
 
   return NextResponse.json({ ...result, cached: false })
 }
