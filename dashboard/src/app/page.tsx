@@ -90,7 +90,7 @@ export default function DashboardPage() {
   const loadDashboard = useCallback(async (fresh = false) => {
     const url = fresh ? `/api/docs?fresh=1&t=${Date.now()}` : `/api/docs?t=${Date.now()}`
     try {
-      const r = await fetch(url)
+      const r = await fetch(url, { cache: "no-store" })
       const data = await r.json()
       setDocs(data.docs ?? [])
       setStats((prev) => data.stats ?? prev)
@@ -117,7 +117,7 @@ export default function DashboardPage() {
   }, [])
 
   useEffect(() => {
-    loadDashboard(false).finally(() => setLoading(false))
+    loadDashboard(true).finally(() => setLoading(false))
   }, [loadDashboard])
 
   useEffect(() => {
@@ -131,7 +131,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (activeView !== "constellation" || constellationData) return
-    fetch(`/api/constellation?t=${Date.now()}`)
+    fetch(`/api/constellation?fresh=1&t=${Date.now()}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((data: ConstellationData) => {
         setConstellationData(data)

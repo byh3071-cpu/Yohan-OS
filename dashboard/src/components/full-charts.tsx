@@ -117,7 +117,7 @@ function EvaluatorPanel({ rollup }: { rollup: EvaluatorRollup | null }) {
   useEffect(() => {
     if (!open) return
     setLoading(true)
-    fetch(`/api/evaluations?limit=32`)
+    fetch(`/api/evaluations?limit=32`, { cache: "no-store" })
       .then((r) => r.json())
       .then((d) => setItems(Array.isArray(d.items) ? d.items : []))
       .catch(() => setItems([]))

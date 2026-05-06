@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { buildConstellation } from "@/lib/constellation"
 import { getDocsCached, getDocsCacheMeta, clearDocsCache } from "@/lib/docs-cache"
 import { createTtlCache } from "@/lib/server-cache"
+import { withNoStoreJson } from "@/lib/http-cache"
 
 export const dynamic = "force-dynamic"
 
@@ -20,7 +21,7 @@ export async function GET(req: Request) {
     return buildConstellation(docs)
   })
 
-  const res = NextResponse.json(data)
+  const res = withNoStoreJson(NextResponse.json(data))
   const meta = constellationCache.inspect()
   const docsMeta = getDocsCacheMeta()
   res.headers.set("x-cache-constellation", meta.hit ? "hit" : "miss")

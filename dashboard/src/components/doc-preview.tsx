@@ -24,7 +24,7 @@ export function DocPreview({ relPath, onClose, fullscreenMobile }: DocPreviewPro
   useEffect(() => {
     if (!relPath) { setDoc(null); return }
     setLoading(true)
-    fetch(`/api/docs/${relPath}`)
+    fetch(`/api/docs/${relPath}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((d) => setDoc(d))
       .catch(() => setDoc(null))

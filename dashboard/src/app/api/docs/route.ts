@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getStats, buildChartData, parseBatchHistory, pickSerendipity, getGitLog, extractDecisions, getSessionLogs, getEvaluatorRollup } from "@/lib/memory"
 import { getDocsCached, getDocsCacheMeta, clearDocsCache } from "@/lib/docs-cache"
 import { createTtlCache } from "@/lib/server-cache"
+import { withNoStoreJson } from "@/lib/http-cache"
 
 export const dynamic = "force-dynamic"
 
@@ -29,7 +30,7 @@ export async function GET(req: Request) {
   }
 
   const data = await payloadCache.get(buildPayload)
-  const res = NextResponse.json(data)
+  const res = withNoStoreJson(NextResponse.json(data))
   const meta = payloadCache.inspect()
   const docsMeta = getDocsCacheMeta()
   res.headers.set("x-cache-payload", meta.hit ? "hit" : "miss")

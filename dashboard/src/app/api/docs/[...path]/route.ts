@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDoc } from "@/lib/memory"
+import { withNoStoreJson } from "@/lib/http-cache"
 
 export const dynamic = "force-dynamic"
 
@@ -16,11 +17,11 @@ export async function GET(
   const { path } = await params
 
   if (!isSafePath(path)) {
-    return NextResponse.json({ error: "invalid path" }, { status: 400 })
+    return withNoStoreJson(NextResponse.json({ error: "invalid path" }, { status: 400 }))
   }
 
   const relPath = path.join("/")
   const doc = await getDoc(relPath)
-  if (!doc) return NextResponse.json({ error: "not found" }, { status: 404 })
-  return NextResponse.json(doc)
+  if (!doc) return withNoStoreJson(NextResponse.json({ error: "not found" }, { status: 404 }))
+  return withNoStoreJson(NextResponse.json(doc))
 }
