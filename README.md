@@ -49,6 +49,8 @@ npm run build
 | `NOTION_OCR_RESOURCE_DATABASE_ID` | 텔레그램 OCR **리소스** DB ID (`notion_push_ocr_pair` / `sync:notion:ocr`). |
 | `NOTION_OCR_SUMMARY_DATABASE_ID`  | OCR **서머리** DB ID. |
 | `NOTION_OCR_RESOURCE_PROP_*` 등 | 리소스·서머리 DB **열 이름**·기본값 오버라이드 — `notion-ocr-pipeline.md`. `상태`는 기본 **Notion Status**; Select 열이면 `NOTION_OCR_*_STATUS_KIND=select`. |
+| `NOTION_KNOWLEDGE_HUB_DB_ID` / `NOTION_EXECUTION_LOG_DB_ID` | `sync_to_notion`이 푸시할 두 DB. ADR·트러블슈팅 → 지식 허브, 세션 로그 → EXECUTION LOG. |
+| `NOTION_KNOWLEDGE_HUB_PROP_*` / `NOTION_EXECUTION_LOG_PROP_*` 등 | 두 DB **열 이름**·상태/카테고리 종류 오버라이드. 기본값은 한국어 UI(`이름`·`상태`·`카테고리`·`SoT Key`). 상태 컬럼이 Status 타입이 아니면 `NOTION_KNOWLEDGE_HUB_STATUS_KIND=select`. 전체 키는 `.env.example`. |
 | `TELEGRAM_BOT_TOKEN`          | 텔레그램 봇 (`npm run bot`). @BotFather 발급 토큰.               |
 | `TELEGRAM_CHAT_ID`            | (권장) 본인 채팅 ID만 처리. 비우면 모든 채팅 수신.                        |
 
@@ -67,9 +69,21 @@ npm run sync:notion:push -- 20    # memory/decisions 최근 20개 → 노션 DB 
 npm run sync:notion:pull -- 50    # 노션 DB 행 → notion-queue.md 에 append 만 (이미 있는 page_id 는 스킵, SoT 자동 병합 없음)
 npm run sync:notion:ocr -- path/to/ocr-payload.json   # OCR 리소스(+선택 서머리) 페이지 생성 — `notion-ocr-pipeline.md`
 npm run sync:notion:ocr:telegram-batch -- memory/inbox/telegram-ocr-snapshot-20260408.md   # 인박스 스크린샷 블록 일괄 푸시
+npm run sync:notion:records -- --since today           # 오늘 변경된 ADR·트러블슈팅·세션 로그 → 두 DB 자동 푸시
 ```
 
-MCP: `notion_push_decisions`, `notion_push_ocr_pair`, `notion_pull_to_queue`. 클라이언트는 `@notionhq/client@2.2` (Notion API `databases.query`).
+MCP: `notion_push_decisions`, `notion_push_ocr_pair`, `notion_pull_to_queue`, `sync_to_notion`. 클라이언트는 `@notionhq/client@2.2` (Notion API `databases.query`).
+
+### 기록 레이어 자동 동기 (`sync_to_notion`)
+
+ADR(`docs/adr/`)·트러블슈팅(`docs/troubleshooting/`)·세션 로그(`memory/logs/sessions/`)를 git 커밋만 하면 노션 두 DB로 자동 흘려보낸다.
+
+- **분기**: `docs/adr/*.md`·`docs/troubleshooting/*.md` → **지식 허브 DB**(상태 `초안`, 카테고리 `🔧 시스템·아키텍처`). `memory/logs/sessions/*.md` → **EXECUTION LOG DB**.
+- **CLI**: `npm run sync:notion:records -- --since today` (또는 ISO 날짜, 예: `--since 2026-05-01`). `--json` 추가 시 결과 JSON 출력.
+- **자동 트리거**: `.claude/hooks/post-session.sh` Stop hook이 변경 있을 때만 호출. 실패해도 세션 종료 비차단.
+- **멱등 키**: 파일 경로 SHA-256 32자 → `SoT Key` rich_text 컬럼. 동일 키는 페이지 갱신, 신규는 페이지 생성. **DB에 `SoT Key` 텍스트 열 필수**.
+- **DB 스키마 가정**: 한국어 UI 기본(`이름`·`상태`·`카테고리`·`SoT Key`). 컬럼명이 다르면 `.env`로 오버라이드. 상태가 Status 타입이 아니면 `NOTION_KNOWLEDGE_HUB_STATUS_KIND=select`.
+- **본문 매핑 한계**: 노션 페이지당 children **95블록**까지(노션 100 한도). 더 긴 문서가 필요하면 페이지 분할.
 
 ## 텔레그램 봇 인박스 (폴링)
 
@@ -189,6 +203,7 @@ memory/
 | `notion_push_decisions` | `memory/decisions` 최근 항목 → 노션 DB (멱등 `SoT Key`). |
 | `notion_push_ocr_pair` | OCR 리소스 DB(원문)+서머리 DB(정제본, relation). 인자·`.env`는 `memory/rules/notion-ocr-pipeline.md`. |
 | `notion_pull_to_queue` | 노션 DB 행 → `memory/inbox/notion-queue.md`에 append 만. |
+| `sync_to_notion` | git log 기준 변경된 `docs/adr/`·`docs/troubleshooting/`·`memory/logs/sessions/` 마크다운을 두 노션 DB로 자동 푸시 (멱등 `SoT Key`). 인자 `since` (기본 `today`, ISO 날짜 가능). `.claude/hooks/post-session.sh` Stop hook으로 자동 트리거. |
 
 그 외 RSS 전용 MCP(`ingest_yozm_rss`, `ingest_aitimes_rss`, `ingest_themilk_rss`, `ingest_paulgraham_rss`, `ingest_samaltman_rss`, `ingest_karpathy_rss`)는 각각 대응 피드를 `memory/ingest/rss/{이름}/`에 저장한다. 인자는 공통으로 선택 `limit` (1–100, 기본 20).
 
