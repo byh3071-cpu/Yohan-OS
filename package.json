@@ -32,6 +32,7 @@
     "sync:notion:push": "tsx src/notion-push-cli.ts",
     "sync:notion:pull": "tsx src/notion-pull-cli.ts",
     "sync:notion:ocr": "tsx src/notion-ocr-push-cli.ts",
+    "sync:notion:records": "tsx src/notion-sync-records-cli.ts",
     "sync:notion:ocr:telegram-batch": "tsx scripts/telegram-ocr-batch.ts",
     "automation:batch": "tsx scripts/automation-batch.ts",
     "automation:batch:force": "tsx scripts/automation-batch.ts --force",

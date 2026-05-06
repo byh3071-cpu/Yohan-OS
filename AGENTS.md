@@ -29,5 +29,6 @@
    - **운영 결정 메모:** `memory/decisions/` — 세션 단위 결정. `append_decision` MCP로 자동 생성.
    - **세션 작업 로그:** `memory/logs/sessions/` — 세션별 변경 요약.
    - **트러블슈팅:** `[docs/troubleshooting/](docs/troubleshooting/)` — 에러 해결 완료 시 증상→원인→해결→교훈.
+   - **노션 자동 동기화:** MCP 도구 `sync_to_notion`(또는 `npm run sync:notion:records -- --since today`) 한 번이면 위 3종이 노션 **지식 허브 DB**(ADR·트러블슈팅, 카테고리 `🔧 시스템·아키텍처`)와 **EXECUTION LOG DB**(세션 로그)에 푸시. 멱등 키(`SoT Key` 컬럼) 기준 중복 스킵. 세션 종료 시 자동 실행 hook: `[.claude/hooks/post-session.sh](.claude/hooks/post-session.sh)` (settings.json `Stop` hook에 `bash .claude/hooks/post-session.sh` 등록 필요). 환경 변수: `[.env.example](.env.example)` 의 `NOTION_KNOWLEDGE_HUB_DB_ID` · `NOTION_EXECUTION_LOG_DB_ID`.
 
 MCP `yohan-os` 사용 시 레포 루트가 `cwd`이고 `dist/index.js`가 빌드되어 있어야 한다. `[README.md](README.md)` 트러블슈팅 참고.

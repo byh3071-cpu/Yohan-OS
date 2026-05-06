@@ -24,9 +24,11 @@ import { buildPlanStub } from "./plan/task-plan.js";
 import { getMemoryDir } from "./paths.js";
 import { loadNotionSyncEnv } from "./notion/notion-env.js";
 import { loadNotionOcrEnv } from "./notion/notion-ocr-env.js";
+import { loadNotionRecordsEnv } from "./notion/notion-records-env.js";
 import { pushDecisionsFromSoT } from "./notion/push-decisions.js";
 import { OcrPushInputSchema, pushOcrResourceAndSummary } from "./notion/push-ocr.js";
 import { pullNotionDatabaseToQueue } from "./notion/pull-queue.js";
+import { syncRecordsToNotion } from "./notion/sync-records.js";
 import { loadNotionQueuePreview } from "./notion-queue.js";
 import { searchMemory } from "./search/memory-search.js";
 import { writeEvaluationLog } from "./evaluation-log.js";
@@ -419,6 +421,46 @@ async function main(): Promise<void> {
         const msg = e instanceof Error ? e.message : String(e);
         return {
           content: [{ type: "text", text: JSON.stringify({ ok: false, error: msg }, null, 2) }],
+        };
+      }
+    },
+  );
+
+  server.registerTool(
+    "sync_to_notion",
+    {
+      description:
+        "오늘(또는 지정 시점부터) 변경된 docs/adr/·docs/troubleshooting/·memory/logs/sessions/ 마크다운을 노션에 자동 동기화. ADR·트러블슈팅 → 지식 허브 DB(상태 '초안', 카테고리 '🔧 시스템·아키텍처'), 세션 로그 → EXECUTION LOG DB. 멱등 키(`SoT Key` 컬럼)로 중복 페이지 스킵. NOTION_TOKEN·NOTION_KNOWLEDGE_HUB_DB_ID·NOTION_EXECUTION_LOG_DB_ID 필요(`.env.example` 참조).",
+      inputSchema: {
+        since: z
+          .string()
+          .optional()
+          .describe("'today'(기본) 또는 ISO 날짜(YYYY-MM-DD). git log --since 인자."),
+      },
+    },
+    async (args) => {
+      try {
+        const env = loadNotionRecordsEnv();
+        const summary = await syncRecordsToNotion(env, {
+          since: args?.since ?? "today",
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({ ok: true, summary }, null, 2),
+            },
+          ],
+        };
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({ ok: false, error: msg }, null, 2),
+            },
+          ],
         };
       }
     },

@@ -12,6 +12,7 @@ node_modules/
 dist/
 .env
 .env.*
+!.env.example
 *.local
 
 # 텔레그램 봇 단일 인스턴스 락
