@@ -422,6 +422,7 @@ export default function DashboardPage() {
         docs={docs}
         onSelectDoc={(p) => { setSelectedDoc(p); setMobileNavOpen(false) }}
         onQuickAction={handleQuickAction}
+        onChangeView={setActiveView}
       />
 
       {actionRunning && (

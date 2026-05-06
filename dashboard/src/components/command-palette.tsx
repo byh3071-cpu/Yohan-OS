@@ -8,9 +8,11 @@ import {
   Globe, ArrowUpFromLine, ArrowDownToLine, BarChart3, Play,
   Bot, RefreshCw, GitBranch, Sparkles,
   Library, GraduationCap, FolderKanban,
+  Zap, Eye, Calendar,
 } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import type { DocMeta } from "@/lib/types"
+import type { ViewTab } from "@/components/view-tabs"
 
 interface CommandPaletteProps {
   open: boolean
@@ -18,6 +20,7 @@ interface CommandPaletteProps {
   docs: DocMeta[]
   onSelectDoc: (relPath: string) => void
   onQuickAction: (action: string) => void
+  onChangeView?: (view: ViewTab) => void
 }
 
 const ACTIONS = [
@@ -46,17 +49,29 @@ const CAT_ICON: Record<string, React.ReactNode> = {
   templates: <FileText size={14} />,
 }
 
-export function CommandPalette({ open, onOpenChange, docs, onSelectDoc, onQuickAction }: CommandPaletteProps) {
+type NlpIntent =
+  | { type: "search_docs"; query: string; dateFilter?: string }
+  | { type: "run_action"; action: string; args?: string; confirm?: boolean }
+  | { type: "open_view"; view: ViewTab }
+  | { type: "unknown"; raw: string }
+
+type NlpResult = {
+  intent: NlpIntent
+  results: DocMeta[]
+  method: string
+} | null
+
+export function CommandPalette({ open, onOpenChange, docs, onSelectDoc, onQuickAction, onChangeView }: CommandPaletteProps) {
   const [query, setQuery] = useState("")
-  const [aiResults, setAiResults] = useState<DocMeta[]>([])
-  const [aiSearching, setAiSearching] = useState(false)
-  const [aiMethod, setAiMethod] = useState<string | null>(null)
+  const [nlp, setNlp] = useState<NlpResult>(null)
+  const [nlpLoading, setNlpLoading] = useState(false)
+  const [confirmAction, setConfirmAction] = useState<{ action: string; label: string } | null>(null)
 
   useEffect(() => {
     if (!open) {
       setQuery("")
-      setAiResults([])
-      setAiMethod(null)
+      setNlp(null)
+      setConfirmAction(null)
     }
   }, [open])
 
@@ -75,7 +90,7 @@ export function CommandPalette({ open, onOpenChange, docs, onSelectDoc, onQuickA
 
   const filteredActions = useMemo(
     () => ACTIONS.filter((a) => !q || a.label.toLowerCase().includes(q)),
-    [q]
+    [q],
   )
 
   const filteredDocs = useMemo(
@@ -83,37 +98,55 @@ export function CommandPalette({ open, onOpenChange, docs, onSelectDoc, onQuickA
       docs
         .filter((d) => !q || d.title.toLowerCase().includes(q) || d.tags.some((t) => t.includes(q)))
         .slice(0, 12),
-    [docs, q]
+    [docs, q],
   )
 
-  const handleAiSearch = useCallback(async () => {
+  const handleNlpCommand = useCallback(async () => {
     if (!q || q.length < 2) return
-    setAiSearching(true)
+    setNlpLoading(true)
+    setNlp(null)
+    setConfirmAction(null)
     try {
-      const res = await fetch("/api/search", {
+      const res = await fetch("/api/nlp-command", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: q }),
+        body: JSON.stringify({ input: q }),
       })
       const data = await res.json()
-      setAiResults(data.results ?? [])
-      setAiMethod(data.method ?? "unknown")
+      const intent = data.intent as NlpIntent | undefined
+
+      if (intent?.type === "open_view" && onChangeView) {
+        onChangeView(intent.view)
+        onOpenChange(false)
+        return
+      }
+
+      if (intent?.type === "run_action") {
+        const label = ACTIONS.find((a) => a.action === intent.action)?.label ?? intent.action
+        setConfirmAction({ action: intent.action, label })
+        setNlp(data)
+        return
+      }
+
+      setNlp(data)
     } catch {
-      setAiResults([])
+      setNlp(null)
     } finally {
-      setAiSearching(false)
+      setNlpLoading(false)
     }
-  }, [q])
+  }, [q, onChangeView, onOpenChange])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && q.length >= 2 && filteredDocs.length === 0) {
+    if (e.key === "Enter" && q.length >= 2) {
       e.preventDefault()
-      handleAiSearch()
+      void handleNlpCommand()
     }
   }
 
   const hasKeywordResults = filteredActions.length > 0 || filteredDocs.length > 0
-  const showAiHint = q.length >= 2 && filteredDocs.length === 0 && aiResults.length === 0 && !aiSearching
+  const nlpDocs = nlp?.results ?? []
+  const nlpIntent = nlp?.intent
+  const showNlpHint = q.length >= 2 && filteredDocs.length === 0 && !nlp && !nlpLoading
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -122,15 +155,58 @@ export function CommandPalette({ open, onOpenChange, docs, onSelectDoc, onQuickA
           <Search size={16} className="text-muted-foreground shrink-0" />
           <Input
             value={query}
-            onChange={(e) => { setQuery(e.target.value); setAiResults([]); setAiMethod(null) }}
+            onChange={(e) => { setQuery(e.target.value); setNlp(null); setConfirmAction(null) }}
             onKeyDown={handleKeyDown}
-            placeholder="문서 검색, 명령 실행, 또는 자연어로 질문…"
+            placeholder="문서 검색, 명령 실행, 또는 자연어로 질문… (Enter)"
             className="border-0 shadow-none focus-visible:ring-0 h-11 text-sm"
             autoFocus
           />
         </div>
         <ScrollArea className="max-h-[min(60vh,400px)]">
-          {filteredActions.length > 0 && (
+          {confirmAction && (
+            <div className="p-4 space-y-2 border-b border-border/60">
+              <div className="flex items-center gap-2 text-sm">
+                <Zap size={14} className="text-amber-500" />
+                <span><strong>{confirmAction.label}</strong> 실행할까요?</span>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onQuickAction(confirmAction.action)
+                    onOpenChange(false)
+                  }}
+                  className="rounded-md bg-foreground px-3 py-1 text-xs font-medium text-background hover:opacity-90"
+                >
+                  실행
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmAction(null)}
+                  className="rounded-md border border-border px-3 py-1 text-xs text-muted-foreground hover:bg-accent"
+                >
+                  취소
+                </button>
+              </div>
+            </div>
+          )}
+
+          {nlpIntent?.type === "open_view" && (
+            <div className="p-3 flex items-center gap-2 text-xs text-muted-foreground border-b border-border/60">
+              <Eye size={12} />
+              <span>뷰 전환: <strong className="text-foreground">{nlpIntent.view}</strong></span>
+            </div>
+          )}
+
+          {nlpIntent?.type === "search_docs" && nlpIntent.dateFilter && (
+            <div className="px-3 py-1.5 flex items-center gap-2 text-[10px] text-muted-foreground border-b border-border/60">
+              <Calendar size={10} />
+              <span>날짜 필터: <strong className="text-foreground">{nlpIntent.dateFilter}</strong></span>
+              {nlp?.method && <span className="ml-auto text-[9px] opacity-60">{nlp.method}</span>}
+            </div>
+          )}
+
+          {filteredActions.length > 0 && !confirmAction && (
             <div className="p-1">
               <p className="text-[10px] text-muted-foreground px-2 py-1 font-medium">빠른 실행</p>
               {filteredActions.map((a) => (
@@ -162,19 +238,20 @@ export function CommandPalette({ open, onOpenChange, docs, onSelectDoc, onQuickA
             </div>
           )}
 
-          {aiSearching && (
+          {nlpLoading && (
             <div className="p-4 flex items-center gap-2 justify-center">
               <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <span className="text-xs text-muted-foreground">AI가 문서를 찾는 중…</span>
+              <span className="text-xs text-muted-foreground">AI가 명령을 분석 중…</span>
             </div>
           )}
 
-          {aiResults.length > 0 && (
+          {nlpDocs.length > 0 && !confirmAction && (
             <div className="p-1">
               <p className="text-[10px] text-muted-foreground px-2 py-1 font-medium flex items-center gap-1">
                 <Sparkles size={10} /> AI 검색 결과
+                {nlp?.method && <span className="ml-1 opacity-60">({nlp.method})</span>}
               </p>
-              {aiResults.map((d) => (
+              {nlpDocs.map((d) => (
                 <button
                   key={d.relPath}
                   onClick={() => { onSelectDoc(d.relPath); onOpenChange(false) }}
@@ -188,23 +265,23 @@ export function CommandPalette({ open, onOpenChange, docs, onSelectDoc, onQuickA
             </div>
           )}
 
-          {showAiHint && (
+          {showNlpHint && (
             <div className="p-4 text-center">
               <p className="text-xs text-muted-foreground mb-2">키워드 결과 없음</p>
               <button
                 type="button"
-                onClick={handleAiSearch}
+                onClick={() => void handleNlpCommand()}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
               >
                 <Sparkles size={12} />
-                AI로 "{q}" 검색
+                AI로 &quot;{q}&quot; 실행
               </button>
             </div>
           )}
 
-          {!hasKeywordResults && aiResults.length === 0 && !aiSearching && !showAiHint && q.length < 2 && (
+          {!hasKeywordResults && nlpDocs.length === 0 && !nlpLoading && !showNlpHint && !confirmAction && q.length < 2 && (
             <div className="p-8 text-center text-sm text-muted-foreground">
-              검색어를 입력하세요
+              검색어를 입력하세요 · Enter로 AI 자연어 명령
             </div>
           )}
         </ScrollArea>
