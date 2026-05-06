@@ -5,8 +5,8 @@
 # yohan-profile-card — separate Next.js side project, own repo; not part of private Yohan OS snapshot
 /yohan-profile-card/
 
-# Claude Code worktrees — temporary agent workspaces
-.claude/worktrees/
+# Claude Code — local agent settings + worktrees
+.claude/
 
 node_modules/
 dist/
